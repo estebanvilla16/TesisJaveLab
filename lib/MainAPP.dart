@@ -52,12 +52,33 @@ class _PrincipalState extends State<Principal> {
         _carouselItems = data;
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroDialog());
   }
 
-  void _markAsViewed(int carouselIndex, int itemIndex) {
-    setState(() {
-      _viewed[carouselIndex * 5 + itemIndex] = true;
-    });
+  void _showIntroDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Bienvenido a JAVELAB'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Exploramos principios cognitivistas y de aprendizaje colaborativo.'),
+                Text('Descubre cómo utilizar esta app para tu aprendizaje.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Entendido'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -98,6 +119,40 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+  void _markAsViewed(int carouselIndex, int itemIndex) {
+    setState(() {
+      _viewed[carouselIndex * 5 + itemIndex] = true;
+    });
+    _showSnackBar(' ${itemIndex + 1} marcado como visto');
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  Future<List<Contenido>> _fetchTemas(int cat) async {
+    try {
+      String urlDynamic = Platform.isAndroid ? 'http://192.168.56.1:3011' : 'http://localhost:3011';
+      final String url = '${urlDynamic}/contenido/lista-contenidos/$cat';
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> postData = jsonDecode(response.body);
+        final List<Contenido> posts = postData.map((data) => Contenido.fromJson(data)).toList();
+        return posts;
+      } else {
+        throw Exception('Error en la solicitud: ${response.statusCode}');
+      }
+    } catch (error) {
+      return Future.value([]);
+    }
+  }
+
   List<Widget> _buildCarouselItems(int carouselIndex) {
     return List<Widget>.generate(
       5,
@@ -123,6 +178,7 @@ class _PrincipalState extends State<Principal> {
       final Contenido item = entry.value;
 
       return GestureDetector(
+        onTap: () => _markAsViewed(carouselIndex, itemIndex),
         child: Card(
           color: _viewed[carouselIndex * 5 + itemIndex] ? Colors.grey : Colors.white,
           elevation: 4.0,
@@ -189,35 +245,17 @@ class _PrincipalState extends State<Principal> {
   }
 }
 
-Future<List<Contenido>> _fetchTemas(int cat) async {
-  try {
-    String urlDynamic = Platform.isAndroid ? 'http://192.168.56.1:3011' : 'http://localhost:3011';
-    final String url = '${urlDynamic}/contenido/lista-contenidos/$cat';
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> postData = jsonDecode(response.body);
-      final List<Contenido> posts = postData.map((data) => Contenido.fromJson(data)).toList();
-      return posts;
-    } else {
-      throw Exception('Error en la solicitud: ${response.statusCode}');
-    }
-  } catch (error) {
-    return Future.value([]);
-  }
-}
-
 class CarouselSection extends StatelessWidget {
   final String title;
   final List<Widget> items;
   final Function(int, int) onItemTap;
 
   const CarouselSection({
-    super.key,
+    Key? key,
     required this.title,
     required this.items,
     required this.onItemTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -249,9 +287,9 @@ class CarouselSection extends StatelessWidget {
 
 class TaskCarouselSection extends CarouselSection {
   const TaskCarouselSection({
-    super.key,
+    Key? key,
     required String title,
     required List<Widget> items,
     required Function(int, int) onViewed,
-  }) : super(title: title, items: items, onItemTap: onViewed);
+  }) : super(key: key, title: title, items: items, onItemTap: onViewed);
 }
