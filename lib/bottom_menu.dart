@@ -1,7 +1,14 @@
-//Trabajo Realizado para proyecto de grado - JaveLab.
-//CODIGO DE MENU INFERIOR DE LA APLICACION
-
+import 'package:JaveLab/MainAPP.dart';
+import 'package:JaveLab/foro.dart';
+import 'package:JaveLab/perfil.dart';
+import 'package:JaveLab/rutaAcademica.dart';
 import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(
+    home: MyHomePage(),
+  ));
+}
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
@@ -13,7 +20,7 @@ class MyHomePage extends StatelessWidget {
         title: const Text('My App'),
       ),
       body: Container(
-        margin: const EdgeInsets.only(top: 20.0), // espacio superior contenedor
+        margin: const EdgeInsets.only(top: 20.0),
         child: const YourContentWidget(),
       ),
       bottomNavigationBar: const BottomMenu(),
@@ -46,6 +53,24 @@ class _BottomMenuState extends State<BottomMenu> {
     setState(() {
       _selectedIndex = index;
     });
+
+    switch (index) {
+      case 0:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Principal()));
+        break;
+      case 1:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const PantallaRutaAprendizaje()));
+        break;
+      case 2:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Cara6()));
+        break;
+      case 3:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+        break;
+      case 4:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const MessageScreen()));
+        break;
+    }
   }
 
   @override
@@ -56,7 +81,6 @@ class _BottomMenuState extends State<BottomMenu> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          // Iconos del navbar se usan los nativos de flutter
           buildNavBarItem(Icons.home, 0),
           buildNavBarItem(Icons.school, 1),
           buildNavBarItem(Icons.forum_outlined, 2),
@@ -71,12 +95,67 @@ class _BottomMenuState extends State<BottomMenu> {
     return IconButton(
       icon: Icon(icon, color: _selectedIndex == index ? Colors.blue : Colors.grey),
       onPressed: () => _onItemTapped(index),
-    ); //Index para saber que item fue seleccionado
+    );
   }
 }
 
-void main() {
-  runApp(const MaterialApp(
-    home: MyHomePage(),
-  ));
+// Screens
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Home")),
+      body: const Center(child: Text("Home Screen")),
+    );
+  }
+}
+
+class SchoolScreen extends StatelessWidget {
+  const SchoolScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("School")),
+      body: const Center(child: Text("School Screen")),
+    );
+  }
+}
+
+class ForumScreen extends StatelessWidget {
+  const ForumScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Forum")),
+      body: const Center(child: Text("Forum Screen")),
+    );
+  }
+}
+
+class AccountScreen extends StatelessWidget {
+  const AccountScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Account")),
+      body: const Center(child: Text("Account Screen")),
+    );
+  }
+}
+
+class MessageScreen extends StatelessWidget {
+  const MessageScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Messages")),
+      body: const Center(child: Text("Messages Screen")),
+    );
+  }
 }

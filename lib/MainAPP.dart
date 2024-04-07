@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'bottom_menu.dart';
@@ -7,7 +6,6 @@ import 'burgermenu.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:JaveLab/pages/ver_contenido.dart';
 
 void main() => runApp(const MyApp());
 
@@ -17,8 +15,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'JAVELAB App',
       debugShowCheckedModeBanner: false,
+      title: 'JAVELAB App',
       theme: ThemeData(
         primaryColor: const Color(0xFF2c5697),
         textTheme: TextTheme(
@@ -30,22 +28,23 @@ class MyApp extends StatelessWidget {
           color: Color(0xFF2c5697),
         ),
       ),
-      home: const MyHomePage(),
+      home: const Principal(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class Principal extends StatefulWidget {
+  const Principal({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PrincipalState createState() => _PrincipalState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PrincipalState extends State<Principal> {
   final List<bool> _viewed = List.generate(15, (_) => false);
   List<Contenido> _carouselItems = [];
 
+  @override
   void initState() {
     super.initState();
     _fetchTemas(2).then((data) {
@@ -73,8 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: () {},
         ),
       ),
-      bottomNavigationBar: const BottomMenu(), //Menu inferior
-      endDrawer: const BurgerMenu(), // Menu Hamburguesa
+      bottomNavigationBar: const BottomMenu(),
+      endDrawer: const BurgerMenu(),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -102,37 +101,30 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> _buildCarouselItems(int carouselIndex) {
     return List<Widget>.generate(
       5,
-      (int itemIndex) => GestureDetector(
+          (int itemIndex) => GestureDetector(
         onTap: () => _markAsViewed(carouselIndex, itemIndex),
         child: Card(
-          color: _viewed[carouselIndex * 5 + itemIndex]
-              ? Colors.grey
-              : Colors.white,
+          color: _viewed[carouselIndex * 5 + itemIndex] ? Colors.grey : Colors.white,
           elevation: 4.0,
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            child: Text('Elemento ${itemIndex + 1}',
-                style: const TextStyle(fontSize: 16.0)),
+            child: Text('Elemento ${itemIndex + 1}', style: const TextStyle(fontSize: 16.0)),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildCarouselItemsList(
-      List<Contenido> dataList, int carouselIndex) {
+  List<Widget> _buildCarouselItemsList(List<Contenido> dataList, int carouselIndex) {
     return dataList.asMap().entries.map((entry) {
       final int itemIndex = entry.key;
       final Contenido item = entry.value;
 
       return GestureDetector(
-        onTap: () => _navigateToDetailScreen(context, item),
         child: Card(
-          color: _viewed[carouselIndex * 5 + itemIndex]
-              ? Colors.grey
-              : Colors.white,
+          color: _viewed[carouselIndex * 5 + itemIndex] ? Colors.grey : Colors.white,
           elevation: 4.0,
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
           child: Container(
@@ -143,7 +135,6 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Text(item.titulo, style: const TextStyle(fontSize: 16.0)),
                 Text(item.descripcion),
-                // Agregar más Widgets según sea necesario para mostrar otros datos de Contenido
               ],
             ),
           ),
@@ -159,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return List<Widget>.generate(
       totalTasks,
-      (int itemIndex) {
+          (int itemIndex) {
         bool isCompleted = _viewed[itemIndex];
         return Stack(
           alignment: Alignment.bottomCenter,
@@ -167,20 +158,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               color: isCompleted ? Colors.white : Colors.white,
               elevation: 4.0,
-              margin:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text('Actividad ${itemIndex + 1}',
-                        style: const TextStyle(fontSize: 16.0)),
+                    Text('Actividad ${itemIndex + 1}', style: const TextStyle(fontSize: 16.0)),
                     const Spacer(),
-                    Icon(
-                      isCompleted ? Icons.check_circle : Icons.cancel,
-                      color: isCompleted ? Colors.green : Colors.red,
-                    ),
+                    Icon(isCompleted ? Icons.check_circle : Icons.cancel, color: isCompleted ? Colors.green : Colors.red),
                   ],
                 ),
               ),
@@ -192,8 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: Colors.grey.shade400,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
                 ),
               ),
@@ -204,14 +189,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-void _navigateToDetailScreen(BuildContext context, Contenido item) {
-  String pdfUrl = 'http://localhost:8080/api/blob/download/${item.material}';
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) =>
-          ContenidoDetailScreen(contenido: item, pdfUrl: pdfUrl),
-    ),
-  );
+Future<List<Contenido>> _fetchTemas(int cat) async {
+  try {
+    String urlDynamic = Platform.isAndroid ? 'http://192.168.56.1:3011' : 'http://localhost:3011';
+    final String url = '${urlDynamic}/contenido/lista-contenidos/$cat';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> postData = jsonDecode(response.body);
+      final List<Contenido> posts = postData.map((data) => Contenido.fromJson(data)).toList();
+      return posts;
+    } else {
+      throw Exception('Error en la solicitud: ${response.statusCode}');
+    }
+  } catch (error) {
+    return Future.value([]);
+  }
 }
 
 class CarouselSection extends StatelessWidget {
@@ -235,8 +228,7 @@ class CarouselSection extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child:
-                Text(title, style: Theme.of(context).textTheme.headlineMedium),
+            child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
           ),
           CarouselSlider(
             items: items,
@@ -252,33 +244,6 @@ class CarouselSection extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-Future<List<Contenido>> _fetchTemas(int cat) async {
-  try {
-    // Realiza una solicitud HTTP GET para obtener la lista de Posts
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
-        : 'http://localhost:3011';
-    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
-    final response = await http.get(Uri.parse(url));
-
-    // Verifica si la solicitud fue exitosa (código de estado 200)
-    if (response.statusCode == 200) {
-      // Convierte la respuesta JSON en una lista de mapas
-      final List<dynamic> postData = jsonDecode(response.body);
-      // Crea una lista de Posts a partir de los datos obtenidos
-      final List<Contenido> posts =
-          postData.map((data) => Contenido.fromJson(data)).toList();
-      // Ahora tienes la lista de Posts, puedes usarla según necesites
-      return posts;
-    } else {
-      throw Exception('Error en la solicitud: ${response.statusCode}');
-    }
-  } catch (error) {
-    // Si ocurrió un error durante la solicitud, imprímelo
-    return Future.value([]);
   }
 }
 
