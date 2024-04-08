@@ -1,6 +1,7 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de categoria de foro y boton de creacion de post.
 
+import 'package:JaveLab/helpers/mostrar_alerta.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:JaveLab/widgets/boton_azul.dart';
 import 'package:JaveLab/widgets/custom_input.dart';
@@ -10,11 +11,10 @@ import 'registro.dart';
 import '../contrasena.dart';
 
 class LoginScreen extends StatelessWidget {
-   LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({Key? key}) : super(key: key);
 
   final emailController = TextEditingController();
-  final passwordController = TextEditingController(); 
-
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                   keyboardType: TextInputType.emailAddress,
                   textController: emailController,
                 ), //Text field de correo
-               
+
                 const Text('Por favor ingrese la contraseña'),
 
                 CustomInput(
@@ -81,13 +81,23 @@ class LoginScreen extends StatelessWidget {
                 ), //Text field de contrasena
 
                 BotonAzul(
-                  text: 'Iniciar sesión', 
-                  onPressed: authService.autenticando ? null: () {
+                  text: 'Iniciar sesión',
+                  onPressed: authService.autenticando
+                      ? null
+                      : () async {
+                          FocusScope.of(context).unfocus();
 
-                    FocusScope.of(context).unfocus();
-                    
-                    authService.login(emailController.text.trim(), passwordController.text.trim());
-                  },
+                          final loginOk = await authService.login(
+                              emailController.text.trim(),
+                              passwordController.text.trim());
+                          if (loginOk) {
+                            Navigator.pushReplacementNamed(context, 'inicio');
+                          } else {
+                            //Mostrar alerta
+                            mostrarAlerta(context, 'Login incorrecto',
+                                'Revise sus credenciales nuevamente');
+                          }
+                        },
                 ), //Boton de inicio de sesion
 
                 Row(
@@ -97,26 +107,30 @@ class LoginScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen()),
                         );
                       },
                       child: const Text(
                         //Botones alternativos para registrarse si no posee cuenta o recuperar contrasena
                         'Registrarse',
-                        style: TextStyle(color: Color(0xff2c5697), fontSize: 12),
+                        style:
+                            TextStyle(color: Color(0xff2c5697), fontSize: 12),
                       ),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const ForgotPasswordScreen()),
                         );
-
                       },
                       child: const Text(
                         'Olvidé la contraseña',
-                        style: TextStyle(fontSize: 12, color: Color(0xff2c5697)),
+                        style:
+                            TextStyle(fontSize: 12, color: Color(0xff2c5697)),
                       ),
                     ),
                   ],
@@ -130,8 +144,10 @@ class LoginScreen extends StatelessWidget {
             height: 100,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[ // footer
-                Image.asset('assets/imgs/min_educacion.png', width: 80, height: 80),
+              children: <Widget>[
+                // footer
+                Image.asset('assets/imgs/min_educacion.png',
+                    width: 80, height: 80),
                 Image.asset('assets/imgs/logo.png', width: 80, height: 80),
               ],
             ),
