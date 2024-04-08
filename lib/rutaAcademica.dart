@@ -59,7 +59,8 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
-                decoration: InputDecoration( //buscador
+                decoration: InputDecoration(
+                  //buscador
                   hintText: 'Buscar...',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
@@ -141,6 +142,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
     );
   }
 }
+
 //clase de ruta y contiene el valor del progreso
 class SeccionRutaAprendizaje extends StatefulWidget {
   final String titulo;
@@ -148,7 +150,8 @@ class SeccionRutaAprendizaje extends StatefulWidget {
   final double progreso;
   final List<CapituloContenido> contenido;
 
-  const SeccionRutaAprendizaje({super.key, 
+  const SeccionRutaAprendizaje({
+    super.key,
     required this.titulo,
     required this.icono,
     required this.progreso,
@@ -201,19 +204,19 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
             children: widget.contenido
                 .asMap()
                 .map((index, capitulo) {
-              return MapEntry(
-                index,
-                CapituloContenidoWidget(
-                  capitulo: capitulo,
-                  isLast: index == widget.contenido.length - 1,
-                  onMarcarVisto: () {
-                    setState(() {
-                      capitulo.visto = !capitulo.visto;
-                    });
-                  },
-                ),
-              );
-            })
+                  return MapEntry(
+                    index,
+                    CapituloContenidoWidget(
+                      capitulo: capitulo,
+                      isLast: index == widget.contenido.length - 1,
+                      onMarcarVisto: () {
+                        setState(() {
+                          capitulo.visto = !capitulo.visto;
+                        });
+                      },
+                    ),
+                  );
+                })
                 .values
                 .toList(),
           ),
@@ -302,7 +305,8 @@ class CapituloContenidoWidget extends StatelessWidget {
             },
           );
         }).toList(),
-        if (!isLast) const Divider(), // Separador entre capítulos (excepto para el último)
+        if (!isLast)
+          const Divider(), // Separador entre capítulos (excepto para el último)
       ],
     );
   }
@@ -330,10 +334,10 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.6,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Algoritmos básicos',
         descripcion:
-        'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
+            'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
         videos: [
           Video(
             titulo: 'Introducción a los algoritmos',
@@ -355,10 +359,10 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.3,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Leyes de Newton',
         descripcion:
-        'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
+            'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
         videos: [
           Video(
             titulo: 'Ley de la inercia',
@@ -380,10 +384,10 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.8,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Derivadas',
         descripcion:
-        'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
+            'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
         videos: [
           Video(
             titulo: 'Introducción a las derivadas',
