@@ -34,17 +34,8 @@ class Cara6 extends StatelessWidget {
     Color primaryColor = const Color(0xFF2c5968);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Foro | Academico'),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
+        title: Tooltip(message: 'Bienvenido al Foro Académico', child: const Text('Foro | Academico')),
+
       ),
       bottomNavigationBar: const BottomMenu(),
       endDrawer: const BurgerMenu(),
@@ -57,20 +48,26 @@ class Cara6 extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Foro',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 28.0,
-                      fontWeight: FontWeight.bold,
+                  Tooltip(
+                    message: 'Sección principal del foro',
+                    child: const Text(
+                      'Foro',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  const Text(
-                    'Categorías',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black,
+                  Tooltip(
+                    message: 'Explora las categorías del foro',
+                    child: const Text(
+                      'Categorías',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -82,11 +79,11 @@ class Cara6 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(25.0),
                       border: Border.all(color: Colors.grey),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        SizedBox(width: 10.0),
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 10.0),
+                        const SizedBox(width: 10.0),
+                        const Icon(Icons.search, color: Colors.grey),
+                        const SizedBox(width: 10.0),
                         Expanded(
                           child: TextField(
                             decoration: InputDecoration(
@@ -103,66 +100,109 @@ class Cara6 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16.0),
+            IconButton(
+              icon: Icon(Icons.info_outline, color: Colors.blueGrey),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        SizedBox(width: 8),
+                        Expanded(child: Text('La aplicación integra el modelo pedagógico de pares con una interfaz intuitiva que utiliza colores estratégicamente para mejorar el aprendizaje y la retención. La disposición y navegación de los elementos, alineadas con principios de psicología visual, facilitan una experiencia de usuario fluida, mientras que el posicionamiento efectivo enfatiza contenido clave, apoyando así el enfoque colaborativo y la interacción efectiva entre pares..')),
+
+                      ],
+                    ),
+
+                    duration: Duration(seconds: 10),
+                    backgroundColor: Colors.blueGrey,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+
+
+                );
+              },
+              tooltip: 'Información',
+            ),
             SectionWidget(
+
               title: 'Calculo Diferencial',
-              description: '5 posts',
+              description: 'Explora temas de Cálculo Diferencial',
               backgroundColor: primaryColor,
               icon: Icons.calculate,
               category: 2, // Icono relacionado
+
             ),
+
+
             SectionWidget(
               title: 'Física Mecánica',
-              description: '5 posts',
+              description: 'Descubre los fundamentos de la Física Mecánica',
               backgroundColor: primaryColor,
               icon: Icons.build,
               category: 3, // Icono relacionado
             ),
             SectionWidget(
               title: 'Programacion I',
-              description: '5 posts',
+              description: 'Aprende los principios básicos de la programación',
               backgroundColor: primaryColor,
               icon: Icons.code,
               category: 1, // Icono relacionado
             ),
             const SizedBox(height: 16.0),
             Row(
+
               mainAxisAlignment: MainAxisAlignment.center,
+
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const Cara8(),
-                                ),
-                              );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0.0),
+                Tooltip(
+                  message: 'Crea un nuevo post en el foro',
+
+                  child: ElevatedButton(
+
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const Cara8(),
+                        ),
+
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
                     ),
+                    child: const Text(
+                      'Nuevo Post',
+                      style: TextStyle(fontSize: 18.0),
+
+                    ),
+
                   ),
-                  child: const Text(
-                    'Nuevo Post',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
+
                 ),
+
                 const SizedBox(width: 16.0),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0.0),
+                Tooltip(
+                  message: 'Participa en intercambios dentro del foro',
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Intercambio',
-                    style: TextStyle(fontSize: 18.0),
+                    child: const Text(
+                      'Intercambio',
+                      style: TextStyle(fontSize: 18.0),
+                    ),
                   ),
                 ),
               ],
@@ -179,16 +219,16 @@ class SectionWidget extends StatefulWidget {
   final String title;
   final String description;
   final Color backgroundColor;
-  final IconData icon; // Icono relacionado
-  final int category; // Agrega un atributo para la categoría
+  final IconData icon;
+  final int category;
 
   const SectionWidget({
     Key? key,
     required this.title,
     required this.description,
     required this.backgroundColor,
-    required this.icon, // Icono relacionado
-    required this.category, // Categoría requerida para la llamada a _fetchPosts
+    required this.icon,
+    required this.category,
   }) : super(key: key);
 
   @override
@@ -198,7 +238,6 @@ class SectionWidget extends StatefulWidget {
 class _SectionWidgetState extends State<SectionWidget> {
   bool _isExpanded = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -207,34 +246,39 @@ class _SectionWidgetState extends State<SectionWidget> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(widget.icon,
-                  color: _isExpanded
-                      ? Colors.white
-                      : Colors.black), // Icono relacionado
-              const SizedBox(width: 8.0),
-              Text(
-                widget.title,
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: _isExpanded ? Colors.white : Colors.black,
+      title: Tooltip(
+        message: widget.description,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+
+              children: [
+
+                Icon(widget.icon, color: _isExpanded ? Colors.white : Colors.black),
+                const SizedBox(width: 8.0),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: _isExpanded ? Colors.white : Colors.black,
+                  ),
+
                 ),
-              ),
-            ],
-          ),
-          Text(
-            widget.description,
-            style: TextStyle(
-              fontSize: 20.0,
-              color: _isExpanded ? Colors.white : Colors.black,
+
+
+              ],
             ),
-          ),
-        ],
+            Text(
+              widget.description,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: _isExpanded ? Colors.white : Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
       backgroundColor: widget.backgroundColor,
       onExpansionChanged: (bool expanded) {
@@ -245,16 +289,13 @@ class _SectionWidgetState extends State<SectionWidget> {
       children: [
         if (_isExpanded)
           FutureBuilder<List<Post>>(
-            future: _fetchPosts(
-                widget.category), // Utiliza el futuro de la lista de posts
+            future: _fetchPosts(widget.category),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                // Construye la lista de ListTile utilizando la lista de posts obtenida
-                print(snapshot.data);
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: snapshot.data!.map((post) {
@@ -269,25 +310,15 @@ class _SectionWidgetState extends State<SectionWidget> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.arrow_forward),
+                            tooltip: 'Ver detalles del post',
                             onPressed: () {
-                              // Agregar lógica para acceder al post
                               int? id = post.id_post;
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      PostViewScreen(id: id)));
-                              /*Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PostViewScreen(post: post),
-                                ),
-                              );*/
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostViewScreen(id: id)));
                             },
                           ),
                         ],
                       ),
-                      subtitle:
-                          Text('Fecha: ${post.fecha}, Persona: ${post.nombre}'),
+                      subtitle: Text('Fecha: ${post.fecha}, Persona: ${post.nombre}'),
                     );
                   }).toList(),
                 );
@@ -299,29 +330,41 @@ class _SectionWidgetState extends State<SectionWidget> {
   }
 }
 
+void showCustomSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+          SizedBox(width: 8),
+          Expanded(child: Text(message)),
+        ],
+      ),
+      duration: Duration(seconds: 3),
+      backgroundColor: Colors.blueGrey,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      behavior: SnackBarBehavior.floating,
+    ),
+  );
+}
+
+
+
 Future<List<Post>> _fetchPosts(int cat) async {
   try {
-    // Realiza una solicitud HTTP GET para obtener la lista de Posts
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3010'
-        : 'http://localhost:3010';
-    final String url = ('${urlDynamic}/post/lista-posts/${cat}');
+    String urlDynamic = Platform.isAndroid ? 'http://192.168.56.1:3010' : 'http://localhost:3010';
+    final String url = ('$urlDynamic/post/lista-posts/$cat');
     final response = await http.get(Uri.parse(url));
 
-    // Verifica si la solicitud fue exitosa (código de estado 200)
     if (response.statusCode == 200) {
-      // Convierte la respuesta JSON en una lista de mapas
       final List<dynamic> postData = jsonDecode(response.body);
-      // Crea una lista de Posts a partir de los datos obtenidos
-      final List<Post> posts =
-          postData.map((data) => Post.fromJson(data)).toList();
-      // Ahora tienes la lista de Posts, puedes usarla según necesites
+      final List<Post> posts = postData.map((data) => Post.fromJson(data)).toList();
       return posts;
     } else {
       throw Exception('Error en la solicitud: ${response.statusCode}');
     }
   } catch (error) {
-    // Si ocurrió un error durante la solicitud, imprímelo
     return Future.value([]);
   }
+
 }
