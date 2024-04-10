@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:io';
+import 'package:flutter_quill/flutter_quill.dart' hide Text;
+
 
 class Cara8 extends StatefulWidget {
   const Cara8({Key? key}) : super(key: key);
@@ -16,6 +18,8 @@ class _Cara8State extends State<Cara8> {
   TextEditingController tituloController = TextEditingController();
   TextEditingController etiquetasController = TextEditingController();
   TextEditingController contenidoController = TextEditingController();
+
+
   String categoriaSeleccionada = "Programación"; // Valor por defecto
   bool _isPublishing = false; // Controla el estado de la publicación
 
@@ -46,6 +50,15 @@ class _Cara8State extends State<Cara8> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8.0),
@@ -60,13 +73,26 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
-                'Categoría',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Categoria',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
                 isExpanded: true,
@@ -103,6 +129,7 @@ class _Cara8State extends State<Cara8> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(
@@ -115,13 +142,26 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
-                'Contenido del Post',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Contenido del post',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(

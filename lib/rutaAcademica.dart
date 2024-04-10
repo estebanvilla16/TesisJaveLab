@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/bottom_menu.dart';
 import 'widgets/burgermenu.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,15 +31,24 @@ class PantallaRutaAprendizaje extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> carouselItems = [
+      '1. Interfaz Centrada en el Usuario: El uso de colores, tipografías, y una barra de progreso en rutaAcademica facilita la navegación y enfoca la atención en el aprendizaje.',
+      '2. Flexibilidad de Aprendizaje: El diseño soporta aprendizaje asincrónico, permitiendo a los estudiantes aprender a su ritmo y en su horario.',
+      '3. Interacción y Reflexión: Comentarios de usuarios y videos interactivos promueven la participación activa y el aprendizaje colaborativo.',
+      '4. Orientación Educativa: Tooltips y pantallas de introducción explican el diseño pedagógico, fomentando la comprensión del usuario.',
+      '5. Acceso Eficiente a Contenido: Búsqueda y filtros avanzados optimizan el acceso a recursos educativos, alineándose con principios cognitivistas.',
+    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
+
         leading: IconButton(
           icon: const Icon(Icons.notifications),
           onPressed: () {
             // Implementar la funcionalidad de notificaciones
           },
         ),
+
         title: const Text(
           'Mi Ruta de Aprendizaje',
           style: TextStyle(
@@ -55,7 +65,9 @@ class PantallaRutaAprendizaje extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+
             Container(
+
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
@@ -71,6 +83,31 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                 },
               ),
             ),
+            IconButton(
+              icon: Icon(Icons.info_outline, color: Colors.blueGrey),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        SizedBox(width: 8),
+                        Expanded(child: Text('El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
+
+                      ],
+                    ),
+
+                    duration: Duration(seconds: 10),
+                    backgroundColor: Colors.blueGrey,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+
+
+                );
+              },
+              tooltip: 'Información',
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
@@ -85,7 +122,48 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 200, // Ajusta este valor según tus necesidades
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true,
+                      ),
+                      items: carouselItems.map((item) => Container(
+                        child: Center(
+                          // Usar una Column para colocar el icono encima del texto
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
+                            children: [
+                              Icon(
+                                Icons.apps_sharp, // Elige el icono que prefieras
+                                color: Colors.blueGrey, // Color del icono
+                                size: 19.0, // Tamaño del icono
+                              ),
+                              Text(
+                                item,
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.teal[50],
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: EdgeInsets.all(12.0),
+                        margin: EdgeInsets.all(8.0),
+                      )).toList(),
+                    ),
+                  ),
                   const Text(
+
                     'Último Capítulo Visto',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -93,6 +171,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+
                   // Bloque rectangular para mostrar el último capítulo visto
                   Container(
                     height: 100,
@@ -275,6 +354,7 @@ class CapituloContenidoWidget extends StatelessWidget {
                 ),
               ),
             ],
+
           ),
         ),
         const SizedBox(height: 8),
@@ -374,6 +454,7 @@ final List<Map<String, dynamic>> secciones = [
       ),
     ),
   },
+
   {
     'titulo': 'Cálculo Diferencial',
     'icono': Icons.calculate, // Icono relacionado con el cálculo
@@ -395,10 +476,16 @@ final List<Map<String, dynamic>> secciones = [
             titulo: 'Ejercicios prácticos',
             url: 'URL_EJERCICIOS',
           ),
+
         ],
+
       ),
+
+
     ),
+
   },
+
 ];
 
 void _mostrarFiltroAvanzado(BuildContext context) {

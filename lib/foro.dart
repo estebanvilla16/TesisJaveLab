@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:JaveLab/pages/ver_post.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +34,16 @@ class Cara6 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color primaryColor = const Color(0xFF2c5968);
+
+    final List<String> carouselItems = [
+      '1. Experiencia Intuitiva: Diseñamos una interfaz centrada en el estudiante, asegurando una navegación intuitiva que facilita el aprendizaje efectivo.',
+      '2. Psicología del Color: Utilizamos colores estratégicamente para mejorar la concentración y retención de información, optimizando así el entorno de aprendizaje.',
+      '3. Diseño Efectivo: La disposición lógica y la navegación fácil promueven un acceso sin esfuerzo a contenidos educativos importantes.',
+      '4. Flexibilidad en Aprendizaje: Nuestra aplicación favorece el aprendizaje asincrónico, ofreciendo flexibilidad para estudiar en cualquier momento y lugar.',
+      '5. Participación Activa: Fomentamos la interacción y reflexión en foros y videos, mejorando la participación y el intercambio de conocimientos.',
+    ];
+
+
     return Scaffold(
       appBar: AppBar(
         title: Tooltip(message: 'Bienvenido al Foro Académico', child: const Text('Foro | Academico')),
@@ -42,6 +54,7 @@ class Cara6 extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
             const SizedBox(height: 16.0),
             Center(
               child: Column(
@@ -203,14 +216,60 @@ class Cara6 extends StatelessWidget {
                       'Intercambio',
                       style: TextStyle(fontSize: 18.0),
                     ),
+
                   ),
+
                 ),
+
               ],
+
+            ),
+            SizedBox(
+              height: 200, // Ajusta este valor según tus necesidades
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  autoPlay: true,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                ),
+                items: carouselItems.map((item) => Container(
+                  child: Center(
+                    // Usar una Column para colocar el icono encima del texto
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
+                      children: [
+                        Icon(
+                          Icons.question_answer, // Elige el icono que prefieras
+                          color: Colors.deepPurple, // Color del icono
+                          size: 19.0, // Tamaño del icono
+                        ),
+                        Text(
+                          item,
+                          style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: EdgeInsets.all(12.0),
+                  margin: EdgeInsets.all(8.0),
+                )).toList(),
+              ),
             ),
             const SizedBox(height: 16.0),
           ],
         ),
+
       ),
+
     );
   }
 }
