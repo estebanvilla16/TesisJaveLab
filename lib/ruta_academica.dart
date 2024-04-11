@@ -1,14 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'widgets/bottom_menu.dart';
 import 'widgets/burgermenu.dart';
-
-void main() {
-  runApp(const MyApp());
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -66,9 +60,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-
             Container(
-
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
@@ -86,26 +78,26 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               ),
             ),
             IconButton(
-              icon: Icon(Icons.info_outline, color: Colors.blueGrey),
+              icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Row(
                       children: [
-                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
-                        SizedBox(width: 8),
-                        Expanded(child: Text('El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
-
+                        const Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.',
+                          ),
+                        ),
                       ],
                     ),
-
-                    duration: Duration(seconds: 10),
+                    duration: const Duration(seconds: 10),
                     backgroundColor: Colors.blueGrey,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     behavior: SnackBarBehavior.floating,
                   ),
-
-
                 );
               },
               tooltip: 'Información',
@@ -125,7 +117,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 200, // Ajusta este valor según tus necesidades
+                    height: 200,
                     child: CarouselSlider(
                       options: CarouselOptions(
                         autoPlay: true,
@@ -134,38 +126,36 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                       ),
                       items: carouselItems.map((item) => Container(
                         child: Center(
-                          // Usar una Column para colocar el icono encima del texto
                           child: Column(
-                            mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.apps_sharp, // Elige el icono que prefieras
-                                color: Colors.blueGrey, // Color del icono
-                                size: 19.0, // Tamaño del icono
+                              const Icon(
+                                Icons.apps_sharp,
+                                color: Colors.blueGrey,
+                                size: 19.0,
                               ),
                               Text(
                                 item,
-                                style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w400,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ],
                           ),
                         ),
-                        decoration: BoxDecoration(
+                        decoration:  BoxDecoration(
                           color: Colors.teal[50],
                           borderRadius: BorderRadius.circular(8.0),
                         ),
-                        padding: EdgeInsets.all(12.0),
-                        margin: EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(12.0),
+                        margin: const EdgeInsets.all(8.0),
                       )).toList(),
                     ),
                   ),
                   const Text(
-
                     'Último Capítulo Visto',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -207,17 +197,15 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               future: _fetchTemas(1), // Categoría de programación
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return SeccionRutaAprendizaje(
                     titulo: 'Programación', // Título de la sección
                     icono: Icons.code, // Icono relacionado con la programación
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
+                    progreso: 0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ?? [], // Lista de contenido obtenida del servidor
                   );
                 }
               },
@@ -227,17 +215,15 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               future: _fetchTemas(2), // Categoría de física
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return SeccionRutaAprendizaje(
                     titulo: 'Física Mecánica', // Título de la sección
                     icono: Icons.explore, // Icono similar a física
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
+                    progreso: 0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ?? [], // Lista de contenido obtenida del servidor
                   );
                 }
               },
@@ -247,17 +233,15 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               future: _fetchTemas(3), // Categoría de cálculo
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else {
                   return SeccionRutaAprendizaje(
                     titulo: 'Cálculo Diferencial', // Título de la sección
                     icono: Icons.calculate, // Icono relacionado con el cálculo
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
+                    progreso: 0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ?? [], // Lista de contenido obtenida del servidor
                   );
                 }
               },
@@ -269,7 +253,62 @@ class PantallaRutaAprendizaje extends StatelessWidget {
   }
 }
 
-// clase de ruta y contiene el valor del progreso
+void _mostrarFiltroAvanzado(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Filtro Avanzado'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CheckboxListTile(
+              title: const Text('Por título'),
+              value: false,
+              onChanged: (newValue) {},
+            ),
+            CheckboxListTile(
+              title: const Text('Por capítulo'),
+              value: false,
+              onChanged: (newValue) {},
+            ),
+            CheckboxListTile(
+              title: const Text('Por contenido'),
+              value: false,
+              onChanged: (newValue) {},
+            ),
+            CheckboxListTile(
+              title: const Text('Por materia'),
+              value: false,
+              onChanged: (newValue) {},
+            ),
+            CheckboxListTile(
+              title: const Text('Por palabras clave'),
+              value: false,
+              onChanged: (newValue) {},
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cerrar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Aplicar filtros
+              Navigator.of(context).pop();
+            },
+            child: const Text('Aplicar'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class SeccionRutaAprendizaje extends StatefulWidget {
   final String titulo;
   final IconData icono;
@@ -329,6 +368,10 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
         const Divider(), // Separador entre secciones
       ],
     );
+  }
+
+  void _navigateToDetailScreen(BuildContext context, Contenido contenido) {
+    // Implementar la navegación a la pantalla de detalle
   }
 }
 
@@ -439,10 +482,9 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.6,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Algoritmos básicos',
-        descripcion:
-        'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
+        descripcion: 'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
         videos: [
           Video(
             titulo: 'Introducción a los algoritmos',
@@ -464,10 +506,9 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.3,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Leyes de Newton',
-        descripcion:
-        'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
+        descripcion: 'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
         videos: [
           Video(
             titulo: 'Ley de la inercia',
@@ -489,10 +530,9 @@ final List<Map<String, dynamic>> secciones = [
     'progreso': 0.8,
     'contenido': List.generate(
       10,
-          (index) => CapituloContenido(
+      (index) => CapituloContenido(
         titulo: 'Capítulo ${index + 1}: Derivadas',
-        descripcion:
-        'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
+        descripcion: 'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
         videos: [
           Video(
             titulo: 'Introducción a las derivadas',
@@ -510,58 +550,9 @@ final List<Map<String, dynamic>> secciones = [
   },
 ];
 
-void _mostrarFiltroAvanzado(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Filtro Avanzado'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CheckboxListTile(
-              title: const Text('Por título'),
-              value: false,
-              onChanged: (newValue) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Por capítulo'),
-              value: false,
-              onChanged: (newValue) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Por contenido'),
-              value: false,
-              onChanged: (newValue) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Por materia'),
-              value: false,
-              onChanged: (newValue) {},
-            ),
-            CheckboxListTile(
-              title: const Text('Por palabras clave'),
-              value: false,
-              onChanged: (newValue) {},
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Cerrar'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Aplicar filtros
-              Navigator.of(context).pop();
-            },
-            child: const Text('Aplicar'),
-          ),
-        ],
-      );
-    },
-  );
+Future<List<Contenido>> _fetchTemas(int categoria) async {
+  // Aquí iría la lógica para obtener los temas según la categoría
+  // En lugar de retornar una lista vacía, puedes retornar los datos reales obtenidos del servidor
+  return [];
 }
+

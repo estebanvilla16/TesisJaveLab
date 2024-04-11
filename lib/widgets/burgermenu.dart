@@ -1,23 +1,4 @@
-import 'package:JaveLab/MainAPP.dart';
-import 'package:JaveLab/pages/foro.dart';
-import 'package:JaveLab/perfil.dart';
-import 'package:JaveLab/rutaAcademica.dart';
 import 'package:flutter/material.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: BurgerMenu(),
-      ),
-    );
-  }
-}
 
 class BurgerMenu extends StatefulWidget {
   const BurgerMenu({Key? key}) : super(key: key);
@@ -27,6 +8,8 @@ class BurgerMenu extends StatefulWidget {
 }
 
 class _BurgerMenuState extends State<BurgerMenu> {
+  bool _isHovered = false; // Definimos _isHovered aquí
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -81,7 +64,7 @@ class _BurgerMenuState extends State<BurgerMenu> {
             padding: const EdgeInsets.all(10),
             color: Colors.grey[300],
             child: Column(
-              children: const [
+              children:  [
                 Row(
                   children: [
                     Expanded(
@@ -89,17 +72,13 @@ class _BurgerMenuState extends State<BurgerMenu> {
                         children: [
                           Icon(
                             Icons.exit_to_app,
-                            color: _isHovered
-                                ? Colors.black.withOpacity(0.85) // Más oscuro
-                                : Colors.grey.withOpacity(0.85), // Más oscuro
+                            color: Colors.black.withOpacity(0.85),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             'Cerrar Sesión',
                             style: TextStyle(
-                              color: _isHovered
-                                  ? Colors.black.withOpacity(0.85) // Más oscuro
-                                  : Colors.grey.withOpacity(0.85), // Más oscuro
+                              color: Colors.black.withOpacity(0.85),
                               fontSize: 14,
                             ),
                           ),
@@ -116,7 +95,6 @@ class _BurgerMenuState extends State<BurgerMenu> {
                         children: [
                           Icon(
                             Icons.info_outline,
-                            //Detectanis si se pasa el click por encima para generar efectos de color
                             color: _isHovered ? Colors.black : Colors.grey,
                           ),
                           const SizedBox(width: 8),

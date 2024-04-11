@@ -1,7 +1,3 @@
-import 'package:JaveLab/MainAPP.dart';
-import 'package:JaveLab/pages/foro.dart';
-import 'package:JaveLab/perfil.dart';
-import 'package:JaveLab/rutaAcademica.dart';
 import 'package:flutter/material.dart';
 
 void main() {
