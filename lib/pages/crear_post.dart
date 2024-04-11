@@ -234,7 +234,7 @@ class _Cara8State extends State<Cara8> {
       TextEditingController contenidoController,
       String categoriaSeleccionada) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3010/'
+        ? 'http://192.168.10.34:3010/'
         : 'http://localhost:3010/';
     final String url = ('${urlDynamic}post/agregar');
 

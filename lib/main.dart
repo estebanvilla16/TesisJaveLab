@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: 'foro', // ruta inicial 'loading' inicio.dart
+        initialRoute: 'login', // ruta inicial 'loading' inicio.dart
         routes: appRoutes, // rutas de la aplicación
       ),
     );

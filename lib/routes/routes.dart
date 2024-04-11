@@ -1,6 +1,6 @@
 import 'package:JaveLab/pages/crear_post.dart';
 import 'package:JaveLab/pages/foro.dart';
-import 'package:JaveLab/pages/home.dart';
+import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/perfil.dart';
 import 'package:flutter/material.dart';
 import 'package:JaveLab/pages/chat_page.dart';
@@ -20,5 +20,5 @@ import 'package:JaveLab/pages/usuarios_page.dart';
   'new_post': (_) => const Cara8(),
   'foro': (_) => const Cara6(),
   'perfil': (_) => const ProfilePage(),
-  'inicio': (_) => const MyHomePage(),
+  'inicio': (_) => const Principal(),
 };

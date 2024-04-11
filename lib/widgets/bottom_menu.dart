@@ -1,28 +1,10 @@
+import 'package:JaveLab/pages/main_app.dart';
+import 'package:JaveLab/pages/foro.dart';
+import 'package:JaveLab/pages/usuarios_page.dart';
+import 'package:JaveLab/perfil.dart';
+import 'package:JaveLab/ruta_academica.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: MyHomePage(),
-  ));
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My App'),
-      ),
-      body: Container(
-        margin: const EdgeInsets.only(top: 20.0),
-        child: const YourContentWidget(),
-      ),
-      bottomNavigationBar: const BottomMenu(),
-    );
-  }
-}
 
 class YourContentWidget extends StatelessWidget {
   const YourContentWidget({super.key});
@@ -52,19 +34,19 @@ class _BottomMenuState extends State<BottomMenu> {
 
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, 'inicio');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Principal()));
         break;
       case 1:
-        Navigator.pushNamed(context, 'login');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const PantallaRutaAprendizaje()));
         break;
       case 2:
-        Navigator.pushNamed(context, 'foro');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Cara6()));
         break;
       case 3:
-        Navigator.pushNamed(context, 'perfil');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
         break;
       case 4:
-        Navigator.pushNamed(context, 'usuarios');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const UsuariosPage()));
         break;
     }
   }
@@ -89,8 +71,7 @@ class _BottomMenuState extends State<BottomMenu> {
 
   Widget buildNavBarItem(IconData icon, int index) {
     return IconButton(
-      icon: Icon(icon,
-          color: _selectedIndex == index ? Colors.blue : Colors.grey),
+      icon: Icon(icon, color: _selectedIndex == index ? Colors.blue : Colors.grey),
       onPressed: () => _onItemTapped(index),
     );
   }

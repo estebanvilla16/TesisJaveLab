@@ -1,7 +1,6 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de clase segun corresponde a la ruta de aprendizaje
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:JaveLab/models/contenido.dart';
@@ -286,220 +285,108 @@ class CommentsSection extends StatefulWidget {
   final Color accentColor;
   final Contenido item;
 
-  const CommentsSection({
-    Key? key,
-    required this.accentColor,
-    required this.item,
-  }) : super(key: key);
+  const CommentsSection(
+      {super.key, required this.accentColor, required this.item});
 
   @override
   _CommentsSectionState createState() => _CommentsSectionState();
 }
 
 class _CommentsSectionState extends State<CommentsSection> {
-  late Future<List<ComentarioTema>> comments;
+  List<Comment> comments = [];
   final TextEditingController _commentController = TextEditingController();
   double _currentRating = 4.0;
 
-  @override
-  void initState() {
-    super.initState();
-    comments = _fetchComments();
-  }
-
-  void updateComments() {
-    setState(() {
-      comments = _fetchComments();
-    });
-  }
-
-  Future<List<ComentarioTema>> _fetchComments() async {
-    try {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.56.1:3011'
-          : 'http://localhost:3011';
-      final String url =
-          ('$urlDynamic/comentariotema/lista-comentarios/${widget.item.id_contenido}');
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> postData = jsonDecode(response.body);
-        final List<ComentarioTema> coms =
-            postData.map((data) => ComentarioTema.fromJson(data)).toList();
-        return coms;
-      } else {
-        throw Exception('Error en la solicitud: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error al obtener comentarios: $error');
-      return Future.value([]);
-    }
-  }
-
-  void _deleteComment(int id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
-        : 'http://localhost:3011';
-    final String url = ('$urlDynamic/comentariotema/borrar/$id');
-
-    final response = await http.delete(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      print('Comentario eliminado: ${response.statusCode}');
-    } else {
-      print(
-          'Error al eliminar el comentario. Código de estado: ${response.statusCode}');
-    }
-  }
-
-  void _crearComs() async {
+  void _addComment() {
     if (_commentController.text.isNotEmpty) {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.56.1:3011'
-          : 'http://localhost:3011';
-      final String url = ('$urlDynamic/comentariotema/agregar');
-
-      String formattedDate =
-          DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
-
-      Map<String, dynamic> data = {
-        "id_comentador": 1,
-        "id_tema": widget.item.id_contenido,
-        "nombre": 'Falcao Garcia',
-        "mensaje": _commentController.text,
-        "valoracion": _currentRating.toInt(),
-        "fecha": formattedDate,
-      };
-
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(data),
+      final newComment = Comment(
+        userName: "Usuario ${comments.length + 1}",
+        comment: _commentController.text,
+        dateTime: DateTime.now(),
+        rating: _currentRating,
       );
-
-      if (response.statusCode == 201) {
-        print('Comentario publicado: ${response.body}');
-        updateComments();
-      } else {
-        print(
-            'Error al publicar el comentario. Código de estado: ${response.statusCode}');
-      }
+      setState(() {
+        comments.add(newComment);
+        _commentController.clear();
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.withOpacity(0.5)),
-            ),
-            child: TextField(
-              controller: _commentController,
-              decoration: InputDecoration(
-                hintText: 'Añade un comentario...',
-                contentPadding: const EdgeInsets.all(12),
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.send, color: widget.accentColor),
-                  onPressed: _crearComs,
-                ),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.withOpacity(0.5)),
+          ),
+          child: TextField(
+            controller: _commentController,
+            decoration: InputDecoration(
+              hintText: 'Añade un comentario...',
+              contentPadding: const EdgeInsets.all(12),
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                icon: Icon(Icons.send, color: widget.accentColor),
+                onPressed: _addComment,
               ),
             ),
           ),
-          const SizedBox(height: 8),
-          RatingBar.builder(
-            initialRating: 3,
-            minRating: 1,
-            direction: Axis.horizontal,
-            itemCount: 5,
-            itemSize: 20,
-            itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-            itemBuilder: (context, _) => Icon(
-              Icons.star,
-              color: widget.accentColor,
-            ),
-            onRatingUpdate: (rating) {
-              setState(() {
-                _currentRating = rating;
-              });
-            },
+        ),
+        const SizedBox(height: 8),
+        RatingBar.builder(
+          initialRating: 3,
+          minRating: 1,
+          direction: Axis.horizontal,
+          itemCount: 5,
+          itemSize: 20, // Ajusta el tamaño de las estrellas
+          itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+          itemBuilder: (context, _) => Icon(
+            Icons.star,
+            color: widget.accentColor,
           ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: FutureBuilder<List<ComentarioTema>>(
-              future: comments,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  final comments = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: comments.length,
-                    itemBuilder: (context, index) {
-                      final comment = comments[index];
-                      return Card(
-                        elevation: 2,
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: widget.accentColor,
-                            child:
-                                const Icon(Icons.person, color: Colors.white),
-                          ),
-                          title: Text(
-                            comment.mensaje,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          subtitle: Text(
-                            "${comment.nombre}, ${DateFormat('dd/MM/yyyy').format(comment.fecha)} - ${comment.valoracion} stars",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          trailing: PopupMenuButton<String>(
-                            onSelected: (String value) {
-                              if (value == 'edit') {
-                                // Implementar la lógica para editar el comentario
-                              } else if (value == 'delete') {
-                                _deleteComment(comment.id_com);
-                                updateComments();
-                              }
-                            },
-                            itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry<String>>[
-                              const PopupMenuItem<String>(
-                                value: 'edit',
-                                child: ListTile(
-                                  leading: Icon(Icons.edit),
-                                  title: Text('Editar'),
-                                ),
-                              ),
-                              const PopupMenuItem<String>(
-                                value: 'delete',
-                                child: ListTile(
-                                  leading: Icon(Icons.delete),
-                                  title: Text('Eliminar'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+          onRatingUpdate: (rating) {
+            setState(() {
+              _currentRating = rating;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        ...comments.map((comment) => Card(
+              elevation: 2,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: widget.accentColor,
+                  child: const Icon(Icons.person, color: Colors.white),
+                ),
+                title: Text(
+                  comment.comment,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                subtitle: Text(
+                  "${comment.userName}, ${DateFormat('dd/MM/yyyy').format(comment.dateTime)} - ${comment.rating.toStringAsFixed(1)} stars",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+            )),
+      ],
     );
   }
+}
+
+class Comment {
+  String userName;
+  String comment;
+  DateTime dateTime;
+  double rating;
+
+  Comment(
+      {required this.userName,
+      required this.comment,
+      required this.dateTime,
+      required this.rating});
 }
 
 class CourseProgressBar extends StatelessWidget {

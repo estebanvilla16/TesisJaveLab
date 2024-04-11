@@ -1,18 +1,34 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../widgets/bottom_menu.dart';
-import '../widgets/burgermenu.dart';
+import 'package:JaveLab/widgets/bottom_menu.dart';
+import 'package:JaveLab/widgets/burgermenu.dart';
+import 'package:JaveLab/models/contenido.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:JaveLab/pages/pantalla_clase.dart';
 
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+
+class Principal extends StatefulWidget {
+  const Principal({super.key});
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PrincipalState createState() => _PrincipalState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PrincipalState extends State<Principal> {
   final List<bool> _viewed = List.generate(15, (_) => false);
+  List<Contenido> _carouselItems = [];
+
+  void initState() {
+    super.initState();
+    _fetchTemas(2).then((data) {
+      setState(() {
+        _carouselItems = data;
+      });
+    });
+  }
 
   void _markAsViewed(int carouselIndex, int itemIndex) {
     setState(() {
@@ -39,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             CarouselSection(
               title: 'Ruta de Aprendizaje',
-              items: _buildCarouselItems(0),
+              items: _buildCarouselItemsList(_carouselItems, 0),
               onItemTap: _markAsViewed,
             ),
             CarouselSection(
@@ -61,20 +77,54 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Widget> _buildCarouselItems(int carouselIndex) {
     return List<Widget>.generate(
       5,
-          (int itemIndex) => GestureDetector(
+      (int itemIndex) => GestureDetector(
         onTap: () => _markAsViewed(carouselIndex, itemIndex),
         child: Card(
-          color: _viewed[carouselIndex * 5 + itemIndex] ? Colors.grey : Colors.white,
+          color: _viewed[carouselIndex * 5 + itemIndex]
+              ? Colors.grey
+              : Colors.white,
           elevation: 4.0,
           margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16.0),
-            child: Text('Elemento ${itemIndex + 1}', style: const TextStyle(fontSize: 16.0)),
+            child: Text('Elemento ${itemIndex + 1}',
+                style: const TextStyle(fontSize: 16.0)),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildCarouselItemsList(
+      List<Contenido> dataList, int carouselIndex) {
+    return dataList.asMap().entries.map((entry) {
+      final int itemIndex = entry.key;
+      final Contenido item = entry.value;
+
+      return GestureDetector(
+        onTap: () => _navigateToDetailScreen(context, item),
+        child: Card(
+          color: _viewed[carouselIndex * 5 + itemIndex]
+              ? Colors.grey
+              : Colors.white,
+          elevation: 4.0,
+          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(item.titulo, style: const TextStyle(fontSize: 16.0)),
+                Text(item.descripcion),
+                // Agregar más Widgets según sea necesario para mostrar otros datos de Contenido
+              ],
+            ),
+          ),
+        ),
+      );
+    }).toList();
   }
 
   List<Widget> _buildTaskCarouselItems() {
@@ -84,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return List<Widget>.generate(
       totalTasks,
-          (int itemIndex) {
+      (int itemIndex) {
         bool isCompleted = _viewed[itemIndex];
         return Stack(
           alignment: Alignment.bottomCenter,
@@ -92,13 +142,15 @@ class _MyHomePageState extends State<MyHomePage> {
             Card(
               color: isCompleted ? Colors.white : Colors.white,
               elevation: 4.0,
-              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
+              margin:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text('Actividad ${itemIndex + 1}', style: const TextStyle(fontSize: 16.0)),
+                    Text('Actividad ${itemIndex + 1}',
+                        style: const TextStyle(fontSize: 16.0)),
                     const Spacer(),
                     Icon(
                       isCompleted ? Icons.check_circle : Icons.cancel,
@@ -115,7 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: LinearProgressIndicator(
                     value: progress,
                     backgroundColor: Colors.grey.shade400,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
                 ),
               ),
@@ -126,12 +179,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+void _navigateToDetailScreen(BuildContext context, Contenido item) {
+  String urlDynamic =
+      Platform.isAndroid ? 'http://192.168.10.34:8080' : 'http://localhost:8080';
+  String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
+    ),
+  );
+}
+
 class CarouselSection extends StatelessWidget {
   final String title;
   final List<Widget> items;
   final Function(int, int) onItemTap;
 
-  const CarouselSection({super.key, 
+  const CarouselSection({
+    super.key,
     required this.title,
     required this.items,
     required this.onItemTap,
@@ -146,7 +211,8 @@ class CarouselSection extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
+            child:
+                Text(title, style: Theme.of(context).textTheme.headlineMedium),
           ),
           CarouselSlider(
             items: items,
@@ -165,11 +231,38 @@ class CarouselSection extends StatelessWidget {
   }
 }
 
+Future<List<Contenido>> _fetchTemas(int cat) async {
+  try {
+    // Realiza una solicitud HTTP GET para obtener la lista de Posts
+    String urlDynamic = Platform.isAndroid
+        ? 'http://192.168.10.34:3011'
+        : 'http://localhost:3011';
+    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
+    final response = await http.get(Uri.parse(url));
+
+    // Verifica si la solicitud fue exitosa (código de estado 200)
+    if (response.statusCode == 200) {
+      // Convierte la respuesta JSON en una lista de mapas
+      final List<dynamic> postData = jsonDecode(response.body);
+      // Crea una lista de Posts a partir de los datos obtenidos
+      final List<Contenido> posts =
+          postData.map((data) => Contenido.fromJson(data)).toList();
+      // Ahora tienes la lista de Posts, puedes usarla según necesites
+      return posts;
+    } else {
+      throw Exception('Error en la solicitud: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Si ocurrió un error durante la solicitud, imprímelo
+    return Future.value([]);
+  }
+}
+
 class TaskCarouselSection extends CarouselSection {
-  const TaskCarouselSection({super.key, 
+  const TaskCarouselSection({
+    super.key,
     required String title,
     required List<Widget> items,
     required Function(int, int) onViewed,
   }) : super(title: title, items: items, onItemTap: onViewed);
-
 }
