@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'bottom_menu.dart';
-import 'burgermenu.dart';
+import 'package:JaveLab/widgets/bottom_menu.dart';
+import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
