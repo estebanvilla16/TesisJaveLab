@@ -1,0 +1,86 @@
+[33mcommit 47ccdab0bf257261fd1ffe886937b565b21475cb[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Merge: d586ac7 56c0b35
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Sun Jan 28 15:18:35 2024 -0500
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       lib/main.dart
+    #       pubspec.yaml
+    #       test/widget_test.dart
+
+[33mcommit d586ac744051941c0ef088b44f95b866633502e9[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Sun Jan 28 14:51:18 2024 -0500
+
+    Se arregle el bottom menu
+
+[33mcommit 07bd234a09484a9f5a66e2fe1b37d2ac9cd345b7[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Sun Jan 28 14:07:10 2024 -0500
+
+    Se arregle el bottom menu
+
+[33mcommit d09e22b759de23a7e1616c04af2cf7517fe9bdf5[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Sun Jan 28 02:28:03 2024 -0500
+
+    Se corrige con UX/UI las caras de Inicio sesion, registro, olvide contrasena y perfil
+
+[33mcommit 56c0b358f364285d90c6338694ba01d41d16b030[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: jg0nzalezr <jgonzalezrincon02@gmail.com>
+Date:   Thu Jan 25 22:06:27 2024 -0500
+
+    Se agregan las caras 13, 14 y 15
+
+[33mcommit dfef728eef402b5f9a669593d8ae65730568a0ca[m
+Merge: c4d4555 43464cf
+Author: jg0nzalezr <jgonzalezrincon02@gmail.com>
+Date:   Thu Jan 25 16:40:16 2024 -0500
+
+    Merge branch 'master' of https://github.com/estebanvilla16/TesisJaveLab
+
+[33mcommit c4d45556e10abf323c3d1c718f1ebb4499182042[m
+Author: jg0nzalezr <jgonzalezrincon02@gmail.com>
+Date:   Thu Jan 25 16:37:51 2024 -0500
+
+    message
+
+[33mcommit 43464cfb78288f788b331aaf74b0850745835665[m
+Author: alarcon-af <andre_felipe_alarcon@hotmail.com>
+Date:   Thu Jan 25 02:13:12 2024 -0500
+
+    Adición de caras 1,2,3 y 5 a la librería de lib.
+
+[33mcommit 8fb852b378e8f68a6847f287cdc76a2c1059e48f[m
+Author: jg0nzalezr <jgonzalezrincon02@gmail.com>
+Date:   Wed Jan 24 19:07:26 2024 -0500
+
+    Se añaden las caras "cara6, cara8 y cara12" correspondientes a los mismos índices en el canva de UX.
+    
+    La cara 6 correspondiente a la cara inicial del foro se añade a partir del click de la opción 3 del menú inferior creado en primer lugar por Esteban (el salto de una cara a otra se añade al main.dart).
+    
+    En la misma cara se añaden 2 botones provisionales que sirven para probar la correcta navegación y observación de las otras dos caras añadidas.
+    
+    Al archivo pubscpec.yaml se añaden los 3 assets correspondientes a las imagenes encontradas en la cara 6.
+    
+    En el archivo widget_test.dart se eliminan dos líneas de código que presentaba errores (se eliminan en reunión con Esteban).
+
+[33mcommit 60c9b52f48f92d4bb2c21018733035c75b73d5a1[m[33m ([m[1;31morigin/ramaJPG[m[33m)[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Wed Jan 24 10:48:36 2024 -0500
+
+    Se agregar el menu inferior con los 5 iconos principales
+
+[33mcommit c9e97af90d5b9db745228273f5fdc250f6c2299d[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Tue Jan 23 20:41:16 2024 -0500
+
+    correcion icono ocupa 100% del espacio
+
+[33mcommit 5cbed32010ac22d70331f03429783aa12871c18f[m
+Author: esteban villa <estebana-villa@javeriana.edu.co>
+Date:   Tue Jan 23 17:45:57 2024 -0500
+
+    Commit inicial y cambio de icono

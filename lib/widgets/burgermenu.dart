@@ -45,64 +45,38 @@ class _BurgerMenuState extends State<BurgerMenu> {
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text('JaveLab',
-                        style: TextStyle(
-                            color: Color(0xFF2c5697),
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold)),
-                    Text('Pontificia Universidad Javeriana',
-                        style: TextStyle(color: Colors.black54, fontSize: 14)),
+                  children: [
+                    Text(
+                      'JaveLab',
+                      style: TextStyle(
+                        color: Color(0xFF2c5697),
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Pontificia Universidad Javeriana',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.home, color: Color(0xFF2c5697)),
-            title: Text('Home', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Home'),
-          ),
-          ListTile(
-            leading: Icon(Icons.person, color: Color(0xFF2c5697)),
-            title: Text('Perfil', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Perfil'),
-          ),
-          ListTile(
-            leading: Icon(Icons.chat, color: Color(0xFF2c5697)),
-            title: Text('Conversaciones', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Conversaciones'),
-          ),
-          Container(
-              height: 1,
-              color: Colors.grey,
-              margin: const EdgeInsets.symmetric(vertical: 4)),
-          ListTile(
-            leading: Icon(Icons.swap_horiz, color: Color(0xFF2c5697)),
-            title: Text('Intercambios', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Intercambios'),
-          ),
-          ListTile(
-            leading: Icon(Icons.forum, color: Color(0xFF2c5697)),
-            title: Text('Foro', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Foro'),
-          ),
-          ListTile(
-            leading: Icon(Icons.school, color: Color(0xFF2c5697)),
-            title: Text('Ruta académica', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Ruta académica'),
-          ),
-          ListTile(
-            leading: Icon(Icons.people, color: Color(0xFF2c5697)),
-            title: Text('Monitorias', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Monitorias'),
-          ),
-          ListTile(
-            leading: Icon(Icons.calendar_today, color: Color(0xFF2c5697)),
-            title: Text('Calendario académico', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Calendario académico'),
-          ),
-          Spacer(),
+          // Iconos nativos de material flutter.
+          buildMenuItem(context, Icons.home, 'Home'),
+          buildMenuItem(context, Icons.person, 'Perfil'),
+          buildMenuItem(context, Icons.chat, 'Conversaciones'),
+          buildMenuDivider(),
+          buildMenuItem(context, Icons.swap_horiz, 'Intercambios'),
+          buildMenuItem(context, Icons.forum, 'Foro'),
+          buildMenuItem(context, Icons.school, 'Ruta académica'),
+          buildMenuItem(context, Icons.people, 'Monitorias'),
+          buildMenuItem(context, Icons.calendar_today, 'Calendario académico'),
+          const Spacer(),
           Container(
             padding: const EdgeInsets.all(10),
             color: Colors.grey[300],
@@ -110,19 +84,53 @@ class _BurgerMenuState extends State<BurgerMenu> {
               children: const [
                 Row(
                   children: [
-                    Icon(Icons.exit_to_app, color: Colors.grey),
-                    SizedBox(width: 8),
-                    Text('Cerrar Sesión',
-                        style: TextStyle(color: Colors.grey, fontSize: 14)),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.exit_to_app,
+                            color: _isHovered
+                                ? Colors.black.withOpacity(0.85) // Más oscuro
+                                : Colors.grey.withOpacity(0.85), // Más oscuro
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Cerrar Sesión',
+                            style: TextStyle(
+                              color: _isHovered
+                                  ? Colors.black.withOpacity(0.85) // Más oscuro
+                                  : Colors.grey.withOpacity(0.85), // Más oscuro
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(Icons.info_outline, color: Colors.grey),
-                    SizedBox(width: 8),
-                    Text('JaveLab 2024',
-                        style: TextStyle(color: Colors.grey, fontSize: 14)),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            //Detectanis si se pasa el click por encima para generar efectos de color
+                            color: _isHovered ? Colors.black : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            //Copyright
+                            'JaveLab 2024',
+                            style: TextStyle(
+                              color: _isHovered ? Colors.black : Colors.grey,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -133,44 +141,45 @@ class _BurgerMenuState extends State<BurgerMenu> {
     );
   }
 
-  void navigateToScreen(BuildContext context, String title) {
-    switch (title) {
-      case 'Home':
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => Principal()));
-        break;
-      case 'Perfil':
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => ProfilePage()));
-        break;
-      case 'Conversaciones':
+  Widget buildMenuItem(BuildContext context, IconData icon, String title) {
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+      },
+      onHover: (isHovered) {
+        setState(() {
+          _isHovered = isHovered;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        color: _isHovered ? Colors.grey[400] : Colors.white,
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: const Color(0xFF2c5697),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
-        break;
-      case 'Intercambios':
-
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
-        break;
-      case 'Foro':
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => Cara6()));
-        break;
-      case 'Ruta académica':
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => PantallaRutaAprendizaje()));
-        break;
-      case 'Monitorias':
-
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
-        break;
-      case 'Calendario académico':
-
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
-        break;
-
-      // Incluye los demás casos aquí
-      default:
-        Navigator.of(context)
-            .pop(); // Cierra el drawer si no hay una pantalla definida
-    }
+  Widget buildMenuDivider() {
+    return Container(
+      height: 1,
+      color: Colors.grey,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+    );
   }
 }

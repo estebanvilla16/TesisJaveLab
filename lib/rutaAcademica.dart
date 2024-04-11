@@ -3,10 +3,8 @@ import 'dart:io';
 
 import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
-import 'package:JaveLab/widgets/bottom_menu.dart';
-import 'package:JaveLab/widgets/burgermenu.dart';
-import 'package:http/http.dart' as http;
-import 'package:JaveLab/pantallaClase.dart';
+import 'widgets/bottom_menu.dart';
+import 'widgets/burgermenu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,15 +32,24 @@ class PantallaRutaAprendizaje extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> carouselItems = [
+      '1. Interfaz Centrada en el Usuario: El uso de colores, tipografías, y una barra de progreso en rutaAcademica facilita la navegación y enfoca la atención en el aprendizaje.',
+      '2. Flexibilidad de Aprendizaje: El diseño soporta aprendizaje asincrónico, permitiendo a los estudiantes aprender a su ritmo y en su horario.',
+      '3. Interacción y Reflexión: Comentarios de usuarios y videos interactivos promueven la participación activa y el aprendizaje colaborativo.',
+      '4. Orientación Educativa: Tooltips y pantallas de introducción explican el diseño pedagógico, fomentando la comprensión del usuario.',
+      '5. Acceso Eficiente a Contenido: Búsqueda y filtros avanzados optimizan el acceso a recursos educativos, alineándose con principios cognitivistas.',
+    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
+
         leading: IconButton(
           icon: const Icon(Icons.notifications),
           onPressed: () {
             // Implementar la funcionalidad de notificaciones
           },
         ),
+
         title: const Text(
           'Mi Ruta de Aprendizaje',
           style: TextStyle(
@@ -59,7 +66,9 @@ class PantallaRutaAprendizaje extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+
             Container(
+
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: TextField(
@@ -76,6 +85,31 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                 },
               ),
             ),
+            IconButton(
+              icon: Icon(Icons.info_outline, color: Colors.blueGrey),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        SizedBox(width: 8),
+                        Expanded(child: Text('El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
+
+                      ],
+                    ),
+
+                    duration: Duration(seconds: 10),
+                    backgroundColor: Colors.blueGrey,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+
+
+                );
+              },
+              tooltip: 'Información',
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
@@ -90,7 +124,48 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 200, // Ajusta este valor según tus necesidades
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true,
+                      ),
+                      items: carouselItems.map((item) => Container(
+                        child: Center(
+                          // Usar una Column para colocar el icono encima del texto
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
+                            children: [
+                              Icon(
+                                Icons.apps_sharp, // Elige el icono que prefieras
+                                color: Colors.blueGrey, // Color del icono
+                                size: 19.0, // Tamaño del icono
+                              ),
+                              Text(
+                                item,
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w400
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.teal[50],
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: EdgeInsets.all(12.0),
+                        margin: EdgeInsets.all(8.0),
+                      )).toList(),
+                    ),
+                  ),
                   const Text(
+
                     'Último Capítulo Visto',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -98,6 +173,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
+
                   // Bloque rectangular para mostrar el último capítulo visto
                   Container(
                     height: 100,
@@ -256,43 +332,183 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   }
 }
 
-void _navigateToDetailScreen(BuildContext context, Contenido item) {
-  String urlDynamic =
-      Platform.isAndroid ? 'http://192.168.56.1:8080' : 'http://localhost:8080';
-  String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
-    ),
-  );
+class CapituloContenido {
+  final String titulo;
+  final String descripcion;
+  final List<Video> videos;
+  final List<ArchivoAdjunto> archivosAdjuntos;
+  bool visto; // Estado del capítulo
+
+  CapituloContenido({
+    required this.titulo,
+    required this.descripcion,
+    required this.videos,
+    required this.archivosAdjuntos,
+    this.visto = false, // Por defecto, el capítulo no está visto
+  });
 }
 
-Future<List<Contenido>> _fetchTemas(int cat) async {
-  try {
-    // Realiza una solicitud HTTP GET para obtener la lista de Contenido
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
-        : 'http://localhost:3011';
-    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
-    final response = await http.get(Uri.parse(url));
+class CapituloContenidoWidget extends StatelessWidget {
+  final CapituloContenido capitulo;
+  final bool isLast;
+  final VoidCallback onMarcarVisto;
 
-    // Verifica si la solicitud fue exitosa (código de estado 200)
-    if (response.statusCode == 200) {
-      // Convierte la respuesta JSON en una lista de mapas
-      final List<dynamic> contenidoData = jsonDecode(response.body);
-      // Crea una lista de Contenido a partir de los datos obtenidos
-      final List<Contenido> contenidoList =
-          contenidoData.map((data) => Contenido.fromJson(data)).toList();
-      // Ahora tienes la lista de Contenido, puedes usarla según necesites
-      return contenidoList;
-    } else {
-      throw Exception('Error en la solicitud: ${response.statusCode}');
-    }
-  } catch (error) {
-    // Si ocurrió un error durante la solicitud, imprímelo
-    return Future.value([]);
+  const CapituloContenidoWidget({
+    Key? key,
+    required this.capitulo,
+    required this.isLast,
+    required this.onMarcarVisto,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: onMarcarVisto,
+          child: Row(
+            children: [
+              Icon(
+                capitulo.visto ? Icons.check : Icons.remove_red_eye,
+                color: capitulo.visto ? Colors.green : Colors.grey,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  capitulo.titulo,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            capitulo.descripcion,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+        ),
+        const SizedBox(height: 8),
+        ...capitulo.videos.map((video) {
+          return ListTile(
+            title: Text(video.titulo),
+            onTap: () {
+              // Implementar la funcionalidad para reproducir el video
+            },
+          );
+        }).toList(),
+        ...capitulo.archivosAdjuntos.map((archivo) {
+          return ListTile(
+            title: Text(archivo.titulo),
+            onTap: () {
+              // Implementar la funcionalidad para abrir el archivo adjunto
+            },
+          );
+        }).toList(),
+        if (!isLast) const Divider(), // Separador entre capítulos (excepto para el último)
+      ],
+    );
   }
 }
+
+class Video {
+  final String titulo;
+  final String url;
+
+  Video({required this.titulo, required this.url});
+}
+
+class ArchivoAdjunto {
+  final String titulo;
+  final String url;
+
+  ArchivoAdjunto({required this.titulo, required this.url});
+}
+
+// Datos de ejemplo
+final List<Map<String, dynamic>> secciones = [
+  {
+    'titulo': 'Pensamiento Algorítmico',
+    'icono': Icons.code, // Icono relacionado con la programación
+    'progreso': 0.6,
+    'contenido': List.generate(
+      10,
+          (index) => CapituloContenido(
+        titulo: 'Capítulo ${index + 1}: Algoritmos básicos',
+        descripcion:
+        'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
+        videos: [
+          Video(
+            titulo: 'Introducción a los algoritmos',
+            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
+          ),
+        ],
+        archivosAdjuntos: [
+          ArchivoAdjunto(
+            titulo: 'Presentación',
+            url: 'URL_PRESENTACION',
+          ),
+        ],
+      ),
+    ),
+  },
+  {
+    'titulo': 'Física Mecánica',
+    'icono': Icons.explore, // Icono similar a física
+    'progreso': 0.3,
+    'contenido': List.generate(
+      10,
+          (index) => CapituloContenido(
+        titulo: 'Capítulo ${index + 1}: Leyes de Newton',
+        descripcion:
+        'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
+        videos: [
+          Video(
+            titulo: 'Ley de la inercia',
+            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
+          ),
+        ],
+        archivosAdjuntos: [
+          ArchivoAdjunto(
+            titulo: 'PDF',
+            url: 'URL_PDF',
+          ),
+        ],
+      ),
+    ),
+  },
+  {
+    'titulo': 'Cálculo Diferencial',
+    'icono': Icons.calculate, // Icono relacionado con el cálculo
+    'progreso': 0.8,
+    'contenido': List.generate(
+      10,
+          (index) => CapituloContenido(
+        titulo: 'Capítulo ${index + 1}: Derivadas',
+        descripcion:
+        'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
+        videos: [
+          Video(
+            titulo: 'Introducción a las derivadas',
+            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
+          ),
+        ],
+        archivosAdjuntos: [
+          ArchivoAdjunto(
+            titulo: 'Ejercicios prácticos',
+            url: 'URL_EJERCICIOS',
+          ),
+        ],
+      ),
+    ),
+  },
+];
 
 void _mostrarFiltroAvanzado(BuildContext context) {
   showDialog(

@@ -56,26 +56,19 @@ class _BottomMenuState extends State<BottomMenu> {
 
     switch (index) {
       case 0:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const Principal()));
+        Navigator.pushNamed(context, 'inicio');
         break;
       case 1:
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const PantallaRutaAprendizaje()));
+        Navigator.pushNamed(context, 'login');
         break;
       case 2:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Cara6()));
+        Navigator.pushNamed(context, 'foro');
         break;
       case 3:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const ProfilePage()));
+        Navigator.pushNamed(context, 'perfil');
         break;
       case 4:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const MessageScreen()));
+        Navigator.pushNamed(context, 'usuarios');
         break;
     }
   }

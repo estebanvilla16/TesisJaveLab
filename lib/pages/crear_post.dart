@@ -1,9 +1,11 @@
-import 'package:JaveLab/pages/foro.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:io';
+
+
 
 class Cara8 extends StatefulWidget {
   const Cara8({Key? key}) : super(key: key);
@@ -16,6 +18,8 @@ class _Cara8State extends State<Cara8> {
   TextEditingController tituloController = TextEditingController();
   TextEditingController etiquetasController = TextEditingController();
   TextEditingController contenidoController = TextEditingController();
+
+
   String categoriaSeleccionada = "Programación"; // Valor por defecto
   bool _isPublishing = false; // Controla el estado de la publicación
 
@@ -46,6 +50,15 @@ class _Cara8State extends State<Cara8> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8.0),
@@ -60,13 +73,26 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
-                'Categoría',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Categoria',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
                 isExpanded: true,
@@ -103,6 +129,7 @@ class _Cara8State extends State<Cara8> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(
@@ -115,13 +142,26 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              const Text(
-                'Contenido del Post',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  const Text(
+                    'Contenido del post',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
+
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(
@@ -198,8 +238,8 @@ class _Cara8State extends State<Cara8> {
         : 'http://localhost:3010/';
     final String url = ('${urlDynamic}post/agregar');
 
-    String formattedDate =
-        DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
+  String formattedDate =
+      DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
 
     int etiqueta = _asignarValorCategoria(categoriaSeleccionada);
 
@@ -222,52 +262,13 @@ class _Cara8State extends State<Cara8> {
     final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
 
-    if (response.statusCode == 201) {
-      print('Post publicado: ${response.body}');
-    } else {
-      print(
-          'Error al publicar el post. Código de estado: ${response.statusCode}');
-    }
-    setState(() {
-      _isPublishing = true; // Inicia la visualización del indicador de carga
-    });
-
-    if (_isPublishing)
-      Column(
-        children: [
-          CircularProgressIndicator(),
-          const SizedBox(height: 20),
-          Text('Publicando...', style: TextStyle(fontSize: 16)),
-        ],
-      );
-
-    await Future.delayed(const Duration(seconds: 3)); // Simulación de espera
-    if (!mounted) return;
-    setState(() {
-      _isPublishing = false; // Detiene la visualización del indicador de carga
-    });
-
-    if (!mounted) return;
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Publicado'),
-        content: const Text('Tu post ha sido publicado exitosamente.'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Ok'),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const Cara6())); // Cerrar el diálogo
-            },
-          ),
-        ],
-      ),
-    );
+  if (response.statusCode == 201) {
+    print('Post publicado: ${response.body}');
+  } else {
+    print(
+        'Error al publicar el post. Código de estado: ${response.statusCode}');
   }
+}
 
   int _asignarValorCategoria(String? categoria) {
     switch (categoria) {
