@@ -1,72 +1,80 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de clase segun corresponde a la ruta de aprendizaje
 
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:file_picker/file_picker.dart'; // Importa la librería para seleccionar archivos
-import 'widgets/bottom_menu.dart';
-import 'widgets/burgermenu.dart';
+import 'package:JaveLab/widgets/bottom_menu.dart';
+import 'package:JaveLab/widgets/burgermenu.dart';
+import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
+import 'package:JaveLab/models/comentariotema.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+class MyPantallaClase extends StatelessWidget {
+  final Contenido contenido;
+  final String pdfUrl;
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyPantallaClase(
+      {Key? key, required this.contenido, required this.pdfUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF2C5697),
         scaffoldBackgroundColor: Colors.white,
         appBarTheme: const AppBarTheme(
           color: Color(0xFF2C5697),
-
         ),
-
         tabBarTheme: TabBarTheme(
           labelColor: Colors.black,
           unselectedLabelColor: Colors.grey[500],
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white, backgroundColor: const Color(0xFF2C5697),
+            foregroundColor: Colors.white,
+            backgroundColor: const Color(0xFF2C5697),
             elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           ),
         ),
       ),
-      home: const MyWidget(),
+      home: MyWidget(item: contenido, pdfUrl: pdfUrl),
     );
   }
 }
 
 class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+  final Contenido item;
+  final String pdfUrl;
+
+  const MyWidget({Key? key, required this.item, required this.pdfUrl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: const Text('Pantalla clase', style: TextStyle(fontSize: 20)),
         actions: const [],
-
       ),
-      bottomNavigationBar: const BottomMenu(),
-      endDrawer: const BurgerMenu(),
-      body: const DefaultTabController(
+      bottomNavigationBar: BottomMenu(),
+      endDrawer: BurgerMenu(),
+      body: DefaultTabController(
         length: 2,
         child: Column(
           children: [
             // Link del video tomado desde la BD
-            YoutubeVideoPlayerWidget(videoUrl: 'https://www.youtube.com/watch?v=bo9Z_pgByQY'),
+            YoutubeVideoPlayerWidget(videoUrl: item.video),
             TabBar(
               tabs: [
                 Tab(text: 'Actividades'),
@@ -76,12 +84,14 @@ class MyWidget extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  VideoTab(),
-                  ClassInfoTab(),
+                  VideoTab(pdfUrl: pdfUrl, item: item),
+                  ClassInfoTab(item: item),
                 ],
               ),
             ),
-            CourseProgressBar(progress: 0.6), // Cambia el valor según el progreso real del curso
+            CourseProgressBar(
+                progress:
+                    0.6), // Cambia el valor según el progreso real del curso
           ],
         ),
       ),
@@ -90,7 +100,36 @@ class MyWidget extends StatelessWidget {
 }
 
 class VideoTab extends StatelessWidget {
-  const VideoTab({super.key});
+  final String pdfUrl;
+  final Contenido item;
+
+  const VideoTab({Key? key, required this.pdfUrl, required this.item})
+      : super(key: key);
+
+  Future<void> _downloadPDF(BuildContext context, String pdfUrl) async {
+    final response = await http.get(Uri.parse(pdfUrl));
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+
+      // Obtiene la ruta del directorio de descargas
+      final downloadDir = await getExternalStorageDirectory();
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}.pdf'; // Nombre de archivo único
+
+      // Guardar el archivo en el directorio de descargas
+      final pdfFile =
+          await File('${downloadDir!.path}/$fileName').writeAsBytes(bytes);
+
+      // Abrir el archivo PDF
+      OpenFile.open(pdfFile.path);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo descargar el PDF'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,21 +139,6 @@ class VideoTab extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-
-            ),
-
             const Text(
               'Descripción del documento adjunto:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -126,20 +150,10 @@ class VideoTab extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.custom, // Puedes especificar el tipo de archivo que deseas permitir
-                  allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx'], // Extensiones permitidas
-                );
-
-                if (result != null) {
-                  PlatformFile file = result.files.first;
-                  // Aquí puedes manejar el archivo seleccionado, por ejemplo, mostrar su nombre o realizar alguna acción con él.
-                  print('Archivo seleccionado: ${file.name}');
-                }
-              },
+              onPressed: () => _downloadPDF(context, pdfUrl),
               icon: const Icon(Icons.attach_file, size: 20),
-              label: const Text('Adjuntar archivo', style: TextStyle(fontSize: 16)),
+              label:
+                  const Text('Descargar PDF', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -149,26 +163,31 @@ class VideoTab extends StatelessWidget {
             const SizedBox(height: 10),
             const Text(
               '- Contiene información adicional sobre el tema del video.\n'
-                  '- Formato: PDF\n'
-                  '- Tamaño: 2.5 MB\n'
-                  '- Autor: Desconocido\n'
-                  '- Fecha de creación: 10/02/2024',
+              '- Formato: PDF\n'
+              '- Tamaño: 2.5 MB\n'
+              '- Autor: Desconocido\n'
+              '- Fecha de creación: 10/02/2024',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
-            const Text( //Comentarios (caja de comentarios)
+            const Text(
+              //Comentarios (caja de comentarios)
               'Comentarios',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
             const SizedBox(height: 10),
-            const CommentsSection(accentColor: Colors.black),
+            CommentsSection(accentColor: Colors.black, item: item),
             const SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () {
                 // Placeholder for next video navigation
               },
               icon: const Icon(Icons.navigate_next, size: 20),
-              label: const Text('Siguiente capítulo', style: TextStyle(fontSize: 16)),
+              label: const Text('Siguiente capítulo',
+                  style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
@@ -176,80 +195,60 @@ class VideoTab extends StatelessWidget {
     );
   }
 }
+
 //Informacion de la clase
 class ClassInfoTab extends StatelessWidget {
-  const ClassInfoTab({super.key});
+  final Contenido item;
+  const ClassInfoTab({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Información de la Clase',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // Agrega detalles de la clase de forma jerárquica y clara
-          Text(
+          const Text(
             'Título de la Clase:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Text(
-            'Clase 1',
+            item.titulo,
             style: TextStyle(fontSize: 16),
           ),
-          SizedBox(height: 10),
-          Text(
+          const SizedBox(height: 10),
+          const Text(
             'Descripción:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Text(
-            'En esta clase, aprenderás ...',
+            item.descripcion,
             style: TextStyle(fontSize: 16),
           ),
-          SizedBox(height: 10),
-          Text(
-            'Instructor:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            'Profesor Juan Pérez',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Duración:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '4 semanas',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(height: 10),
-          Text(
-            'Fecha de Inicio:',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '15 de Febrero de 2024',
-            style: TextStyle(fontSize: 16),
-          ),
+          const SizedBox(height: 10),
         ],
       ),
     );
   }
 }
+
 //Clase que implementa los videos para el import respectivo
 class YoutubeVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
 
-  const YoutubeVideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+  const YoutubeVideoPlayerWidget({Key? key, required this.videoUrl})
+      : super(key: key);
 
   @override
-  _YoutubeVideoPlayerWidgetState createState() => _YoutubeVideoPlayerWidgetState();
+  _YoutubeVideoPlayerWidgetState createState() =>
+      _YoutubeVideoPlayerWidgetState();
 }
 
 class _YoutubeVideoPlayerWidgetState extends State<YoutubeVideoPlayerWidget> {
@@ -284,8 +283,10 @@ class _YoutubeVideoPlayerWidgetState extends State<YoutubeVideoPlayerWidget> {
 
 class CommentsSection extends StatefulWidget {
   final Color accentColor;
+  final Contenido item;
 
-  const CommentsSection({super.key, required this.accentColor});
+  const CommentsSection(
+      {super.key, required this.accentColor, required this.item});
 
   @override
   _CommentsSectionState createState() => _CommentsSectionState();
@@ -353,23 +354,23 @@ class _CommentsSectionState extends State<CommentsSection> {
         ),
         const SizedBox(height: 16),
         ...comments.map((comment) => Card(
-          elevation: 2,
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: widget.accentColor,
-              child: const Icon(Icons.person, color: Colors.white),
-            ),
-            title: Text(
-              comment.comment,
-              style: const TextStyle(fontSize: 16),
-            ),
-            subtitle: Text(
-              "${comment.userName}, ${DateFormat('dd/MM/yyyy').format(comment.dateTime)} - ${comment.rating.toStringAsFixed(1)} stars",
-              style: const TextStyle(fontSize: 12),
-            ),
-          ),
-        )),
+              elevation: 2,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: widget.accentColor,
+                  child: const Icon(Icons.person, color: Colors.white),
+                ),
+                title: Text(
+                  comment.comment,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                subtitle: Text(
+                  "${comment.userName}, ${DateFormat('dd/MM/yyyy').format(comment.dateTime)} - ${comment.rating.toStringAsFixed(1)} stars",
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+            )),
       ],
     );
   }
@@ -381,7 +382,11 @@ class Comment {
   DateTime dateTime;
   double rating;
 
-  Comment({required this.userName, required this.comment, required this.dateTime, required this.rating});
+  Comment(
+      {required this.userName,
+      required this.comment,
+      required this.dateTime,
+      required this.rating});
 }
 
 class CourseProgressBar extends StatelessWidget {

@@ -1,11 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:io';
-
-
 
 class Cara8 extends StatefulWidget {
   const Cara8({Key? key}) : super(key: key);
@@ -185,14 +182,12 @@ class _Cara8State extends State<Cara8> {
   }
 }
 
-
 void _publicarPost(
     TextEditingController tituloController,
     TextEditingController contenidoController,
     String categoriaSeleccionada) async {
-  String urlDynamic = Platform.isAndroid
-      ? 'http://192.168.10.40:3010'
-      : 'http://localhost:3010';
+  String urlDynamic =
+      Platform.isAndroid ? 'http://192.168.56.1:3010' : 'http://localhost:3010';
   final String url = ('$urlDynamic/post/agregar');
 
   String formattedDate =
@@ -213,8 +208,6 @@ void _publicarPost(
     "fecha": formattedDate,
     "nombre": 'Pepito Perez'
   };
-
- 
 
   final response = await http.post(Uri.parse(url),
       headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
@@ -239,4 +232,3 @@ int _asignarValorCategoria(String? categoria) {
       return 0;
   }
 }
-

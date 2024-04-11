@@ -115,12 +115,11 @@ class Cara6 extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const Cara8(),
-                                ),
-                              );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Cara8(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Color.fromARGB(255, 21, 53, 237),
@@ -182,11 +181,9 @@ class SectionWidget extends StatefulWidget {
 class _SectionWidgetState extends State<SectionWidget> {
   bool _isExpanded = false;
 
-
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -288,7 +285,7 @@ Future<List<Post>> _fetchPosts(int cat) async {
   try {
     // Realiza una solicitud HTTP GET para obtener la lista de Posts
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/post/lista-posts/$cat');
     final response = await http.get(Uri.parse(url));

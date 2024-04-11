@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
 
-
 class EditarComentarioScreen extends StatefulWidget {
   final Comentario com;
 
@@ -75,7 +74,8 @@ class _EditarComentarioScreenState extends State<EditarComentarioScreen> {
                     Navigator.pop(context); // Cerrar la pantalla de edición
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Cambia el color del botón a rojo
+                    backgroundColor:
+                        Colors.red, // Cambia el color del botón a rojo
                   ),
                   child: const Text('Cancelar'),
                 ),
@@ -89,7 +89,7 @@ class _EditarComentarioScreenState extends State<EditarComentarioScreen> {
 
   void _modificarCom(String nuevoContenido, int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/comentario/actualizar/$id');
 

@@ -39,7 +39,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
 
   Future<Post> _fetchPost(int? id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/post/$id');
     final response = await http.get(Uri.parse(url));
@@ -54,10 +54,9 @@ class _PostViewScreenState extends State<PostViewScreen> {
     try {
       // Realiza una solicitud HTTP GET para obtener la lista de Posts
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.0.11:3010'
+          ? 'http://192.168.56.1:3010'
           : 'http://localhost:3010';
-      final String url =
-          ('$urlDynamic/comentario/lista-comentarios/$idPost');
+      final String url = ('$urlDynamic/comentario/lista-comentarios/$idPost');
       final response = await http.get(Uri.parse(url));
 
       // Verifica si la solicitud fue exitosa (código de estado 200)
@@ -130,7 +129,7 @@ class PostView extends StatelessWidget {
 
   void _deleteComment(int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/comentario/borrar/$id');
 
@@ -395,10 +394,9 @@ class PostView extends StatelessWidget {
     );
   }
 
-  void _crearCom(
-      int idPost, TextEditingController comentarioController) async {
+  void _crearCom(int idPost, TextEditingController comentarioController) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/comentario/agregar');
 
@@ -427,7 +425,7 @@ class PostView extends StatelessWidget {
 
   void _deletePost(int? id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.0.11:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/comentario/borrar-por-post/$id');
     final String url2 = ('$urlDynamic/post/borrar/$id');

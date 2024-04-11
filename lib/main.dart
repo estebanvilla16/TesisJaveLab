@@ -3,7 +3,6 @@ import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider( create: ( _ ) => AuthService() ),
+        ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false, // quita el banner de debug

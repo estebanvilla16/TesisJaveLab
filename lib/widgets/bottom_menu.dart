@@ -1,5 +1,43 @@
+import 'package:JaveLab/MainAPP.dart';
+import 'package:JaveLab/foro.dart';
+import 'package:JaveLab/perfil.dart';
+import 'package:JaveLab/rutaAcademica.dart';
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    home: MyHomePage(),
+  ));
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My App'),
+      ),
+      body: Container(
+        margin: const EdgeInsets.only(top: 20.0),
+        child: const YourContentWidget(),
+      ),
+      bottomNavigationBar: const BottomMenu(),
+    );
+  }
+}
+
+class YourContentWidget extends StatelessWidget {
+  const YourContentWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Your Content'),
+    );
+  }
+}
 
 class BottomMenu extends StatefulWidget {
   const BottomMenu({Key? key}) : super(key: key);
@@ -12,30 +50,35 @@ class _BottomMenuState extends State<BottomMenu> {
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
-  if (index != _selectedIndex) {
     setState(() {
       _selectedIndex = index;
     });
 
     switch (index) {
       case 0:
-        Navigator.pushNamed(context, 'inicio');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Principal()));
         break;
       case 1:
-        Navigator.pushNamed(context, 'login');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PantallaRutaAprendizaje()));
         break;
       case 2:
-        Navigator.pushNamed(context, 'foro');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Cara6()));
         break;
       case 3:
-        Navigator.pushNamed(context, 'perfil');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProfilePage()));
         break;
       case 4:
-        Navigator.pushNamed(context, 'usuarios');
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const MessageScreen()));
         break;
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +100,70 @@ class _BottomMenuState extends State<BottomMenu> {
 
   Widget buildNavBarItem(IconData icon, int index) {
     return IconButton(
-      icon: Icon(icon, color: _selectedIndex == index ? Colors.blue : Colors.grey),
+      icon: Icon(icon,
+          color: _selectedIndex == index ? Colors.blue : Colors.grey),
       onPressed: () => _onItemTapped(index),
+    );
+  }
+}
+
+// Screens
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Home")),
+      body: const Center(child: Text("Home Screen")),
+    );
+  }
+}
+
+class SchoolScreen extends StatelessWidget {
+  const SchoolScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("School")),
+      body: const Center(child: Text("School Screen")),
+    );
+  }
+}
+
+class ForumScreen extends StatelessWidget {
+  const ForumScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Forum")),
+      body: const Center(child: Text("Forum Screen")),
+    );
+  }
+}
+
+class AccountScreen extends StatelessWidget {
+  const AccountScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Account")),
+      body: const Center(child: Text("Account Screen")),
+    );
+  }
+}
+
+class MessageScreen extends StatelessWidget {
+  const MessageScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Messages")),
+      body: const Center(child: Text("Messages Screen")),
     );
   }
 }

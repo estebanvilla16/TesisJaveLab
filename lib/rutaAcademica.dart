@@ -1,15 +1,19 @@
-//Trabajo Realizado para proyecto de grado - JaveLab.
-//Pantalla de de ruta de aprenzizaje
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
-import 'widgets/bottom_menu.dart';
-import 'widgets/burgermenu.dart';
+import 'package:JaveLab/widgets/bottom_menu.dart';
+import 'package:JaveLab/widgets/burgermenu.dart';
+import 'package:http/http.dart' as http;
+import 'package:JaveLab/pantallaClase.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class MyApp extends StatelessWidget {
 }
 
 class PantallaRutaAprendizaje extends StatelessWidget {
-  const PantallaRutaAprendizaje({super.key});
+  const PantallaRutaAprendizaje({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -123,17 +127,63 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               ),
             ),
             const Divider(), // Separador entre filtros y secciones
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: secciones.length,
-              itemBuilder: (context, index) {
-                return SeccionRutaAprendizaje(
-                  titulo: secciones[index]['titulo'],
-                  icono: secciones[index]['icono'],
-                  progreso: secciones[index]['progreso'],
-                  contenido: secciones[index]['contenido'],
-                );
+            FutureBuilder<List<Contenido>>(
+              future: _fetchTemas(1), // Categoría de programación
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return SeccionRutaAprendizaje(
+                    titulo: 'Programación', // Título de la sección
+                    icono: Icons.code, // Icono relacionado con la programación
+                    progreso:
+                        0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ??
+                        [], // Lista de contenido obtenida del servidor
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 16), // Espacio entre secciones
+            FutureBuilder<List<Contenido>>(
+              future: _fetchTemas(2), // Categoría de física
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return SeccionRutaAprendizaje(
+                    titulo: 'Física Mecánica', // Título de la sección
+                    icono: Icons.explore, // Icono similar a física
+                    progreso:
+                        0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ??
+                        [], // Lista de contenido obtenida del servidor
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 16), // Espacio entre secciones
+            FutureBuilder<List<Contenido>>(
+              future: _fetchTemas(3), // Categoría de cálculo
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return SeccionRutaAprendizaje(
+                    titulo: 'Cálculo Diferencial', // Título de la sección
+                    icono: Icons.calculate, // Icono relacionado con el cálculo
+                    progreso:
+                        0.0, // Por ahora no tenemos información de progreso
+                    contenido: snapshot.data ??
+                        [], // Lista de contenido obtenida del servidor
+                  );
+                }
               },
             ),
           ],
@@ -143,15 +193,14 @@ class PantallaRutaAprendizaje extends StatelessWidget {
   }
 }
 
-//clase de ruta y contiene el valor del progreso
+// clase de ruta y contiene el valor del progreso
 class SeccionRutaAprendizaje extends StatefulWidget {
   final String titulo;
   final IconData icono;
   final double progreso;
-  final List<CapituloContenido> contenido;
+  final List<Contenido> contenido;
 
   const SeccionRutaAprendizaje({
-    super.key,
     required this.titulo,
     required this.icono,
     required this.progreso,
@@ -165,19 +214,8 @@ class SeccionRutaAprendizaje extends StatefulWidget {
 class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   bool _expanded = false;
 
-  int _calcularCapitulosVistos() {
-    return widget.contenido.where((capitulo) => capitulo.visto).length;
-  }
-
-  double _calcularProgreso() {
-    final totalCapitulos = widget.contenido.length;
-    final capitulosVistos = _calcularCapitulosVistos();
-    return totalCapitulos != 0 ? capitulosVistos / totalCapitulos : 0.0;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final progreso = _calcularProgreso();
     return Column(
       children: [
         ListTile(
@@ -192,7 +230,7 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
               fontSize: 18,
             ),
           ),
-          trailing: Text('${(progreso * 100).toInt()}%'),
+          trailing: Text('${(widget.progreso * 100).toInt()}%'),
           onTap: () {
             setState(() {
               _expanded = !_expanded;
@@ -201,24 +239,16 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
         ),
         if (_expanded)
           Column(
-            children: widget.contenido
-                .asMap()
-                .map((index, capitulo) {
-                  return MapEntry(
-                    index,
-                    CapituloContenidoWidget(
-                      capitulo: capitulo,
-                      isLast: index == widget.contenido.length - 1,
-                      onMarcarVisto: () {
-                        setState(() {
-                          capitulo.visto = !capitulo.visto;
-                        });
-                      },
-                    ),
-                  );
-                })
-                .values
-                .toList(),
+            children: widget.contenido.map((contenido) {
+              return ListTile(
+                title: Text(contenido.titulo),
+                subtitle: Text(contenido.descripcion),
+                onTap: () {
+                  // Implementar la funcionalidad al hacer clic en el contenido
+                  _navigateToDetailScreen(context, contenido);
+                },
+              );
+            }).toList(),
           ),
         const Divider(), // Separador entre secciones
       ],
@@ -226,184 +256,43 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   }
 }
 
-class CapituloContenido {
-  final String titulo;
-  final String descripcion;
-  final List<Video> videos;
-  final List<ArchivoAdjunto> archivosAdjuntos;
-  bool visto; // Estado del capítulo
-
-  CapituloContenido({
-    required this.titulo,
-    required this.descripcion,
-    required this.videos,
-    required this.archivosAdjuntos,
-    this.visto = false, // Por defecto, el capítulo no está visto
-  });
+void _navigateToDetailScreen(BuildContext context, Contenido item) {
+  String urlDynamic =
+      Platform.isAndroid ? 'http://192.168.56.1:8080' : 'http://localhost:8080';
+  String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
+    ),
+  );
 }
 
-class CapituloContenidoWidget extends StatelessWidget {
-  final CapituloContenido capitulo;
-  final bool isLast;
-  final VoidCallback onMarcarVisto;
+Future<List<Contenido>> _fetchTemas(int cat) async {
+  try {
+    // Realiza una solicitud HTTP GET para obtener la lista de Contenido
+    String urlDynamic = Platform.isAndroid
+        ? 'http://192.168.56.1:3011'
+        : 'http://localhost:3011';
+    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
+    final response = await http.get(Uri.parse(url));
 
-  const CapituloContenidoWidget({
-    Key? key,
-    required this.capitulo,
-    required this.isLast,
-    required this.onMarcarVisto,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: onMarcarVisto,
-          child: Row(
-            children: [
-              Icon(
-                capitulo.visto ? Icons.check : Icons.remove_red_eye,
-                color: capitulo.visto ? Colors.green : Colors.grey,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  capitulo.titulo,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            capitulo.descripcion,
-            style: TextStyle(color: Colors.grey[600]),
-          ),
-        ),
-        const SizedBox(height: 8),
-        ...capitulo.videos.map((video) {
-          return ListTile(
-            title: Text(video.titulo),
-            onTap: () {
-              // Implementar la funcionalidad para reproducir el video
-            },
-          );
-        }).toList(),
-        ...capitulo.archivosAdjuntos.map((archivo) {
-          return ListTile(
-            title: Text(archivo.titulo),
-            onTap: () {
-              // Implementar la funcionalidad para abrir el archivo adjunto
-            },
-          );
-        }).toList(),
-        if (!isLast)
-          const Divider(), // Separador entre capítulos (excepto para el último)
-      ],
-    );
+    // Verifica si la solicitud fue exitosa (código de estado 200)
+    if (response.statusCode == 200) {
+      // Convierte la respuesta JSON en una lista de mapas
+      final List<dynamic> contenidoData = jsonDecode(response.body);
+      // Crea una lista de Contenido a partir de los datos obtenidos
+      final List<Contenido> contenidoList =
+          contenidoData.map((data) => Contenido.fromJson(data)).toList();
+      // Ahora tienes la lista de Contenido, puedes usarla según necesites
+      return contenidoList;
+    } else {
+      throw Exception('Error en la solicitud: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Si ocurrió un error durante la solicitud, imprímelo
+    return Future.value([]);
   }
 }
-
-class Video {
-  final String titulo;
-  final String url;
-
-  Video({required this.titulo, required this.url});
-}
-
-class ArchivoAdjunto {
-  final String titulo;
-  final String url;
-
-  ArchivoAdjunto({required this.titulo, required this.url});
-}
-
-// Datos de ejemplo
-final List<Map<String, dynamic>> secciones = [
-  {
-    'titulo': 'Pensamiento Algorítmico',
-    'icono': Icons.code, // Icono relacionado con la programación
-    'progreso': 0.6,
-    'contenido': List.generate(
-      10,
-      (index) => CapituloContenido(
-        titulo: 'Capítulo ${index + 1}: Algoritmos básicos',
-        descripcion:
-            'En este capítulo aprenderás los conceptos básicos de algoritmos con ejemplos prácticos.',
-        videos: [
-          Video(
-            titulo: 'Introducción a los algoritmos',
-            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
-          ),
-        ],
-        archivosAdjuntos: [
-          ArchivoAdjunto(
-            titulo: 'Presentación',
-            url: 'URL_PRESENTACION',
-          ),
-        ],
-      ),
-    ),
-  },
-  {
-    'titulo': 'Física Mecánica',
-    'icono': Icons.explore, // Icono similar a física
-    'progreso': 0.3,
-    'contenido': List.generate(
-      10,
-      (index) => CapituloContenido(
-        titulo: 'Capítulo ${index + 1}: Leyes de Newton',
-        descripcion:
-            'En este capítulo explorarás las leyes fundamentales de la física mecánica con ejemplos de la vida real.',
-        videos: [
-          Video(
-            titulo: 'Ley de la inercia',
-            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
-          ),
-        ],
-        archivosAdjuntos: [
-          ArchivoAdjunto(
-            titulo: 'PDF',
-            url: 'URL_PDF',
-          ),
-        ],
-      ),
-    ),
-  },
-  {
-    'titulo': 'Cálculo Diferencial',
-    'icono': Icons.calculate, // Icono relacionado con el cálculo
-    'progreso': 0.8,
-    'contenido': List.generate(
-      10,
-      (index) => CapituloContenido(
-        titulo: 'Capítulo ${index + 1}: Derivadas',
-        descripcion:
-            'En este capítulo estudiarás las derivadas y sus aplicaciones en problemas del mundo real.',
-        videos: [
-          Video(
-            titulo: 'Introducción a las derivadas',
-            url: 'https://www.youtube.com/watch?v=VIDEO_ID',
-          ),
-        ],
-        archivosAdjuntos: [
-          ArchivoAdjunto(
-            titulo: 'Ejercicios prácticos',
-            url: 'URL_EJERCICIOS',
-          ),
-        ],
-      ),
-    ),
-  },
-];
 
 void _mostrarFiltroAvanzado(BuildContext context) {
   showDialog(

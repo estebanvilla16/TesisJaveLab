@@ -6,6 +6,7 @@ import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:JaveLab/pantallaClase.dart';
 
 void main() => runApp(const MyApp());
 
@@ -44,7 +45,6 @@ class _PrincipalState extends State<Principal> {
   final List<bool> _viewed = List.generate(15, (_) => false);
   List<Contenido> _carouselItems = [];
 
-  @override
   void initState() {
     super.initState();
     _fetchTemas(2).then((data) {
@@ -52,34 +52,12 @@ class _PrincipalState extends State<Principal> {
         _carouselItems = data;
       });
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) => _showIntroDialog());
   }
 
-  void _showIntroDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Bienvenido a JAVELAB'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(
-                    'Exploramos principios cognitivistas y de aprendizaje colaborativo.'),
-                Text('Descubre cómo utilizar esta app para tu aprendizaje.'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Entendido'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
+  void _markAsViewed(int carouselIndex, int itemIndex) {
+    setState(() {
+      _viewed[carouselIndex * 5 + itemIndex] = true;
+    });
   }
 
   @override
@@ -94,8 +72,8 @@ class _PrincipalState extends State<Principal> {
           onPressed: () {},
         ),
       ),
-      bottomNavigationBar: const BottomMenu(),
-      endDrawer: const BurgerMenu(),
+      bottomNavigationBar: const BottomMenu(), //Menu inferior
+      endDrawer: const BurgerMenu(), // Menu Hamburguesa
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -118,43 +96,6 @@ class _PrincipalState extends State<Principal> {
         ),
       ),
     );
-  }
-
-  void _markAsViewed(int carouselIndex, int itemIndex) {
-    setState(() {
-      _viewed[carouselIndex * 5 + itemIndex] = true;
-    });
-    _showSnackBar(' ${itemIndex + 1} marcado como visto');
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: Duration(seconds: 3),
-      ),
-    );
-  }
-
-  Future<List<Contenido>> _fetchTemas(int cat) async {
-    try {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.56.1:3011'
-          : 'http://localhost:3011';
-      final String url = '${urlDynamic}/contenido/lista-contenidos/$cat';
-      final response = await http.get(Uri.parse(url));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> postData = jsonDecode(response.body);
-        final List<Contenido> posts =
-            postData.map((data) => Contenido.fromJson(data)).toList();
-        return posts;
-      } else {
-        throw Exception('Error en la solicitud: ${response.statusCode}');
-      }
-    } catch (error) {
-      return Future.value([]);
-    }
   }
 
   List<Widget> _buildCarouselItems(int carouselIndex) {
@@ -186,7 +127,7 @@ class _PrincipalState extends State<Principal> {
       final Contenido item = entry.value;
 
       return GestureDetector(
-        onTap: () => _markAsViewed(carouselIndex, itemIndex),
+        onTap: () => _navigateToDetailScreen(context, item),
         child: Card(
           color: _viewed[carouselIndex * 5 + itemIndex]
               ? Colors.grey
@@ -201,6 +142,7 @@ class _PrincipalState extends State<Principal> {
               children: [
                 Text(item.titulo, style: const TextStyle(fontSize: 16.0)),
                 Text(item.descripcion),
+                // Agregar más Widgets según sea necesario para mostrar otros datos de Contenido
               ],
             ),
           ),
@@ -234,8 +176,10 @@ class _PrincipalState extends State<Principal> {
                     Text('Actividad ${itemIndex + 1}',
                         style: const TextStyle(fontSize: 16.0)),
                     const Spacer(),
-                    Icon(isCompleted ? Icons.check_circle : Icons.cancel,
-                        color: isCompleted ? Colors.green : Colors.red),
+                    Icon(
+                      isCompleted ? Icons.check_circle : Icons.cancel,
+                      color: isCompleted ? Colors.green : Colors.red,
+                    ),
                   ],
                 ),
               ),
@@ -259,17 +203,28 @@ class _PrincipalState extends State<Principal> {
   }
 }
 
+void _navigateToDetailScreen(BuildContext context, Contenido item) {
+  String urlDynamic =
+      Platform.isAndroid ? 'http://192.168.56.1:8080' : 'http://localhost:8080';
+  String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
+    ),
+  );
+}
+
 class CarouselSection extends StatelessWidget {
   final String title;
   final List<Widget> items;
   final Function(int, int) onItemTap;
 
   const CarouselSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.items,
     required this.onItemTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -300,11 +255,38 @@ class CarouselSection extends StatelessWidget {
   }
 }
 
+Future<List<Contenido>> _fetchTemas(int cat) async {
+  try {
+    // Realiza una solicitud HTTP GET para obtener la lista de Posts
+    String urlDynamic = Platform.isAndroid
+        ? 'http://192.168.56.1:3011'
+        : 'http://localhost:3011';
+    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
+    final response = await http.get(Uri.parse(url));
+
+    // Verifica si la solicitud fue exitosa (código de estado 200)
+    if (response.statusCode == 200) {
+      // Convierte la respuesta JSON en una lista de mapas
+      final List<dynamic> postData = jsonDecode(response.body);
+      // Crea una lista de Posts a partir de los datos obtenidos
+      final List<Contenido> posts =
+          postData.map((data) => Contenido.fromJson(data)).toList();
+      // Ahora tienes la lista de Posts, puedes usarla según necesites
+      return posts;
+    } else {
+      throw Exception('Error en la solicitud: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Si ocurrió un error durante la solicitud, imprímelo
+    return Future.value([]);
+  }
+}
+
 class TaskCarouselSection extends CarouselSection {
   const TaskCarouselSection({
-    Key? key,
+    super.key,
     required String title,
     required List<Widget> items,
     required Function(int, int) onViewed,
-  }) : super(key: key, title: title, items: items, onItemTap: onViewed);
+  }) : super(title: title, items: items, onItemTap: onViewed);
 }

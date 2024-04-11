@@ -90,7 +90,8 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
                     Navigator.pop(context); // Cerrar la pantalla de edición
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Cambia el color del botón a rojo
+                    backgroundColor:
+                        Colors.red, // Cambia el color del botón a rojo
                   ),
                   child: const Text('Cancelar'),
                 ),
@@ -104,7 +105,7 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
 
   void _modificarPost(String nuevoTitulo, String nuevoContenido, int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.40:3010'
+        ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/post/actualizar/$id');
 
