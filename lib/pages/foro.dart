@@ -1,8 +1,8 @@
 import 'package:JaveLab/pages/crear_post.dart';
 import 'package:JaveLab/models/post.dart';
 import 'package:flutter/material.dart';
-import '../widgets/bottom_menu.dart';
-import '../widgets/burgermenu.dart';
+import 'package:JaveLab/widgets/bottom_menu.dart';
+import 'package:JaveLab/widgets/burgermenu.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
@@ -15,7 +15,7 @@ class Cara6 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color primaryColor = Color.fromARGB(255, 255, 234, 0);
+    Color primaryColor = const Color(0xFF2c5968);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Foro | Academico'),
@@ -122,7 +122,7 @@ class Cara6 extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Color.fromARGB(255, 21, 53, 237),
+                    foregroundColor: Colors.white,
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0.0),
@@ -137,7 +137,7 @@ class Cara6 extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Color.fromARGB(255, 21, 53, 237),
+                    foregroundColor: Colors.white,
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0.0),
@@ -231,7 +231,7 @@ class _SectionWidgetState extends State<SectionWidget> {
                 widget.category), // Utiliza el futuro de la lista de posts
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return CircularProgressIndicator();
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
@@ -287,7 +287,7 @@ Future<List<Post>> _fetchPosts(int cat) async {
     String urlDynamic = Platform.isAndroid
         ? 'http://192.168.56.1:3010'
         : 'http://localhost:3010';
-    final String url = ('$urlDynamic/post/lista-posts/$cat');
+    final String url = ('${urlDynamic}/post/lista-posts/${cat}');
     final response = await http.get(Uri.parse(url));
 
     // Verifica si la solicitud fue exitosa (código de estado 200)
