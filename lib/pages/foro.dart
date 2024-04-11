@@ -126,7 +126,7 @@ class Cara6 extends StatelessWidget {
 
               title: 'Calculo Diferencial',
               description: 'Explora temas de Cálculo Diferencial',
-              backgroundColor: primaryColor,
+              backgroundColor: primaryColor.withOpacity(0.7),
               icon: Icons.calculate,
               category: 2, // Icono relacionado
 
@@ -136,14 +136,14 @@ class Cara6 extends StatelessWidget {
             SectionWidget(
               title: 'Física Mecánica',
               description: 'Descubre los fundamentos de la Física Mecánica',
-              backgroundColor: primaryColor,
+              backgroundColor: primaryColor.withOpacity(0.6),
               icon: Icons.build,
               category: 3, // Icono relacionado
             ),
             SectionWidget(
               title: 'Programacion I',
               description: 'Aprende los principios básicos de la programación',
-              backgroundColor: primaryColor,
+              backgroundColor: primaryColor.withOpacity(0.5),
               icon: Icons.code,
               category: 1, // Icono relacionado
             ),
@@ -362,7 +362,7 @@ class _SectionWidgetState extends State<SectionWidget> {
                         ],
                       ),
                       subtitle: Text('Fecha: ${post.fecha}, Persona: ${post.nombre}'),
-                      textColor: Colors.black,
+                      textColor: Colors.white,
                     );
                   }).toList(),
                 );
