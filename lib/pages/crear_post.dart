@@ -41,9 +41,9 @@ class _Cara8State extends State<Cara8> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              const Row(
                 children: [
-                  const Text(
+                  Text(
                     'Título',
                     style: TextStyle(
                       fontSize: 20.0,
@@ -51,7 +51,7 @@ class _Cara8State extends State<Cara8> {
                     ),
                   ),
 
-                  const Text(
+                  Text(
                     ' *',
                     style: TextStyle(
                       fontSize: 20.0,
@@ -73,16 +73,16 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              Row(
+              const Row(
                 children: [
-                  const Text(
+                  Text(
                     'Categoria',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Text(
+                  Text(
                     ' *',
                     style: TextStyle(
                       fontSize: 20.0,
@@ -142,16 +142,16 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              Row(
+              const Row(
                 children: [
-                  const Text(
+                  Text(
                     'Contenido del post',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Text(
+                  Text(
                     ' *',
                     style: TextStyle(
                       fontSize: 20.0,
@@ -176,10 +176,10 @@ class _Cara8State extends State<Cara8> {
               ),
               const SizedBox(height: 24.0),
               if (_isPublishing)
-                Column(
+                const Column(
                   children: [
                     CircularProgressIndicator(),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
                     Text('Publicando...', style: TextStyle(fontSize: 16)),
                   ],
                 )
@@ -191,6 +191,8 @@ class _Cara8State extends State<Cara8> {
                       onPressed: () {
                         _publicarPost(tituloController, contenidoController,
                             categoriaSeleccionada);
+                            Navigator.pushReplacementNamed(
+                                    context, 'foro');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2c5697),
@@ -237,6 +239,7 @@ class _Cara8State extends State<Cara8> {
         ? 'http://192.168.10.34:3010/'
         : 'http://localhost:3010/';
     final String url = ('${urlDynamic}post/agregar');
+    
 
   String formattedDate =
       DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
