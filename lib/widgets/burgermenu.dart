@@ -2,6 +2,7 @@ import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/perfil.dart';
 import 'package:JaveLab/ruta_academica.dart';
+import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 
@@ -31,7 +32,7 @@ class _BurgerMenuState extends State<BurgerMenu> {
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children:  [
                     Text('JaveLab', style: TextStyle(color: Color(0xFF2c5697), fontSize: 24, fontWeight: FontWeight.bold)),
                     Text('Pontificia Universidad Javeriana', style: TextStyle(color: Colors.black54, fontSize: 14)),
                   ],
@@ -80,17 +81,26 @@ class _BurgerMenuState extends State<BurgerMenu> {
             title: Text('Calendario académico', style: TextStyle(fontSize: 16)),
             onTap: () => navigateToScreen(context, 'Calendario académico'),
           ),
-          Spacer(),
+          const Spacer(),
           Container(
             padding: const EdgeInsets.all(10),
             color: Colors.grey[300],
-            child: Column(
-              children: const [
+            child:  Column(
+              children: [
                 Row(
                   children: [
-                    Icon(Icons.exit_to_app, color: Colors.grey),
-                    SizedBox(width: 8),
-                    Text('Cerrar Sesión', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                    IconButton(
+                      icon:  const Icon(Icons.exit_to_app, color: Colors.black87),
+                      onPressed: () {
+
+                        //TODO: desconectarse del socketserver
+
+                        Navigator.pushReplacementNamed(context, 'login');
+                        AuthService.deleteToken();
+                        
+
+                      },
+                    ),
                   ],
                 ),
                 SizedBox(height: 8),
