@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/chat_service.dart';
+import 'package:JaveLab/services/socket_service.dart';
 import 'package:JaveLab/widgets/chat_message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class ChatPage extends StatefulWidget {
@@ -18,12 +22,27 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
   final _textController = TextEditingController();
   final _focusNode = FocusNode();
 
+  late ChatService chatService;
+  late SocketService socketService;
+  late AuthService authService;
+
   final List<ChatMessage> _messages = [];
 
   bool _estaEscribiendo = false;
 
   @override
+  void initState() {
+    super.initState();
+    chatService = Provider.of<ChatService>(context, listen: false);
+    socketService = Provider.of<SocketService>(context, listen: false);
+    authService = Provider.of<AuthService>(context, listen: false);
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    final usuarioPara = chatService.usuarioPara;
+
     return  Scaffold(
       appBar: AppBar(
         title:  Column(
@@ -31,12 +50,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
            CircleAvatar(
              backgroundColor: Colors.blue[100],
              maxRadius: 14,
-             child: const Text('Te', style:  TextStyle(fontSize: 12)),
+             child: Text(usuarioPara.nombre.substring(0,2), style:  const TextStyle(fontSize: 12)),
            ),
 
            const SizedBox(height: 3),
 
-           const Text('Santiago', style: TextStyle(fontSize: 12)),
+            Text(usuarioPara.nombre, style: const TextStyle(fontSize: 12)),
 
           ],
         ),
@@ -134,8 +153,6 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
 
     if(texto.isEmpty)return;
 
-    print(texto);
-
     _textController.clear();
     _focusNode.requestFocus();
 
@@ -150,6 +167,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
 
     setState(() {
       _estaEscribiendo = false;
+    });
+
+    socketService.emit('mensaje-personal', {
+      'de': chatService.usuarioPara.uid,
+      'para': chatService.usuarioPara.uid,
+      'mensaje': texto
     });
   }
 

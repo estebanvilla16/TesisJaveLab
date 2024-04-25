@@ -1,8 +1,8 @@
 import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/usuarios_page.dart';
-import 'package:JaveLab/perfil.dart';
-import 'package:JaveLab/ruta_academica.dart';
+import 'package:JaveLab/pages/perfil.dart';
+import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:flutter/material.dart';
 
 

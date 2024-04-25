@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import 'widgets/burgermenu.dart';
 import 'widgets/bottom_menu.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

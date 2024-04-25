@@ -1,5 +1,8 @@
+import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/chat_service.dart';
 import 'package:JaveLab/services/socket_service.dart';
+import 'package:JaveLab/services/usuarios_service.dart';
 import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +17,15 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
+  final usuariosService = UsuariosService();
   final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  List<Usuario> usuarios = [];
 
-  final usuarios = [
-    Usuario(online: true, email: 'test1@test.com', nombre: 'Juan', uid: '1'),
-    Usuario(online: false, email: 'test2@test.com', nombre: 'Pepe', uid: '2'),
-    Usuario(online: true, email: 'test3@test.com', nombre: 'Pancho', uid: '3'),
-  ];
+  @override
+  void initState() {
+    _cargarUsuarios();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +88,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
   ListTile _usuarioListTile(Usuario usuario) {
     return ListTile(
       title: Text(usuario.nombre),
-      subtitle: Text(usuario.email),
+      subtitle: Text(usuario.correo),
       leading: CircleAvatar(
         child: Text(usuario.nombre.substring(0, 2)),
       ),
@@ -95,20 +100,23 @@ class _UsuariosPageState extends State<UsuariosPage> {
           borderRadius: BorderRadius.circular(100),
         ),
       ),
+      onTap:(){
+        final chatService = Provider.of<ChatService>(context, listen: false);
+        chatService.usuarioPara = usuario;
+        Navigator.pushNamed(context, 'chat');
+      },
     );
   }
 
   _cargarUsuarios() async {
-    await Future.delayed(const Duration(milliseconds: 1000));
+    
+
+    usuarios = await usuariosService.getUsuarios();
+    setState(() {
+      
+    });
+
+    //await Future.delayed(const Duration(milliseconds: 1000));
     _refreshController.refreshCompleted();
   }
-}
-
-class Usuario {
-  final bool online;
-  final String email;
-  final String nombre;
-  final String uid;
-
-  Usuario({required this.online, required this.email, required this.nombre, required this.uid});
 }

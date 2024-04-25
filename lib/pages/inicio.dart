@@ -9,7 +9,7 @@ import 'package:JaveLab/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'registro.dart';
-import '../contrasena.dart';
+import 'contrasena.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);

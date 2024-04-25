@@ -1,6 +1,6 @@
 import 'dart:io';
 
-class Envirenment {
+class Environment {
   //Servico Rest
   static String apiUrl = Platform.isAndroid
       ? 'http://192.168.10.7:3000/api'

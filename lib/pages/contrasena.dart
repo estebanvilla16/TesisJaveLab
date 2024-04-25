@@ -1,24 +1,7 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de solicitud de recuperacion de contrasena.
 import 'package:flutter/material.dart';
-import 'pages/inicio.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Recuperación de Contraseña',
-      home: ForgotPasswordScreen(),
-    );
-  }
-}
+import 'inicio.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);

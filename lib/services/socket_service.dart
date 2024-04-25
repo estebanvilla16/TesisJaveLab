@@ -22,7 +22,7 @@ class SocketService with ChangeNotifier {
     final token = await AuthService.getToken();
 
     // Dart client
-    _socket = IO.io(Envirenment.socketUrl, {
+    _socket = IO.io(Environment.socketUrl, {
       'transports': ['websocket'],
       'autoConnect': true,
       'forceNew': true,

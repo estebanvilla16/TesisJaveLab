@@ -9,26 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:JaveLab/pages/pantalla_clase.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Ruta de Aprendizaje',
-      theme: ThemeData(
-        primaryColor: const Color(0xFF2c5697),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const PantallaRutaAprendizaje(),
-    );
-  }
-}
 
 class PantallaRutaAprendizaje extends StatelessWidget {
   const PantallaRutaAprendizaje({Key? key});

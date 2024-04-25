@@ -1,8 +1,8 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de perfil de usuario
 import 'package:flutter/material.dart';
-import 'widgets/bottom_menu.dart';
-import 'widgets/burgermenu.dart';
+import '../widgets/bottom_menu.dart';
+import '../widgets/burgermenu.dart';
 
 
 class ProfilePage extends StatefulWidget {
