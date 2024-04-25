@@ -3,7 +3,9 @@ import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/perfil.dart';
 import 'package:JaveLab/ruta_academica.dart';
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/socket_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class BurgerMenu extends StatefulWidget {
@@ -16,6 +18,9 @@ class BurgerMenu extends StatefulWidget {
 class _BurgerMenuState extends State<BurgerMenu> {
   @override
   Widget build(BuildContext context) {
+
+    final socketService = Provider.of<SocketService>(context);
+
     return Drawer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +98,9 @@ class _BurgerMenuState extends State<BurgerMenu> {
                       icon:  const Icon(Icons.exit_to_app, color: Colors.black87),
                       onPressed: () {
 
-                        //TODO: desconectarse del socketserver
+                       socketService.disconnect();
+
+                        
 
                         Navigator.pushReplacementNamed(context, 'login');
                         AuthService.deleteToken();

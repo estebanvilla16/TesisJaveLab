@@ -3,6 +3,7 @@
 
 import 'package:JaveLab/helpers/mostrar_alerta.dart';
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -172,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   pensamientoAlgoritmico);
 
                               if (registroOk == true) {
-                                //TODO: Conectar socket server
+                                socketService.connect();
 
                                 //mostrarAlerta(context, 'BIENVENIDO!', 'Registro completado con éxito. Recibirás un correo electrónico.');
                                 Navigator.pushReplacementNamed(

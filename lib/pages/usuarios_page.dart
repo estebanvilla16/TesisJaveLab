@@ -1,4 +1,5 @@
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/socket_service.dart';
 import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
   Widget build(BuildContext context) {
 
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     final usuario = authService.usuario;
 
@@ -37,7 +39,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
           icon: const Icon(Icons.exit_to_app, color: Colors.black87),
           onPressed: () {
 
-            //TODO: desconectarse del socketserver
+            socketService.disconnect();
 
             Navigator.pushReplacementNamed(context, 'login');
             AuthService.deleteToken();
@@ -48,7 +50,10 @@ class _UsuariosPageState extends State<UsuariosPage> {
         actions:  <Widget>[
           Container(
             margin: const EdgeInsets.only(right: 10.0),
-            child: const Icon(Icons.check_circle, color: Colors.blue, size: 30.0),
+            child:(socketService.serverStatus == ServerStatus.Online)  
+            ? const Icon(Icons.check_circle, color: Colors.blue, size: 30.0)
+            : const Icon(Icons.offline_bolt, color: Colors.red),
+
           )
         ],
       ),

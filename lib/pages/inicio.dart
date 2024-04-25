@@ -3,6 +3,7 @@
 
 import 'package:JaveLab/helpers/mostrar_alerta.dart';
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/services/socket_service.dart';
 import 'package:JaveLab/widgets/boton_azul.dart';
 import 'package:JaveLab/widgets/custom_input.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Scaffold(
       body: Column(
@@ -91,6 +93,7 @@ class LoginScreen extends StatelessWidget {
                               emailController.text.trim(),
                               passwordController.text.trim());
                           if (loginOk) {
+                            socketService.connect();
                             Navigator.pushReplacementNamed(context, 'inicio');
                           } else {
                             //Mostrar alerta

@@ -68,15 +68,15 @@ class MyWidget extends StatelessWidget {
         title: const Text('Pantalla clase', style: TextStyle(fontSize: 20)),
         actions: const [],
       ),
-      bottomNavigationBar: BottomMenu(),
-      endDrawer: BurgerMenu(),
+      bottomNavigationBar: const BottomMenu(),
+      endDrawer: const BurgerMenu(),
       body: DefaultTabController(
         length: 2,
         child: Column(
           children: [
             // Link del video tomado desde la BD
             YoutubeVideoPlayerWidget(videoUrl: item.video),
-            TabBar(
+            const TabBar(
               tabs: [
                 Tab(text: 'Actividades'),
                 Tab(text: 'Info de Clase'),
@@ -90,7 +90,7 @@ class MyWidget extends StatelessWidget {
                 ],
               ),
             ),
-            CourseProgressBar(
+            const CourseProgressBar(
                 progress:
                     0.6), // Cambia el valor según el progreso real del curso
           ],
@@ -125,7 +125,7 @@ class VideoTab extends StatelessWidget {
       OpenFile.open(pdfFile.path);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('No se pudo descargar el PDF'),
         ),
       );
@@ -205,7 +205,7 @@ class ClassInfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -222,7 +222,7 @@ class ClassInfoTab extends StatelessWidget {
           ),
           Text(
             item.titulo,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 10),
           const Text(
@@ -231,7 +231,7 @@ class ClassInfoTab extends StatelessWidget {
           ),
           Text(
             item.descripcion,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 10),
         ],
