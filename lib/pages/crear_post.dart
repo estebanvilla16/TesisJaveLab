@@ -1,11 +1,12 @@
-
+import 'package:JaveLab/models/usuario.dart';
+import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 import 'dart:io';
-
-
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:JaveLab/pages/foro.dart';
 
 class Cara8 extends StatefulWidget {
   const Cara8({Key? key}) : super(key: key);
@@ -19,9 +20,17 @@ class _Cara8State extends State<Cara8> {
   TextEditingController etiquetasController = TextEditingController();
   TextEditingController contenidoController = TextEditingController();
 
+  String categoriaSeleccionada = "Programación";
+  bool _isPublishing = false;
+  late Usuario user;
 
-  String categoriaSeleccionada = "Programación"; // Valor por defecto
-  bool _isPublishing = false; // Controla el estado de la publicación
+  @override
+  void initState() {
+    super.initState();
+    // Obtenemos el usuario del AuthService usando Provider
+    final authService = Provider.of<AuthService>(context, listen: false);
+    user = authService.usuario;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +50,7 @@ class _Cara8State extends State<Cara8> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Título
               const Row(
                 children: [
                   Text(
@@ -50,7 +60,6 @@ class _Cara8State extends State<Cara8> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   Text(
                     ' *',
                     style: TextStyle(
@@ -73,6 +82,7 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
+              // Categoría
               const Row(
                 children: [
                   Text(
@@ -92,7 +102,6 @@ class _Cara8State extends State<Cara8> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 8.0),
               DropdownButtonFormField<String>(
                 isExpanded: true,
@@ -122,6 +131,7 @@ class _Cara8State extends State<Cara8> {
                 },
               ),
               const SizedBox(height: 16.0),
+              // Etiquetas
               const Text(
                 'Etiquetas',
                 style: TextStyle(
@@ -129,7 +139,6 @@ class _Cara8State extends State<Cara8> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(
@@ -142,6 +151,7 @@ class _Cara8State extends State<Cara8> {
                 ),
               ),
               const SizedBox(height: 16.0),
+              // Contenido del post
               const Row(
                 children: [
                   Text(
@@ -161,7 +171,6 @@ class _Cara8State extends State<Cara8> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 8.0),
               Material(
                 child: TextField(
@@ -190,9 +199,7 @@ class _Cara8State extends State<Cara8> {
                     ElevatedButton(
                       onPressed: () {
                         _publicarPost(tituloController, contenidoController,
-                            categoriaSeleccionada);
-                            Navigator.pushReplacementNamed(
-                                    context, 'foro');
+                            categoriaSeleccionada, user);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2c5697),
@@ -234,44 +241,68 @@ class _Cara8State extends State<Cara8> {
   void _publicarPost(
       TextEditingController tituloController,
       TextEditingController contenidoController,
-      String categoriaSeleccionada) async {
+      String categoriaSeleccionada,
+      Usuario user) async {
+    setState(() {
+      _isPublishing = true;
+    });
+
+    String userId = user.uid;
+    String nombreCompleto = '${user.nombre} ${user.apellido}';
+
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.34:3010/'
+        ? 'http://192.168.56.1:3010/'
         : 'http://localhost:3010/';
     final String url = ('${urlDynamic}post/agregar');
-    
 
-  String formattedDate =
-      DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
+    String formattedDate =
+        DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
 
     int etiqueta = _asignarValorCategoria(categoriaSeleccionada);
 
     Map<String, dynamic> data = {
-      "id_op": 1,
+      "id_op": userId,
       "etiqueta": etiqueta,
       "titulo": tituloController.text,
-      //"categoria": categoriaSeleccionada,
-      //"etiquetas": etiquetasController.text,
       "contenido": contenidoController.text,
       "material": 'null',
       "video": 'null',
       "valoracion": 0,
       "fecha": formattedDate,
-      "nombre": 'Pepito Perez'
+      "nombre": nombreCompleto
     };
 
-    print(data);
     await Future.delayed(const Duration(seconds: 3));
     final response = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
 
-  if (response.statusCode == 201) {
-    print('Post publicado: ${response.body}');
-  } else {
-    print(
-        'Error al publicar el post. Código de estado: ${response.statusCode}');
+    if (response.statusCode == 201) {
+      print('Post publicado: ${response.body}');
+      // Mostrar la notificación
+      _mostrarNotificacion('Post creado');
+      // Redirigir a la pantalla Cara6 después de mostrar la notificación
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Cara6()),
+      );
+    } else {
+      print(
+          'Error al publicar el post. Código de estado: ${response.statusCode}');
+    }
+
+    setState(() {
+      _isPublishing = false;
+    });
   }
-}
+
+  void _mostrarNotificacion(String mensaje) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(mensaje),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 
   int _asignarValorCategoria(String? categoria) {
     switch (categoria) {

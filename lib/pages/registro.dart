@@ -1,11 +1,19 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de registro de usuario
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:JaveLab/helpers/mostrar_alerta.dart';
+import 'package:JaveLab/models/contenido.dart';
+import 'package:JaveLab/models/ruta.dart';
+import 'package:JaveLab/models/syllabus.dart';
+import 'package:JaveLab/models/userxmateria.dart';
 import 'package:JaveLab/services/auth_service.dart';
-import 'package:JaveLab/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:JaveLab/models/usuario.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -39,7 +47,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
-    final socketService = Provider.of<SocketService>(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -174,11 +181,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   pensamientoAlgoritmico);
 
                               if (registroOk == true) {
-                                socketService.connect();
-
+                                //TODO: Conectar socket server
+                                Usuario user = authService.usuario;
+                                crearRuta(user);
+                                Navigator.pushReplacementNamed(context, 'inicio');
                                 //mostrarAlerta(context, 'BIENVENIDO!', 'Registro completado con éxito. Recibirás un correo electrónico.');
-                                Navigator.pushReplacementNamed(
-                                    context, 'inicio');
                               } else {
                                 mostrarAlerta(
                                     context, 'Registro Incorrecto', registroOk);
@@ -506,6 +513,217 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 fontSize: 16, color: Colors.black)), // Black text
       ],
     );
+  }
+
+  void crearRuta(Usuario user) async {
+    String id = user.uid;
+    String urlDynamic = Platform.isAndroid
+        ? 'http://192.168.56.1:3011'
+        : 'http://localhost:3011';
+    final String urlRelacion = ('$urlDynamic/userxmateria/agregar');
+    final String urlRuta = ('$urlDynamic/ruta/agregar');
+    final String urlTema = ('$urlDynamic/tema/agregar');
+    if (user.calculoDiferencial = true) {
+      Map<String, dynamic> dataRel = {
+        "materia": 3,
+        "usuario": id,
+      };
+      final response = await http.post(Uri.parse(urlRelacion),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(dataRel));
+
+      if (response.statusCode == 201) {
+        UserxMateria rel = UserxMateria.fromJson(jsonDecode(response.body));
+        Map<String, dynamic> dataRuta = {
+          "id_user_mat": rel.id_user_mat,
+        };
+        final responseRutaCal = await http.post(Uri.parse(urlRuta),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(dataRuta));
+
+        if (responseRutaCal.statusCode == 201) {
+          Ruta rutaCal = Ruta.fromJson(jsonDecode(responseRutaCal.body));
+          final int three = 3;
+          final String sylCal = ('$urlDynamic/syllabus/syl/$three');
+          final responseGetSyl = await http.get(Uri.parse(sylCal));
+          if (responseGetSyl.statusCode == 200) {
+            Syllabus sylCalculo =
+                Syllabus.fromJson(jsonDecode(responseGetSyl.body));
+            int sylc = sylCalculo.id_syllabus;
+            final String contentCal =
+                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+            final responseListCal = await http.get(Uri.parse(contentCal));
+            if (responseListCal.statusCode == 200) {
+              final List<dynamic> listData1 = jsonDecode(responseListCal.body);
+              final List<Contenido> listCal =
+                  listData1.map((data) => Contenido.fromJson(data)).toList();
+              for (final contenido in listCal) {
+                Map<String, dynamic> dataTema = {
+                  "ruta": rutaCal.id_ruta,
+                  "contenido": contenido.id_contenido,
+                  "titulo": contenido.titulo,
+                  "foto": contenido.titulo,
+                  "estado": "No visto"
+                };
+                await http.post(Uri.parse(urlTema),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode(dataTema));
+              }
+            } else {
+              print(
+                  'Error al sacar la lista de contenidos. Código de estado: ${response.statusCode}');
+              return;
+            }
+          } else {
+            print(
+                'Error al sacar el syllabus de la materia. Código de estado: ${response.statusCode}');
+            return;
+          }
+        } else {
+          print(
+              'Error al crear la ruta. Código de estado: ${response.statusCode}');
+          return;
+        }
+      } else {
+        print(
+            'Error al crear la relacion entre materia y estudiante. Código de estado: ${response.statusCode}');
+        return;
+      }
+    }
+    if (user.fisicaMecanica = true) {
+      Map<String, dynamic> dataRel = {
+        "materia": 2,
+        "usuario": id,
+      };
+      final response = await http.post(Uri.parse(urlRelacion),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(dataRel));
+
+      if (response.statusCode == 201) {
+        UserxMateria rel1 = UserxMateria.fromJson(jsonDecode(response.body));
+        Map<String, dynamic> dataRuta1 = {
+          "id_user_mat": rel1.id_user_mat,
+        };
+        final responseRutaFis = await http.post(Uri.parse(urlRuta),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(dataRuta1));
+
+        if (responseRutaFis.statusCode == 201) {
+          Ruta rutaFis = Ruta.fromJson(jsonDecode(responseRutaFis.body));
+          final int two = 2;
+          final String sylFis = ('$urlDynamic/syllabus/syl/$two');
+          final responseGetSyl = await http.get(Uri.parse(sylFis));
+          if (responseGetSyl.statusCode == 200) {
+            Syllabus sylFisica =
+                Syllabus.fromJson(jsonDecode(responseGetSyl.body));
+            int sylc = sylFisica.id_syllabus;
+            final String contentFis =
+                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+            final responseListFis = await http.get(Uri.parse(contentFis));
+            if (responseListFis.statusCode == 200) {
+              final List<dynamic> listData1 = jsonDecode(responseListFis.body);
+              final List<Contenido> listFis =
+                  listData1.map((data) => Contenido.fromJson(data)).toList();
+              for (final contenido in listFis) {
+                Map<String, dynamic> dataTema = {
+                  "ruta": rutaFis.id_ruta,
+                  "contenido": contenido.id_contenido,
+                  "titulo": contenido.titulo,
+                  "foto": contenido.titulo,
+                  "estado": "No visto"
+                };
+                await http.post(Uri.parse(urlTema),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode(dataTema));
+              }
+            } else {
+              print(
+                  'Error al sacar la lista de contenidos. Código de estado: ${response.statusCode}');
+              return;
+            }
+          } else {
+            print(
+                'Error al sacar el syllabus de la materia. Código de estado: ${response.statusCode}');
+            return;
+          }
+        } else {
+          print(
+              'Error al crear la ruta. Código de estado: ${response.statusCode}');
+          return;
+        }
+      } else {
+        print(
+            'Error al crear la relacion entre materia y estudiante. Código de estado: ${response.statusCode}');
+        return;
+      }
+    }
+    if (user.pensamientoAlgoritmico = true) {
+      Map<String, dynamic> dataRel = {
+        "materia": 1,
+        "usuario": id,
+      };
+      final response = await http.post(Uri.parse(urlRelacion),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(dataRel));
+
+      if (response.statusCode == 201) {
+        UserxMateria rel = UserxMateria.fromJson(jsonDecode(response.body));
+        Map<String, dynamic> dataRuta = {
+          "id_user_mat": rel.id_user_mat,
+        };
+        final responseRutaCal = await http.post(Uri.parse(urlRuta),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(dataRuta));
+
+        if (responseRutaCal.statusCode == 201) {
+          Ruta rutaCal = Ruta.fromJson(jsonDecode(responseRutaCal.body));
+          final int one = 1;
+          final String sylCal = ('$urlDynamic/syllabus/syl/$one');
+          final responseGetSyl = await http.get(Uri.parse(sylCal));
+          if (responseGetSyl.statusCode == 200) {
+            Syllabus sylCalculo =
+                Syllabus.fromJson(jsonDecode(responseGetSyl.body));
+            int sylc = sylCalculo.id_syllabus;
+            final String contentCal =
+                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+            final responseListCal = await http.get(Uri.parse(contentCal));
+            if (responseListCal.statusCode == 200) {
+              final List<dynamic> listData1 = jsonDecode(responseListCal.body);
+              final List<Contenido> listCal =
+                  listData1.map((data) => Contenido.fromJson(data)).toList();
+              for (final contenido in listCal) {
+                Map<String, dynamic> dataTema = {
+                  "ruta": rutaCal.id_ruta,
+                  "contenido": contenido.id_contenido,
+                  "titulo": contenido.titulo,
+                  "foto": contenido.titulo,
+                  "estado": "No visto"
+                };
+                await http.post(Uri.parse(urlTema),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode(dataTema));
+              }
+            } else {
+              print(
+                  'Error al sacar la lista de contenidos. Código de estado: ${response.statusCode}');
+              return;
+            }
+          } else {
+            print(
+                'Error al sacar el syllabus de la materia. Código de estado: ${response.statusCode}');
+            return;
+          }
+        } else {
+          print(
+              'Error al crear la ruta. Código de estado: ${response.statusCode}');
+          return;
+        }
+      } else {
+        print(
+            'Error al crear la relacion entre materia y estudiante. Código de estado: ${response.statusCode}');
+        return;
+      }
+    }
   }
 
   bool validateForm() {

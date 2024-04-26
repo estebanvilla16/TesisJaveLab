@@ -1,8 +1,6 @@
-
-
 class Post {
   int id_post;
-  int id_op;
+  String id_op;
   int etiqueta;
   String titulo;
   String contenido;

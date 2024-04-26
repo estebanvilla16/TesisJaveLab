@@ -1,7 +1,6 @@
-
 class Comentario {
   int id_com;
-  int id_comentador;
+  String id_comentador;
   int id_post;
   String nombre;
   String mensaje;

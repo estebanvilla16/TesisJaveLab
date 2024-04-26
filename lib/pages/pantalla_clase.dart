@@ -3,13 +3,15 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:JaveLab/models/usuario.dart';
+import 'package:JaveLab/services/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-import 'package:file_picker/file_picker.dart'; // Importa la librería para seleccionar archivos
 import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:http/http.dart' as http;
@@ -68,15 +70,15 @@ class MyWidget extends StatelessWidget {
         title: const Text('Pantalla clase', style: TextStyle(fontSize: 20)),
         actions: const [],
       ),
-      bottomNavigationBar: const BottomMenu(),
-      endDrawer: const BurgerMenu(),
+      bottomNavigationBar: BottomMenu(),
+      endDrawer: BurgerMenu(),
       body: DefaultTabController(
         length: 2,
         child: Column(
           children: [
             // Link del video tomado desde la BD
             YoutubeVideoPlayerWidget(videoUrl: item.video),
-            const TabBar(
+            TabBar(
               tabs: [
                 Tab(text: 'Actividades'),
                 Tab(text: 'Info de Clase'),
@@ -90,7 +92,7 @@ class MyWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const CourseProgressBar(
+            CourseProgressBar(
                 progress:
                     0.6), // Cambia el valor según el progreso real del curso
           ],
@@ -125,7 +127,7 @@ class VideoTab extends StatelessWidget {
       OpenFile.open(pdfFile.path);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('No se pudo descargar el PDF'),
         ),
       );
@@ -205,7 +207,7 @@ class ClassInfoTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -222,7 +224,7 @@ class ClassInfoTab extends StatelessWidget {
           ),
           Text(
             item.titulo,
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 10),
           const Text(
@@ -231,7 +233,7 @@ class ClassInfoTab extends StatelessWidget {
           ),
           Text(
             item.descripcion,
-            style: const TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 10),
         ],
@@ -300,11 +302,14 @@ class _CommentsSectionState extends State<CommentsSection> {
   late Future<List<ComentarioTema>> comments;
   final TextEditingController _commentController = TextEditingController();
   double _currentRating = 4.0;
+  late Usuario user;
 
   @override
   void initState() {
     super.initState();
     comments = _fetchComments();
+    final authService = Provider.of<AuthService>(context, listen: false);
+    user = authService.usuario;
   }
 
   void updateComments() {
@@ -316,7 +321,7 @@ class _CommentsSectionState extends State<CommentsSection> {
   Future<List<ComentarioTema>> _fetchComments() async {
     try {
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.10.34:3011'
+          ? 'http://192.168.56.1:3011'
           : 'http://localhost:3011';
       final String url =
           ('$urlDynamic/comentariotema/lista-comentarios/${widget.item.id_contenido}');
@@ -338,7 +343,7 @@ class _CommentsSectionState extends State<CommentsSection> {
 
   void _deleteComment(int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.34:3011'
+        ? 'http://192.168.56.1:3011'
         : 'http://localhost:3011';
     final String url = ('$urlDynamic/comentariotema/borrar/$id');
 
@@ -355,17 +360,19 @@ class _CommentsSectionState extends State<CommentsSection> {
   void _crearComs() async {
     if (_commentController.text.isNotEmpty) {
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.10.34:3011'
+          ? 'http://192.168.56.1:3011'
           : 'http://localhost:3011';
       final String url = ('$urlDynamic/comentariotema/agregar');
 
       String formattedDate =
           DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
 
+      String nombreCompleto = '${user.nombre} ${user.apellido}';
+
       Map<String, dynamic> data = {
-        "id_comentador": 1,
+        "id_comentador": user.uid,
         "id_tema": widget.item.id_contenido,
-        "nombre": 'Falcao Garcia',
+        "nombre": nombreCompleto,
         "mensaje": _commentController.text,
         "valoracion": _currentRating.toInt(),
         "fecha": formattedDate,
@@ -463,29 +470,21 @@ class _CommentsSectionState extends State<CommentsSection> {
                           ),
                           trailing: PopupMenuButton<String>(
                             onSelected: (String value) {
-                              if (value == 'edit') {
-                                // Implementar la lógica para editar el comentario
-                              } else if (value == 'delete') {
+                              if (value == 'delete') {
                                 _deleteComment(comment.id_com);
                                 updateComments();
                               }
                             },
                             itemBuilder: (BuildContext context) =>
                                 <PopupMenuEntry<String>>[
-                              const PopupMenuItem<String>(
-                                value: 'edit',
-                                child: ListTile(
-                                  leading: Icon(Icons.edit),
-                                  title: Text('Editar'),
+                              if (comment.id_comentador == user.uid)
+                                const PopupMenuItem<String>(
+                                  value: 'delete',
+                                  child: ListTile(
+                                    leading: Icon(Icons.delete),
+                                    title: Text('Eliminar'),
+                                  ),
                                 ),
-                              ),
-                              const PopupMenuItem<String>(
-                                value: 'delete',
-                                child: ListTile(
-                                  leading: Icon(Icons.delete),
-                                  title: Text('Eliminar'),
-                                ),
-                              ),
                             ],
                           ),
                         ),
