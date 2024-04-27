@@ -1,4 +1,5 @@
 import 'package:JaveLab/global/enviroment.dart';
+import 'package:JaveLab/models/mensajes_response.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +11,7 @@ class ChatService with ChangeNotifier {
 
   late Usuario usuarioPara;
 
-  Future getChat(String usuarioId) async {
+  Future<List<Mensaje>> getChat(String usuarioId) async {
     
     try {
       final uri = Uri.parse('${Environment.apiUrl}/mensajes/$usuarioId');
@@ -20,10 +21,13 @@ class ChatService with ChangeNotifier {
         'x-token':  await AuthService.getToken() ?? ''
       } );
 
-      print(resp.body);
+      final mensajesResp = mensajesResponseFromJson(resp.body);
+
+      return mensajesResp.mensajes;
+      
 
     } catch (e) {
-      print('Error en $e');
+      return [];
     }
 
   }

@@ -311,7 +311,7 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
 
 void _navigateToDetailScreen(BuildContext context, Contenido item) {
   String urlDynamic =
-      Platform.isAndroid ? 'http://192.168.10.34:8080' : 'http://localhost:8080';
+      Platform.isAndroid ? 'http://192.168.10.7:8080' : 'http://localhost:8080';
   String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -324,7 +324,7 @@ Future<List<Contenido>> _fetchTemas(int cat) async {
   try {
     // Realiza una solicitud HTTP GET para obtener la lista de Contenido
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.34:3011'
+        ? 'http://192.168.10.7:3011'
         : 'http://localhost:3011';
     final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
     final response = await http.get(Uri.parse(url));

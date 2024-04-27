@@ -518,7 +518,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void crearRuta(Usuario user) async {
     String id = user.uid;
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
+        ? 'http://192.168.10.7:3011'
         : 'http://localhost:3011';
     final String urlRelacion = ('$urlDynamic/userxmateria/agregar');
     final String urlRuta = ('$urlDynamic/ruta/agregar');

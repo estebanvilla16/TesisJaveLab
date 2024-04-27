@@ -321,7 +321,7 @@ class _CommentsSectionState extends State<CommentsSection> {
   Future<List<ComentarioTema>> _fetchComments() async {
     try {
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.56.1:3011'
+          ? 'http://192.168.10.7:3011'
           : 'http://localhost:3011';
       final String url =
           ('$urlDynamic/comentariotema/lista-comentarios/${widget.item.id_contenido}');
@@ -343,7 +343,7 @@ class _CommentsSectionState extends State<CommentsSection> {
 
   void _deleteComment(int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
+        ? 'http://192.168.10.7:3011'
         : 'http://localhost:3011';
     final String url = ('$urlDynamic/comentariotema/borrar/$id');
 
@@ -360,7 +360,7 @@ class _CommentsSectionState extends State<CommentsSection> {
   void _crearComs() async {
     if (_commentController.text.isNotEmpty) {
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.56.1:3011'
+          ? 'http://192.168.10.7:3011'
           : 'http://localhost:3011';
       final String url = ('$urlDynamic/comentariotema/agregar');
 
