@@ -396,7 +396,7 @@ void showCustomSnackBar(BuildContext context, String message) {
 
 Future<List<Post>> _fetchPosts(int cat) async {
   try {
-    String urlDynamic = Platform.isAndroid ? 'http://192.168.10.7:3010' : 'http://localhost:3010';
+    String urlDynamic = Platform.isAndroid ? 'http://10.195.49.54:3010' : 'http://localhost:3010';
     final String url = ('$urlDynamic/post/lista-posts/$cat');
     final response = await http.get(Uri.parse(url));
 

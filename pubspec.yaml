@@ -88,6 +88,20 @@ flutter:
   - assets/imgs/logo.png
   - assets/imgs/min_educacion.png
   - assets/icon/
+  - assets/imgs/Definiciones basicas.png
+  - assets/imgs/Limites y continuidad.png
+  - assets/imgs/La derivada.png
+  - assets/imgs/Aplicaciones de la derivada.png
+  - assets/imgs/Formas indeterminadas y regla de L'Hopital.png
+  - assets/imgs/Cinematica y dinamica.png
+  - assets/imgs/Fuerzas conservativas y Principio de Conservacion de la energia.png
+  - assets/imgs/Principio de conservacion de cantidad de movimiento.png
+  - assets/imgs/Estatica y dinamica del solido rigido.png
+  - assets/imgs/Oscilaciones y movimiento armonico simple.png
+  - assets/imgs/Solucion de problemas.png
+  - assets/imgs/Construcciones basicas de programacion.png
+  - assets/imgs/Manejo de memoria con colecciones de datos.png
+  - assets/imgs/Manejo de datos en archivos.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -105,7 +105,7 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
 
   void _modificarPost(String nuevoTitulo, String nuevoContenido, int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.7:3010'
+        ? 'http://10.195.49.54:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/post/actualizar/$id');
 

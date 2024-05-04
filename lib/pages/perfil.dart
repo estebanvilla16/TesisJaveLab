@@ -326,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _crearCom(String mensaje, int valoracion) async {
     try {
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.10.7:3010'
+          ? 'http://10.195.49.54:3010'
           : 'http://localhost:3010';
       final String url = ('$urlDynamic/feedback/agregar');
       String nombreCompleto = 'Prueba feedback';
@@ -365,7 +365,7 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       // Realiza una solicitud HTTP GET para obtener la lista de Posts
       String urlDynamic = Platform.isAndroid
-          ? 'http://192.168.10.7:3010'
+          ? 'http://10.195.49.54:3010'
           : 'http://localhost:3010';
       final String url = ('$urlDynamic/feedback/lista-feedback');
       final response = await http.get(Uri.parse(url));

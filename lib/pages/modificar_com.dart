@@ -89,7 +89,7 @@ class _EditarComentarioScreenState extends State<EditarComentarioScreen> {
 
   void _modificarCom(String nuevoContenido, int id) async {
     String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.10.7:3010'
+        ? 'http://10.195.49.54:3010'
         : 'http://localhost:3010';
     final String url = ('$urlDynamic/comentario/actualizar/$id');
 
