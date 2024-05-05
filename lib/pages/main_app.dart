@@ -371,10 +371,8 @@ class CarouselSection extends StatelessWidget {
 
 Future<List<Ruta>> _fetchRutas(String cat) async {
   try {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
-        : 'http://localhost:3011';
-    final String url = ('${urlDynamic}/userxmateria/lista-relaciones/${cat}');
+    final String url =
+        ('${Environment.academicUrl}/userxmateria/lista-relaciones/${cat}');
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> postData = jsonDecode(response.body);
@@ -383,7 +381,7 @@ Future<List<Ruta>> _fetchRutas(String cat) async {
       List<Ruta> rutas = [];
       for (final relacion in relaciones) {
         final String url2 =
-            ('${urlDynamic}/ruta/ruta-user/${relacion.id_user_mat}');
+            ('${Environment.academicUrl}/ruta/ruta-user/${relacion.id_user_mat}');
         final responseRuta = await http.get(Uri.parse(url2));
         if (responseRuta.statusCode == 200) {
           // Verificar que la solicitud fue exitosa
@@ -408,10 +406,7 @@ Future<List<Ruta>> _fetchRutas(String cat) async {
 
 Future<List<Tema>> _fetchTemas(int cat) async {
   try {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://192.168.56.1:3011'
-        : 'http://localhost:3011';
-    final String url = ('${urlDynamic}/tema/lista-temas/${cat}');
+    final String url = ('${Environment.academicUrl}/tema/lista-temas/${cat}');
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

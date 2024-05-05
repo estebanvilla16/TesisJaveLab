@@ -3,7 +3,7 @@
 
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/helpers/mostrar_alerta.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'package:JaveLab/models/ruta.dart';
@@ -184,7 +184,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 //TODO: Conectar socket server
                                 Usuario user = authService.usuario;
                                 crearRuta(user);
-                                Navigator.pushReplacementNamed(context, 'inicio');
+                                Navigator.pushReplacementNamed(
+                                    context, 'inicio');
                                 //mostrarAlerta(context, 'BIENVENIDO!', 'Registro completado con éxito. Recibirás un correo electrónico.');
                               } else {
                                 mostrarAlerta(
@@ -517,12 +518,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void crearRuta(Usuario user) async {
     String id = user.uid;
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3011'
-        : 'http://localhost:3011';
-    final String urlRelacion = ('$urlDynamic/userxmateria/agregar');
-    final String urlRuta = ('$urlDynamic/ruta/agregar');
-    final String urlTema = ('$urlDynamic/tema/agregar');
+    final String urlRelacion =
+        ('${Environment.academicUrl}/userxmateria/agregar');
+    final String urlRuta = ('${Environment.academicUrl}/ruta/agregar');
+    final String urlTema = ('${Environment.academicUrl}/tema/agregar');
     if (user.calculoDiferencial = true) {
       Map<String, dynamic> dataRel = {
         "materia": 3,
@@ -544,14 +543,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (responseRutaCal.statusCode == 201) {
           Ruta rutaCal = Ruta.fromJson(jsonDecode(responseRutaCal.body));
           final int three = 3;
-          final String sylCal = ('$urlDynamic/syllabus/syl/$three');
+          final String sylCal =
+              ('${Environment.academicUrl}/syllabus/syl/$three');
           final responseGetSyl = await http.get(Uri.parse(sylCal));
           if (responseGetSyl.statusCode == 200) {
             Syllabus sylCalculo =
                 Syllabus.fromJson(jsonDecode(responseGetSyl.body));
             int sylc = sylCalculo.id_syllabus;
             final String contentCal =
-                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+                ('${Environment.academicUrl}/contenido/lista-contenidos/$sylc');
             final responseListCal = await http.get(Uri.parse(contentCal));
             if (responseListCal.statusCode == 200) {
               final List<dynamic> listData1 = jsonDecode(responseListCal.body);
@@ -611,14 +611,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (responseRutaFis.statusCode == 201) {
           Ruta rutaFis = Ruta.fromJson(jsonDecode(responseRutaFis.body));
           final int two = 2;
-          final String sylFis = ('$urlDynamic/syllabus/syl/$two');
+          final String sylFis =
+              ('${Environment.academicUrl}/syllabus/syl/$two');
           final responseGetSyl = await http.get(Uri.parse(sylFis));
           if (responseGetSyl.statusCode == 200) {
             Syllabus sylFisica =
                 Syllabus.fromJson(jsonDecode(responseGetSyl.body));
             int sylc = sylFisica.id_syllabus;
             final String contentFis =
-                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+                ('${Environment.academicUrl}/contenido/lista-contenidos/$sylc');
             final responseListFis = await http.get(Uri.parse(contentFis));
             if (responseListFis.statusCode == 200) {
               final List<dynamic> listData1 = jsonDecode(responseListFis.body);
@@ -678,14 +679,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (responseRutaCal.statusCode == 201) {
           Ruta rutaCal = Ruta.fromJson(jsonDecode(responseRutaCal.body));
           final int one = 1;
-          final String sylCal = ('$urlDynamic/syllabus/syl/$one');
+          final String sylCal =
+              ('${Environment.academicUrl}/syllabus/syl/$one');
           final responseGetSyl = await http.get(Uri.parse(sylCal));
           if (responseGetSyl.statusCode == 200) {
             Syllabus sylCalculo =
                 Syllabus.fromJson(jsonDecode(responseGetSyl.body));
             int sylc = sylCalculo.id_syllabus;
             final String contentCal =
-                ('$urlDynamic/contenido/lista-contenidos/$sylc');
+                ('${Environment.academicUrl}/contenido/lista-contenidos/$sylc');
             final responseListCal = await http.get(Uri.parse(contentCal));
             if (responseListCal.statusCode == 200) {
               final List<dynamic> listData1 = jsonDecode(responseListCal.body);

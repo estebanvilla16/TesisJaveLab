@@ -12,6 +12,7 @@ import 'package:JaveLab/pages/editar_post.dart';
 import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/modificar_com.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:JaveLab/global/enviroment.dart';
 
 class PostViewScreen extends StatefulWidget {
   final int? id;
@@ -44,10 +45,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
   }
 
   Future<Post> _fetchPost(int? id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/post/$id');
+    final String url = ('${Environment.foroUrl}/post/$id');
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return Post.fromJson(jsonDecode(response.body));
@@ -58,27 +56,18 @@ class _PostViewScreenState extends State<PostViewScreen> {
 
   Future<List<Comentario>> _fetchComs(int idPost) async {
     try {
-      // Realiza una solicitud HTTP GET para obtener la lista de Posts
-      String urlDynamic = Platform.isAndroid
-          ? 'http://10.195.49.54:3010'
-          : 'http://localhost:3010';
-      final String url = ('$urlDynamic/comentario/lista-comentarios/$idPost');
+      final String url =
+          ('${Environment.foroUrl}/comentario/lista-comentarios/$idPost');
       final response = await http.get(Uri.parse(url));
-
-      // Verifica si la solicitud fue exitosa (código de estado 200)
       if (response.statusCode == 200) {
-        // Convierte la respuesta JSON en una lista de mapas
         final List<dynamic> postData = jsonDecode(response.body);
-        // Crea una lista de Posts a partir de los datos obtenidos
         final List<Comentario> coms =
             postData.map((data) => Comentario.fromJson(data)).toList();
-        // Ahora tienes la lista de Posts, puedes usarla según necesites
         return coms;
       } else {
         throw Exception('Error en la solicitud: ${response.statusCode}');
       }
     } catch (error) {
-      // Si ocurrió un error durante la solicitud, imprímelo
       return Future.value([]);
     }
   }
@@ -137,10 +126,7 @@ class PostView extends StatelessWidget {
       : super(key: key);
 
   void _deleteComment(int id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/comentario/borrar/$id');
+    final String url = ('${Environment.foroUrl}/comentario/borrar/$id');
 
     final response = await http.delete(Uri.parse(url));
 
@@ -422,10 +408,7 @@ class PostView extends StatelessWidget {
 
   void _crearCom(int idPost, TextEditingController comentarioController,
       Usuario user) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/comentario/agregar');
+    final String url = ('${Environment.foroUrl}/comentario/agregar');
 
     String userId = user.uid;
     String nombreCompleto = '${user.nombre} ${user.apellido}';
@@ -454,11 +437,9 @@ class PostView extends StatelessWidget {
   }
 
   void _deletePost(int? id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/comentario/borrar-por-post/$id');
-    final String url2 = ('$urlDynamic/post/borrar/$id');
+    final String url =
+        ('${Environment.foroUrl}/comentario/borrar-por-post/$id');
+    final String url2 = ('${Environment.foroUrl}/post/borrar/$id');
     final response = await http.delete(Uri.parse(url));
 
     if (response.statusCode == 200) {

@@ -17,6 +17,7 @@ import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:JaveLab/models/comentariotema.dart';
+import 'package:JaveLab/global/enviroment.dart';
 
 class MyPantallaClase extends StatelessWidget {
   final Contenido contenido;
@@ -320,11 +321,8 @@ class _CommentsSectionState extends State<CommentsSection> {
 
   Future<List<ComentarioTema>> _fetchComments() async {
     try {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://10.195.49.54:3011'
-          : 'http://localhost:3011';
       final String url =
-          ('$urlDynamic/comentariotema/lista-comentarios/${widget.item.id_contenido}');
+          ('${Environment.academicUrl}/comentariotema/lista-comentarios/${widget.item.id_contenido}');
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
@@ -342,10 +340,7 @@ class _CommentsSectionState extends State<CommentsSection> {
   }
 
   void _deleteComment(int id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3011'
-        : 'http://localhost:3011';
-    final String url = ('$urlDynamic/comentariotema/borrar/$id');
+    final String url = ('${Environment.academicUrl}/comentariotema/borrar/$id');
 
     final response = await http.delete(Uri.parse(url));
 
@@ -359,10 +354,7 @@ class _CommentsSectionState extends State<CommentsSection> {
 
   void _crearComs() async {
     if (_commentController.text.isNotEmpty) {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://10.195.49.54:3011'
-          : 'http://localhost:3011';
-      final String url = ('$urlDynamic/comentariotema/agregar');
+      final String url = ('${Environment.academicUrl}/comentariotema/agregar');
 
       String formattedDate =
           DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());

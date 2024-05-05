@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:JaveLab/pages/ver_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:JaveLab/global/enviroment.dart';
 
 class Cara6 extends StatelessWidget {
   const Cara6({
@@ -27,18 +27,17 @@ class Cara6 extends StatelessWidget {
       '5. Participación Activa: Fomentamos la interacción y reflexión en foros y videos, mejorando la participación y el intercambio de conocimientos.',
     ];
 
-
     return Scaffold(
       appBar: AppBar(
-        title: const Tooltip(message: 'Bienvenido al Foro Académico', child:  Text('Foro | Academico')),
-
+        title: const Tooltip(
+            message: 'Bienvenido al Foro Académico',
+            child: Text('Foro | Academico')),
       ),
       bottomNavigationBar: const BottomMenu(),
       endDrawer: const BurgerMenu(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             const SizedBox(height: 16.0),
             Center(
               child: Column(
@@ -47,7 +46,7 @@ class Cara6 extends StatelessWidget {
                 children: [
                   const Tooltip(
                     message: 'Sección principal del foro',
-                    child:  Text(
+                    child: Text(
                       'Foro',
                       style: TextStyle(
                         color: Colors.black,
@@ -59,7 +58,7 @@ class Cara6 extends StatelessWidget {
                   const SizedBox(height: 8.0),
                   const Tooltip(
                     message: 'Explora las categorías del foro',
-                    child:  Text(
+                    child: Text(
                       'Categorías',
                       style: TextStyle(
                         fontSize: 18.0,
@@ -78,10 +77,10 @@ class Cara6 extends StatelessWidget {
                     ),
                     child: const Row(
                       children: [
-                         SizedBox(width: 10.0),
-                         Icon(Icons.search, color: Colors.grey),
-                         SizedBox(width: 10.0),
-                         Expanded(
+                        SizedBox(width: 10.0),
+                        Icon(Icons.search, color: Colors.grey),
+                        SizedBox(width: 10.0),
+                        Expanded(
                           child: TextField(
                             decoration: InputDecoration(
                               hintText: 'Busque un post...',
@@ -104,35 +103,31 @@ class Cara6 extends StatelessWidget {
                   SnackBar(
                     content: const Row(
                       children: [
-                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        Icon(Icons.lightbulb_outline,
+                            color: Colors.yellowAccent),
                         SizedBox(width: 8),
-                        Expanded(child: Text('La aplicación integra el modelo pedagógico de pares con una interfaz intuitiva que utiliza colores estratégicamente para mejorar el aprendizaje y la retención. La disposición y navegación de los elementos, alineadas con principios de psicología visual, facilitan una experiencia de usuario fluida, mientras que el posicionamiento efectivo enfatiza contenido clave, apoyando así el enfoque colaborativo y la interacción efectiva entre pares..')),
-
+                        Expanded(
+                            child: Text(
+                                'La aplicación integra el modelo pedagógico de pares con una interfaz intuitiva que utiliza colores estratégicamente para mejorar el aprendizaje y la retención. La disposición y navegación de los elementos, alineadas con principios de psicología visual, facilitan una experiencia de usuario fluida, mientras que el posicionamiento efectivo enfatiza contenido clave, apoyando así el enfoque colaborativo y la interacción efectiva entre pares..')),
                       ],
                     ),
-
                     duration: const Duration(seconds: 10),
                     backgroundColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     behavior: SnackBarBehavior.floating,
                   ),
-
-
                 );
               },
               tooltip: 'Información',
             ),
             SectionWidget(
-
               title: 'Calculo Diferencial',
               description: 'Explora temas de Cálculo Diferencial',
               backgroundColor: primaryColor.withOpacity(0.7),
               icon: Icons.calculate,
               category: 2, // Icono relacionado
-
             ),
-
-
             SectionWidget(
               title: 'Física Mecánica',
               description: 'Descubre los fundamentos de la Física Mecánica',
@@ -149,22 +144,17 @@ class Cara6 extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             Row(
-
               mainAxisAlignment: MainAxisAlignment.center,
-
               children: [
                 Tooltip(
                   message: 'Crea un nuevo post en el foro',
-
                   child: ElevatedButton(
-
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const Cara8(),
                         ),
-
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -177,13 +167,9 @@ class Cara6 extends StatelessWidget {
                     child: const Text(
                       'Nuevo Post',
                       style: TextStyle(fontSize: 18.0),
-
                     ),
-
                   ),
-
                 ),
-
                 const SizedBox(width: 16.0),
                 Tooltip(
                   message: 'Participa en intercambios dentro del foro',
@@ -200,13 +186,9 @@ class Cara6 extends StatelessWidget {
                       'Intercambio',
                       style: TextStyle(fontSize: 18.0),
                     ),
-
                   ),
-
                 ),
-
               ],
-
             ),
             SizedBox(
               height: 200, // Ajusta este valor según tus necesidades
@@ -216,44 +198,45 @@ class Cara6 extends StatelessWidget {
                   aspectRatio: 2.0,
                   enlargeCenterPage: true,
                 ),
-                items: carouselItems.map((item) => Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.all(12.0),
-                  margin: const EdgeInsets.all(8.0),
-                  child: Center(
-                    // Usar una Column para colocar el icono encima del texto
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
-                      children: [
-                        const Icon(
-                          Icons.question_answer, // Elige el icono que prefieras
-                          color: Colors.deepPurple, // Color del icono
-                          size: 19.0, // Tamaño del icono
-                        ),
-                        Text(
-                          item,
-                          style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400
+                items: carouselItems
+                    .map((item) => Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                )).toList(),
+                          padding: const EdgeInsets.all(12.0),
+                          margin: const EdgeInsets.all(8.0),
+                          child: Center(
+                            // Usar una Column para colocar el icono encima del texto
+                            child: Column(
+                              mainAxisSize: MainAxisSize
+                                  .min, // Hace que la Columna ocupe solo el espacio necesario
+                              children: [
+                                const Icon(
+                                  Icons
+                                      .question_answer, // Elige el icono que prefieras
+                                  color: Colors.deepPurple, // Color del icono
+                                  size: 19.0, // Tamaño del icono
+                                ),
+                                Text(
+                                  item,
+                                  style: const TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w400),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
             const SizedBox(height: 16.0),
           ],
         ),
-
       ),
-
     );
   }
 }
@@ -295,10 +278,9 @@ class _SectionWidgetState extends State<SectionWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-
               children: [
-
-                Icon(widget.icon, color: _isExpanded ? Colors.white : Colors.black),
+                Icon(widget.icon,
+                    color: _isExpanded ? Colors.white : Colors.black),
                 const SizedBox(width: 8.0),
                 Text(
                   widget.title,
@@ -307,10 +289,7 @@ class _SectionWidgetState extends State<SectionWidget> {
                     fontWeight: FontWeight.bold,
                     color: _isExpanded ? Colors.white : Colors.black,
                   ),
-
                 ),
-
-
               ],
             ),
             Text(
@@ -356,12 +335,15 @@ class _SectionWidgetState extends State<SectionWidget> {
                             tooltip: 'Ver detalles del post',
                             onPressed: () {
                               int? id = post.id_post;
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostViewScreen(id: id)));
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      PostViewScreen(id: id)));
                             },
                           ),
                         ],
                       ),
-                      subtitle: Text('Fecha: ${post.fecha}, Persona: ${post.nombre}'),
+                      subtitle:
+                          Text('Fecha: ${post.fecha}, Persona: ${post.nombre}'),
                       textColor: Colors.white,
                     );
                   }).toList(),
@@ -392,17 +374,15 @@ void showCustomSnackBar(BuildContext context, String message) {
   );
 }
 
-
-
 Future<List<Post>> _fetchPosts(int cat) async {
   try {
-    String urlDynamic = Platform.isAndroid ? 'http://10.195.49.54:3010' : 'http://localhost:3010';
-    final String url = ('$urlDynamic/post/lista-posts/$cat');
+    final String url = ('${Environment.foroUrl}/post/lista-posts/$cat');
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final List<dynamic> postData = jsonDecode(response.body);
-      final List<Post> posts = postData.map((data) => Post.fromJson(data)).toList();
+      final List<Post> posts =
+          postData.map((data) => Post.fromJson(data)).toList();
       return posts;
     } else {
       throw Exception('Error en la solicitud: ${response.statusCode}');
@@ -410,5 +390,4 @@ Future<List<Post>> _fetchPosts(int cat) async {
   } catch (error) {
     return Future.value([]);
   }
-
 }

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
 import 'package:JaveLab/widgets/bottom_menu.dart';
@@ -8,7 +8,6 @@ import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:http/http.dart' as http;
 import 'package:JaveLab/pages/pantalla_clase.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
 
 class PantallaRutaAprendizaje extends StatelessWidget {
   const PantallaRutaAprendizaje({Key? key});
@@ -71,20 +70,20 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                   SnackBar(
                     content: const Row(
                       children: [
-                        Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                        Icon(Icons.lightbulb_outline,
+                            color: Colors.yellowAccent),
                         SizedBox(width: 8),
-                        Expanded(child: Text('El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
-
+                        Expanded(
+                            child: Text(
+                                'El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
                       ],
                     ),
-
                     duration: const Duration(seconds: 10),
                     backgroundColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     behavior: SnackBarBehavior.floating,
                   ),
-
-
                 );
               },
               tooltip: 'Información',
@@ -111,36 +110,40 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                         aspectRatio: 2.0,
                         enlargeCenterPage: true,
                       ),
-                      items: carouselItems.map((item) => Container(
-                        child: Center(
-                          // Usar una Column para colocar el icono encima del texto
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
-                            children: [
-                              Icon(
-                                Icons.apps_sharp, // Elige el icono que prefieras
-                                color: Colors.blueGrey, // Color del icono
-                                size: 19.0, // Tamaño del icono
-                              ),
-                              Text(
-                                item,
-                                style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w400
+                      items: carouselItems
+                          .map((item) => Container(
+                                child: Center(
+                                  // Usar una Column para colocar el icono encima del texto
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize
+                                        .min, // Hace que la Columna ocupe solo el espacio necesario
+                                    children: [
+                                      Icon(
+                                        Icons
+                                            .apps_sharp, // Elige el icono que prefieras
+                                        color:
+                                            Colors.blueGrey, // Color del icono
+                                        size: 19.0, // Tamaño del icono
+                                      ),
+                                      Text(
+                                        item,
+                                        style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w400),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.teal[50],
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        padding: EdgeInsets.all(12.0),
-                        margin: EdgeInsets.all(8.0),
-                      )).toList(),
+                                decoration: BoxDecoration(
+                                  color: Colors.teal[50],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                padding: EdgeInsets.all(12.0),
+                                margin: EdgeInsets.all(8.0),
+                              ))
+                          .toList(),
                     ),
                   ),
                   const Text(
@@ -312,7 +315,7 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
 void _navigateToDetailScreen(BuildContext context, Contenido item) {
   String urlDynamic =
       Platform.isAndroid ? 'http://10.195.49.54:8080' : 'http://localhost:8080';
-  String pdfUrl = '${urlDynamic}/api/blob/download/${item.material}';
+  String pdfUrl = '${Environment.blobUrl}/api/blob/download/${item.material}';
   Navigator.of(context).push(
     MaterialPageRoute(
       builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
@@ -326,7 +329,8 @@ Future<List<Contenido>> _fetchTemas(int cat) async {
     String urlDynamic = Platform.isAndroid
         ? 'http://10.195.49.54:3011'
         : 'http://localhost:3011';
-    final String url = ('${urlDynamic}/contenido/lista-contenidos/${cat}');
+    final String url =
+        ('${Environment.academicUrl}/contenido/lista-contenidos/${cat}');
     final response = await http.get(Uri.parse(url));
 
     // Verifica si la solicitud fue exitosa (código de estado 200)

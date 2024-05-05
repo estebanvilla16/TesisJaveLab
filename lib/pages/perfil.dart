@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -325,14 +326,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _crearCom(String mensaje, int valoracion) async {
     try {
-      String urlDynamic = Platform.isAndroid
-          ? 'http://10.195.49.54:3010'
-          : 'http://localhost:3010';
-      final String url = ('$urlDynamic/feedback/agregar');
-      String nombreCompleto = 'Prueba feedback';
+      final String url = ('${Environment.foroUrl}/feedback/agregar');
+      String nombreCompleto = '${user.nombre} ${user.apellido}';
 
       Map<String, dynamic> data = {
-        "comentador": "123",
+        "comentador": user.uid,
         "receptor": "223",
         "nombre": nombreCompleto,
         "mensaje": mensaje,
@@ -363,11 +361,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<List<FeedbackCom>> _fetchComs() async {
     try {
-      // Realiza una solicitud HTTP GET para obtener la lista de Posts
-      String urlDynamic = Platform.isAndroid
-          ? 'http://10.195.49.54:3010'
-          : 'http://localhost:3010';
-      final String url = ('$urlDynamic/feedback/lista-feedback');
+      final String url = ('${Environment.foroUrl}/feedback/lista-feedback');
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> postData = jsonDecode(response.body);

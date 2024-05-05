@@ -1,5 +1,6 @@
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
+import 'package:JaveLab/global/enviroment.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -249,11 +250,7 @@ class _Cara8State extends State<Cara8> {
 
     String userId = user.uid;
     String nombreCompleto = '${user.nombre} ${user.apellido}';
-
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010/'
-        : 'http://localhost:3010/';
-    final String url = ('${urlDynamic}post/agregar');
+    final String url = ('${Environment.foroUrl}post/agregar');
 
     String formattedDate =
         DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());

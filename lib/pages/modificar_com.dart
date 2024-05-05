@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:io';
+import 'package:JaveLab/global/enviroment.dart';
 
 class EditarComentarioScreen extends StatefulWidget {
   final Comentario com;
@@ -88,10 +89,7 @@ class _EditarComentarioScreenState extends State<EditarComentarioScreen> {
   }
 
   void _modificarCom(String nuevoContenido, int id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/comentario/actualizar/$id');
+    final String url = ('${Environment.foroUrl}/comentario/actualizar/$id');
 
     Map<String, dynamic> data = {
       "mensaje": nuevoContenido,

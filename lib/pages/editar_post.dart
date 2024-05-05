@@ -3,6 +3,7 @@ import 'package:JaveLab/models/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:JaveLab/global/enviroment.dart';
 
 class EditarPublicacionScreen extends StatefulWidget {
   final Post post;
@@ -104,10 +105,7 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
   }
 
   void _modificarPost(String nuevoTitulo, String nuevoContenido, int id) async {
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3010'
-        : 'http://localhost:3010';
-    final String url = ('$urlDynamic/post/actualizar/$id');
+    final String url = ('${Environment.foroUrl}/post/actualizar/$id');
 
     Map<String, dynamic> data = {
       "titulo": nuevoTitulo,
