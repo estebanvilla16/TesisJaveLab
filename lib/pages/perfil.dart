@@ -1,7 +1,6 @@
 //Trabajo Realizado para proyecto de grado - JaveLab.
 //Pantalla de perfil de usuario
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/usuario.dart';

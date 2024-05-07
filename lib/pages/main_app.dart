@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/ruta.dart';
 import 'package:JaveLab/models/tema.dart';
@@ -27,7 +26,6 @@ class Principal extends StatefulWidget {
 class _PrincipalState extends State<Principal> {
   final List<bool> _viewed = List.generate(15, (_) => false);
   List<Contenido> carouselItems = [];
-  List<Tema> _carouselItems = [];
   late Usuario user;
   late Future<List<Ruta>> rutas;
   late Future<List<Tema>> temas1;

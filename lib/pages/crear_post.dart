@@ -4,7 +4,6 @@ import 'package:JaveLab/global/enviroment.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:JaveLab/pages/foro.dart';

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/contenido.dart';
 import 'package:flutter/material.dart';
@@ -313,8 +312,6 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
 }
 
 void _navigateToDetailScreen(BuildContext context, Contenido item) {
-  String urlDynamic =
-      Platform.isAndroid ? 'http://10.195.49.54:8080' : 'http://localhost:8080';
   String pdfUrl = '${Environment.blobUrl}/api/blob/download/${item.material}';
   Navigator.of(context).push(
     MaterialPageRoute(
@@ -325,10 +322,6 @@ void _navigateToDetailScreen(BuildContext context, Contenido item) {
 
 Future<List<Contenido>> _fetchTemas(int cat) async {
   try {
-    // Realiza una solicitud HTTP GET para obtener la lista de Contenido
-    String urlDynamic = Platform.isAndroid
-        ? 'http://10.195.49.54:3011'
-        : 'http://localhost:3011';
     final String url =
         ('${Environment.academicUrl}/contenido/lista-contenidos/${cat}');
     final response = await http.get(Uri.parse(url));

@@ -7,11 +7,9 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'dart:io';
 import 'package:JaveLab/pages/editar_post.dart';
 import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/modificar_com.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:JaveLab/global/enviroment.dart';
 
 class PostViewScreen extends StatefulWidget {
