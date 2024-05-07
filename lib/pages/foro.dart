@@ -5,7 +5,6 @@ import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:JaveLab/widgets/burgermenu.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:io';
 import 'package:JaveLab/pages/ver_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:JaveLab/global/enviroment.dart';
@@ -171,22 +170,8 @@ class Cara6 extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                Tooltip(
+                const Tooltip(
                   message: 'Participa en intercambios dentro del foro',
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0.0),
-                      ),
-                    ),
-                    child: const Text(
-                      'Intercambio',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                  ),
                 ),
               ],
             ),

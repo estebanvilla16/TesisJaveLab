@@ -2,7 +2,6 @@
 //Pantalla de registro de usuario
 
 import 'dart:convert';
-import 'dart:io';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/helpers/mostrar_alerta.dart';
 import 'package:JaveLab/models/contenido.dart';
@@ -14,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:http/http.dart' as http;
+import 'terms_page.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -26,6 +26,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool fisicaMecanica = false;
   bool calculoDiferencial = false;
   bool pensamientoAlgoritmico = false;
+
+  //Temrinos y condiciones
+  bool _isChecked = false;
 
   String nombre = '';
   String apellido = '';
@@ -156,19 +159,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   }),
                   const SizedBox(height: 20),
+                  Row(
+                    children: <Widget>[
+                      Checkbox(
+                        value: _isChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isChecked = value!;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'Acepto los ',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => TermsPage()));
+                        },
+                        child: const Text(
+                          'Términos y Condiciones',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xff2c5697),
+                              decoration: TextDecoration.underline),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   ElevatedButton(
                     onPressed: authService.autenticando
                         ? null
                         : () async {
                             if (validateForm()) {
-                              print(nombre);
-                              print(apellido);
-                              print(correo);
-                              print(contrasena);
-                              print(semestre);
-                              print(fisicaMecanica);
-                              print(calculoDiferencial);
-                              print(pensamientoAlgoritmico);
 
                               final registroOk = await authService.register(
                                   nombre,

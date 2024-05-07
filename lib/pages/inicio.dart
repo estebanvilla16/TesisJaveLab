@@ -141,20 +141,6 @@ class LoginScreen extends StatelessWidget {
               ],
             ),
           ),
-          const Spacer(),
-          const Divider(color: Colors.black, thickness: 1),
-          SizedBox(
-            height: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                // footer
-                Image.asset('assets/imgs/min_educacion.png',
-                    width: 80, height: 80),
-                Image.asset('assets/imgs/logo.png', width: 80, height: 80),
-              ],
-            ),
-          ),
         ],
       ),
     );
