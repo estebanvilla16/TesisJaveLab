@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/ruta.dart';
 import 'package:JaveLab/models/tema.dart';
@@ -26,6 +27,7 @@ class Principal extends StatefulWidget {
 class _PrincipalState extends State<Principal> {
   final List<bool> _viewed = List.generate(15, (_) => false);
   List<Contenido> carouselItems = [];
+  List<Tema> _carouselItems = [];
   late Usuario user;
   late Future<List<Ruta>> rutas;
   late Future<List<Tema>> temas1;
@@ -87,7 +89,8 @@ class _PrincipalState extends State<Principal> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('JAVELAB', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color(0xFF2c5697),
+        backgroundColor: Colors.blue,
+        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
         elevation: 0,
         leading: IconButton(
           icon: Image.asset('assets/icon/icon.png'),
@@ -196,11 +199,20 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+  String formatContent(String rawContent) {
+    // Reemplazar '\n' con saltos de línea visuales
+    return rawContent.replaceAll(r'\n', '\n');
+  }
+
   List<Widget> _buildRecentPostsCarouselItems() {
     return recentPosts.map((post) {
-      String limitedContent = post.contenido.length > 35
-          ? post.contenido.substring(0, 35) + '...'
-          : post.contenido;
+      String nuevo = formatContent(post.contenido);
+      List<String> lines = nuevo.split('\n');
+      String firstLine =
+          lines.firstWhere((line) => line.trim().isNotEmpty, orElse: () => '');
+      String limitedContent = firstLine.length > 35
+          ? firstLine.substring(0, 35) + '...'
+          : firstLine;
 
       return GestureDetector(
         onTap: () => _navigateToPostScreen(context, post.id_post),

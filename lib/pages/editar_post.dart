@@ -1,8 +1,9 @@
-import 'package:JaveLab/models/post.dart';
-import 'package:http/http.dart' as http;
+import 'package:JaveLab/pages/ver_post.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:JaveLab/global/enviroment.dart';
+import 'package:JaveLab/models/post.dart';
 
 class EditarPublicacionScreen extends StatefulWidget {
   final Post post;
@@ -18,6 +19,7 @@ class EditarPublicacionScreen extends StatefulWidget {
 class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
   late TextEditingController _tituloController;
   late TextEditingController _contenidoController;
+  late String mat;
   late int id;
 
   @override
@@ -25,6 +27,8 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     super.initState();
     _tituloController = TextEditingController(text: widget.post.titulo);
     _contenidoController = TextEditingController(text: widget.post.contenido);
+    mat = widget.post.material ??
+        ""; // Inicializa con post.material o vacío si es null
     id = widget.post.id_post;
   }
 
@@ -63,35 +67,57 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
             ),
             TextField(
               controller: _contenidoController,
-              maxLines: null, // Permite varias líneas
+              maxLines: null,
               keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
                 hintText: 'Ingrese el contenido de la publicación',
               ),
             ),
             const SizedBox(height: 16.0),
+            if (widget.post.material != "null")
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      readOnly: true,
+                      controller: TextEditingController(text: mat),
+                      decoration: const InputDecoration(
+                        hintText: 'Material adjunto',
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () {
+                      _confirmarEliminarMaterial(context);
+                    },
+                  ),
+                ],
+              ),
+            const SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Lógica para confirmar la edición
                     String nuevoTitulo = _tituloController.text;
                     String nuevoContenido = _contenidoController.text;
-                    _modificarPost(nuevoTitulo, nuevoContenido, id);
-                    // Aquí debes realizar la actualización del post con los nuevos valores
-                    Navigator.pop(context); // Cerrar la pantalla de edición
+                    _modificarPost(nuevoTitulo, nuevoContenido, id, mat,
+                        widget.post.material);
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PostViewScreen(id: widget.post.id_post)));
                   },
                   child: const Text('Confirmar'),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Lógica para cancelar la edición
-                    Navigator.pop(context); // Cerrar la pantalla de edición
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.red, // Cambia el color del botón a rojo
+                    backgroundColor: Colors.red,
                   ),
                   child: const Text('Cancelar'),
                 ),
@@ -103,24 +129,71 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     );
   }
 
-  void _modificarPost(String nuevoTitulo, String nuevoContenido, int id) async {
-    final String url = ('${Environment.foroUrl}/post/actualizar/$id');
+  void _modificarPost(String nuevoTitulo, String nuevoContenido, int id,
+      String mat, String filename) async {
+    final String url = '${Environment.foroUrl}/post/actualizar/$id';
 
     Map<String, dynamic> data = {
       "titulo": nuevoTitulo,
       "contenido": nuevoContenido,
+      "material": mat, // Incluye el nuevo valor de material en la solicitud
     };
 
-    print(data);
-
-    final response = await http.put(Uri.parse(url),
-        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
 
     if (response.statusCode == 200) {
       print('Post modificado: ${response.body}');
+      if (mat == "null") {
+        final String url2 =
+            ('${Environment.blobUrl}/api/blob/delete/$filename');
+        final response2 = await http.delete(Uri.parse(url2));
+
+        if (response2.statusCode == 200) {
+          print('Archivo eliminado: ${response2.body}');
+        } else {
+          print('Error al eliminar el archivo: ${response2.body}');
+        }
+      }
     } else {
       print(
           'Error al modificar el post. Código de estado: ${response.statusCode}');
+    }
+  }
+
+  Future<void> _confirmarEliminarMaterial(BuildContext context) async {
+    bool confirmado = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Eliminar Material Adjunto'),
+          content:
+              const Text('¿Está seguro de eliminar este material adjunto?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Confirma la eliminación
+              },
+              child: const Text('Sí'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancela la eliminación
+              },
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmado) {
+      setState(() {
+        mat = "null"; // Actualiza la variable de material a "null"
+      });
     }
   }
 }

@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  coverage:
+    dependency: transitive
+    description:
+      name: coverage
+      sha256: "3945034e86ea203af7a056d98e98e42a5518fff200d6e8e6647e1886b07e936e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.8.0"
   crypto:
     dependency: transitive
     description:
@@ -371,6 +379,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      sha256: d2696eed13732831414595b98863260e33e8882fc069ee80ec35d4ac9ddb0472
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -549,6 +565,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  notus:
+    dependency: "direct main"
+    description:
+      name: notus
+      sha256: "31802ac0de7d99dac34f2ab46ca2d0e86c1cdae34ba6b5cf03ae6cfb28152dc2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-rc.2"
+  notus_format:
+    dependency: transitive
+    description:
+      name: notus_format
+      sha256: c3905a83a7106cc6b0986d097ca11dec71e20434d05a0e911c0ddb12baf838eb
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   open_file:
     dependency: "direct main"
     description:
@@ -557,8 +589,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.2"
-  path:
+  package_config:
     dependency: transitive
+    description:
+      name: package_config
+      sha256: "1c5b77ccc91e4823a5af61ee74e6b972db1ef98c2ff5a18d3161c982a55448bd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
+  path:
+    dependency: "direct main"
     description:
       name: path
       sha256: "087ce49c3f0dc39180befefc60fdb4acd8f8620e5682fe2476afd0b3688bb4af"
@@ -669,6 +709,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  quill_delta:
+    dependency: transitive
+    description:
+      name: quill_delta
+      sha256: a91c0e5354b32b5344d2514580dc6f453abe2723da92439019aa728da64d8350
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0-nullsafety.2"
+  quill_format:
+    dependency: transitive
+    description:
+      name: quill_format
+      sha256: f0b276ac31f5712b629e746186181f6a4e332c9c6f7687e57101d9cca8cab689
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   quiver:
     dependency: transitive
     description:
@@ -698,6 +754,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  source_maps:
+    dependency: transitive
+    description:
+      name: source_maps
+      sha256: "708b3f6b97248e5781f493b765c3337db11c5d2c81c3094f10904bfa8004c703"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.12"
   source_span:
     dependency: transitive
     description:
@@ -962,6 +1026,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.2"
+  zefyrka:
+    dependency: "direct main"
+    description:
+      name: zefyrka
+      sha256: "547066b152ba1258c65e57bf14a0245f1db4a16d2dab3e4a04cecdd9ea391471"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
 sdks:
   dart: ">=3.3.0 <4.0.0"
   flutter: ">=3.19.0"

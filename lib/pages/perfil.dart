@@ -18,9 +18,11 @@ class ProfilePage extends StatefulWidget {
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
+  
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  
   final FocusNode _feedbackFocusNode = FocusNode();
   int _filledStars = 0; //0 estrellas por defecto
   String _feedbackMessage = '';
@@ -29,12 +31,16 @@ class _ProfilePageState extends State<ProfilePage> {
   late Usuario user;
   late Future<void> _userDataFuture;
 
+  
+
+
   @override
   void initState() {
     super.initState();
     // Llama al método para cargar los comentarios en el inicio
     _comentariosFuture = _fetchComs();
     _userDataFuture = _fetchUserData();
+    
   }
 
   Future<void> _fetchUserData() async {
@@ -65,10 +71,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Perfil'),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.blue,
+        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
         actions: [
           Builder(
             builder: (BuildContext context) {
@@ -92,18 +103,9 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                 child: Stack(
                   children: [
-                    const CircleAvatar(
-                      radius: 100,
-                      backgroundImage:
-                          AssetImage('assets/icon/foto_perfil.jpeg'),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.camera_alt),
-                        onPressed: _changeProfilePicture,
-                      ),
+                     CircleAvatar(
+                      radius:100,
+                      child: Text(usuario.nombre.substring(0, 2), style: const TextStyle(fontSize: 75),),
                     ),
                   ],
                 ),
@@ -122,20 +124,20 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: <Widget>[
                           Row(
                             children: <Widget>[
-                              Icon(Icons.person,
+                              const Icon(Icons.person,
                                   size: 20, color: Colors.black54),
-                              SizedBox(width: 5),
+                              const SizedBox(width: 5),
                               FutureBuilder<void>(
                                 future: _userDataFuture,
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return Text(
+                                    return const Text(
                                         'Cargando...'); // Muestra un indicador de carga mientras se obtiene el usuario
                                   }
                                   return Text(
                                     '${user.nombre} ${user.apellido}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
@@ -145,21 +147,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                           IconButton(
-                            icon: const Icon(Icons.chat),
+                            icon: const Icon(Icons.edit),
                             onPressed: () {
-                              // Acción para iniciar un chat
+                              Navigator.pushNamed(context, 'editar');
                             },
                           ),
                         ],
                       ),
                       const SizedBox(height: 5),
-                      const Row(
+                       Row(
                         children: <Widget>[
-                          Icon(Icons.work, size: 20, color: Colors.black54),
-                          SizedBox(width: 5),
+                          const Icon(Icons.email, size: 20, color: Colors.black54),
+                          const SizedBox(width: 5),
                           Text(
-                            'Monitor',
-                            style: TextStyle(
+                            usuario.correo,
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
@@ -167,13 +169,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 5),
-                      const Row(
+                       Row(
                         children: <Widget>[
-                          Icon(Icons.school, size: 20, color: Colors.black54),
-                          SizedBox(width: 5),
+                          const Icon(Icons.book, size: 20, color: Colors.black54),
+                          const SizedBox(width: 5),
                           Text(
-                            'Pensamiento Algorítmico',
-                            style: TextStyle(
+                            'Semestre: ${usuario.semestre}',
+                            style: const TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
@@ -184,58 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
               //Caja de comentarios al perfil del usuario
-              const Text('Feedback',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              FutureBuilder<List<FeedbackCom>>(
-                future: _comentariosFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    final comentarios = snapshot.data!;
-                    // Limitar la cantidad de comentarios a 5
-                    final limitedComentarios = comentarios.length > 5
-                        ? comentarios.sublist(0, 5)
-                        : comentarios;
-
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: limitedComentarios.length,
-                      itemBuilder: (context, index) {
-                        final comentario = limitedComentarios[index];
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              '${comentario.nombre}: ${comentario.mensaje}',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            trailing: Text(
-                              '${comentario.valor}/5',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.amber,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -305,8 +256,59 @@ class _ProfilePageState extends State<ProfilePage> {
                     backgroundColor: const Color(0xff365b6d),
                     padding: EdgeInsets.zero,
                   ),
-                  child: const Text('Post Feedback'),
+                  child: const Text('Publicar retroalimentación'),
                 ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Feedback',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              FutureBuilder<List<FeedbackCom>>(
+                future: _comentariosFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    final comentarios = snapshot.data!;
+                    // Limitar la cantidad de comentarios a 5
+                    final limitedComentarios = comentarios.length > 5
+                        ? comentarios.sublist(0, 5)
+                        : comentarios;
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: limitedComentarios.length,
+                      itemBuilder: (context, index) {
+                        final comentario = limitedComentarios[index];
+                        return Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              '${comentario.nombre}: ${comentario.mensaje}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            trailing: Text(
+                              '${comentario.valor}/5',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
               ),
             ],
           ),

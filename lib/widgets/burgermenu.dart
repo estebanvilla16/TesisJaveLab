@@ -2,6 +2,7 @@ import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/pages/perfil.dart';
 import 'package:JaveLab/pages/ruta_academica.dart';
+import 'package:JaveLab/pages/usuarios_page.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:JaveLab/services/socket_service.dart';
 import 'package:flutter/material.dart';
@@ -58,14 +59,9 @@ class _BurgerMenuState extends State<BurgerMenu> {
           ListTile(
             leading: Icon(Icons.chat, color: Color(0xFF2c5697)),
             title: Text('Conversaciones', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Conversaciones'),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const UsuariosPage())),
           ),
           Container(height: 1, color: Colors.grey, margin: const EdgeInsets.symmetric(vertical: 4)),
-          ListTile(
-            leading: Icon(Icons.swap_horiz, color: Color(0xFF2c5697)),
-            title: Text('Intercambios', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Intercambios'),
-          ),
           ListTile(
             leading: Icon(Icons.forum, color: Color(0xFF2c5697)),
             title: Text('Foro', style: TextStyle(fontSize: 16)),
@@ -75,16 +71,6 @@ class _BurgerMenuState extends State<BurgerMenu> {
             leading: Icon(Icons.school, color: Color(0xFF2c5697)),
             title: Text('Ruta académica', style: TextStyle(fontSize: 16)),
             onTap: () => navigateToScreen(context, 'Ruta académica'),
-          ),
-          ListTile(
-            leading: Icon(Icons.people, color: Color(0xFF2c5697)),
-            title: Text('Monitorias', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Monitorias'),
-          ),
-          ListTile(
-            leading: Icon(Icons.calendar_today, color: Color(0xFF2c5697)),
-            title: Text('Calendario académico', style: TextStyle(fontSize: 16)),
-            onTap: () => navigateToScreen(context, 'Calendario académico'),
           ),
           const Spacer(),
           Container(

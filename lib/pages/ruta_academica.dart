@@ -22,13 +22,9 @@ class PantallaRutaAprendizaje extends StatelessWidget {
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        leading: IconButton(
-          icon: const Icon(Icons.notifications),
-          onPressed: () {
-            // Implementar la funcionalidad de notificaciones
-          },
-        ),
+        backgroundColor: Colors.blue,
+        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
+       
         title: const Text(
           'Mi Ruta de Aprendizaje',
           style: TextStyle(
@@ -48,19 +44,6 @@ class PantallaRutaAprendizaje extends StatelessWidget {
             Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: TextField(
-                decoration: InputDecoration(
-                  //buscador
-                  hintText: 'Buscar...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onChanged: (value) {
-                  // Implementar la funcionalidad de búsqueda
-                },
-              ),
             ),
             IconButton(
               icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
@@ -87,15 +70,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
               },
               tooltip: 'Información',
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  _mostrarFiltroAvanzado(context);
-                },
-                child: const Text('Filtro Avanzado'),
-              ),
-            ),
+            const SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -145,39 +120,10 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                           .toList(),
                     ),
                   ),
-                  const Text(
-                    'Último Capítulo Visto',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Bloque rectangular para mostrar el último capítulo visto
-                  Container(
-                    height: 100,
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: Text('Último Capítulo Visto'),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Recomendaciones',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Bloque rectangular para mostrar las recomendaciones
-                  Container(
-                    height: 100,
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: Text('Recomendaciones'),
-                    ),
-                  ),
+                  
+                  const SizedBox(height: 75),
+                 
+                  
                 ],
               ),
             ),

@@ -7,10 +7,14 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:io';
 import 'package:JaveLab/pages/editar_post.dart';
 import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/modificar_com.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:JaveLab/global/enviroment.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PostViewScreen extends StatefulWidget {
   final int? id;
@@ -136,6 +140,11 @@ class PostView extends StatelessWidget {
     }
   }
 
+  String formatContent(String rawContent) {
+    // Reemplazar '\n' con saltos de línea visuales
+    return rawContent.replaceAll(r'\n', '\n');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -220,7 +229,7 @@ class PostView extends StatelessWidget {
           ),
           const SizedBox(height: 4.0),
           Text(
-            'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}', // Suponiendo que 'fecha' es de tipo DateTime
+            'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}',
             style: const TextStyle(
               fontSize: 20.0,
             ),
@@ -238,6 +247,14 @@ class PostView extends StatelessWidget {
             _asignarValorCategoria(post.etiqueta),
             style: const TextStyle(fontSize: 18.0),
           ), // Aquí iría la categoría del post
+          const SizedBox(height: 20),
+          if (post.material != "null")
+            ElevatedButton.icon(
+              onPressed: () => _downloadPDF(post.material, context),
+              icon: const Icon(Icons.attach_file, size: 20),
+              label: const Text('Descargar archivo',
+                  style: TextStyle(fontSize: 16)),
+            ),
           const SizedBox(height: 16.0),
           const Text(
             'Contenido del Post',
@@ -248,7 +265,7 @@ class PostView extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            post.contenido,
+            formatContent(post.contenido),
             style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 20),
@@ -402,6 +419,28 @@ class PostView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _downloadPDF(String nombre, BuildContext context) async {
+    String url = ('${Environment.blobUrl}/api/blob/downloadForo/$nombre');
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+
+      // Obtiene la ruta del directorio de descargas
+      final downloadDir = await getExternalStorageDirectory();
+      final file =
+          await File('${downloadDir!.path}/$nombre').writeAsBytes(bytes);
+
+      // Abrir el archivo PDF
+      OpenFile.open(file.path);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo descargar el PDF'),
+        ),
+      );
+    }
   }
 
   void _crearCom(int idPost, TextEditingController comentarioController,

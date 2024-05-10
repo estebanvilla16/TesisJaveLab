@@ -1,18 +1,32 @@
+import 'dart:ffi';
+
 import 'package:JaveLab/pages/crear_post.dart';
 import 'package:JaveLab/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:JaveLab/widgets/burgermenu.dart';
+import 'package:flutter_launcher_icons/xml_templates.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'package:JaveLab/pages/ver_post.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:JaveLab/global/enviroment.dart';
 
-class Cara6 extends StatelessWidget {
+class Cara6 extends StatefulWidget {
   const Cara6({
     super.key,
   });
+
+  @override
+  _Cara6State createState() => _Cara6State();
+}
+
+class _Cara6State extends State<Cara6> {
+  // ignore: prefer_final_fields
+  TextEditingController _searchController = TextEditingController();
+  Future<List<Post>>? _searchFuture;
+  List<Post> _searchResults = [];
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +41,15 @@ class Cara6 extends StatelessWidget {
     ];
 
     return Scaffold(
+      
       appBar: AppBar(
+        backgroundColor: Colors.blue,
+        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
+        
         title: const Tooltip(
             message: 'Bienvenido al Foro Académico',
-            child: Text('Foro | Academico')),
+            child: Text('Foro | Academico')
+            ),
       ),
       bottomNavigationBar: const BottomMenu(),
       endDrawer: const BurgerMenu(),
@@ -74,19 +93,26 @@ class Cara6 extends StatelessWidget {
                       borderRadius: BorderRadius.circular(25.0),
                       border: Border.all(color: Colors.grey),
                     ),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        SizedBox(width: 10.0),
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 10.0),
+                        const SizedBox(width: 10.0),
+                        const Icon(Icons.search, color: Colors.grey),
+                        const SizedBox(width: 10.0),
                         Expanded(
                           child: TextField(
-                            decoration: InputDecoration(
+                            controller: _searchController,
+                            decoration: const InputDecoration(
                               hintText: 'Busque un post...',
                               hintStyle: TextStyle(color: Colors.grey),
                               border: InputBorder.none,
                             ),
                           ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.search),
+                          onPressed: () {
+                            _executeSearch();
+                          },
                         ),
                       ],
                     ),
@@ -95,6 +121,22 @@ class Cara6 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16.0),
+            if (_searchResults.isEmpty)
+              const Text('No se encontraron resultados')
+            else
+              DropdownButton<Post>(
+                items: _searchResults
+                    .map((post) => DropdownMenuItem<Post>(
+                          value: post,
+                          child: Text('${post.titulo} - ${post.nombre}'),
+                        ))
+                    .toList(),
+                onChanged: (selectedPost) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          PostViewScreen(id: selectedPost?.id_post)));
+                },
+              ),
             IconButton(
               icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
               onPressed: () {
@@ -170,9 +212,6 @@ class Cara6 extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16.0),
-                const Tooltip(
-                  message: 'Participa en intercambios dentro del foro',
-                ),
               ],
             ),
             SizedBox(
@@ -223,6 +262,19 @@ class Cara6 extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _executeSearch() {
+    String searchText = _searchController.text;
+    if (searchText.isNotEmpty) {
+      _fetchSearch(searchText).then((posts) {
+        setState(() {
+          _searchResults = posts;
+        });
+      }).catchError((error) {
+        showCustomSnackBar(context, 'Error al realizar la búsqueda');
+      });
+    }
   }
 }
 
@@ -364,6 +416,23 @@ Future<List<Post>> _fetchPosts(int cat) async {
     final String url = ('${Environment.foroUrl}/post/lista-posts/$cat');
     final response = await http.get(Uri.parse(url));
 
+    if (response.statusCode == 200) {
+      final List<dynamic> postData = jsonDecode(response.body);
+      final List<Post> posts =
+          postData.map((data) => Post.fromJson(data)).toList();
+      return posts;
+    } else {
+      throw Exception('Error en la solicitud: ${response.statusCode}');
+    }
+  } catch (error) {
+    return Future.value([]);
+  }
+}
+
+Future<List<Post>> _fetchSearch(String texto) async {
+  try {
+    final String url = ('${Environment.foroUrl}/post/lista-posts/texto/$texto');
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final List<dynamic> postData = jsonDecode(response.body);
       final List<Post> posts =
