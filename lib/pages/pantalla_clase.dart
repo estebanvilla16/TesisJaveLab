@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:JaveLab/models/comentariotema.dart';
 import 'package:JaveLab/global/enviroment.dart';
+import 'package:JaveLab/pages/perfil_user.dart';
 
 class MyPantallaClase extends StatelessWidget {
   final Contenido contenido;
@@ -446,38 +447,54 @@ class _CommentsSectionState extends State<CommentsSection> {
                       return Card(
                         elevation: 2,
                         margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: widget.accentColor,
-                            child:
-                                const Icon(Icons.person, color: Colors.white),
-                          ),
-                          title: Text(
-                            comment.mensaje,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          subtitle: Text(
-                            "${comment.nombre}, ${DateFormat('dd/MM/yyyy').format(comment.fecha)} - ${comment.valoracion} stars",
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          trailing: PopupMenuButton<String>(
-                            onSelected: (String value) {
-                              if (value == 'delete') {
-                                _deleteComment(comment.id_com);
-                                updateComments();
-                              }
-                            },
-                            itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry<String>>[
-                              if (comment.id_comentador == user.uid)
-                                const PopupMenuItem<String>(
-                                  value: 'delete',
-                                  child: ListTile(
-                                    leading: Icon(Icons.delete),
-                                    title: Text('Eliminar'),
-                                  ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ProfileUserPage(
+                                  uidHost: comment.id_comentador),
+                            ));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  comment.mensaje,
+                                  style: const TextStyle(fontSize: 16),
                                 ),
-                            ],
+                                const SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "${comment.nombre}, ${DateFormat('dd/MM/yyyy').format(comment.fecha)} - ${comment.valoracion} stars",
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                    if (comment.id_comentador == user.uid)
+                                      PopupMenuButton<String>(
+                                        itemBuilder: (BuildContext context) =>
+                                            <PopupMenuEntry<String>>[
+                                          const PopupMenuItem<String>(
+                                            value: 'delete',
+                                            child: ListTile(
+                                              leading: Icon(Icons.delete),
+                                              title: Text('Eliminar'),
+                                            ),
+                                          ),
+                                        ],
+                                        onSelected: (String value) {
+                                          if (value == 'delete') {
+                                            _deleteComment(comment.id_com);
+                                            updateComments();
+                                          }
+                                        },
+                                      ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

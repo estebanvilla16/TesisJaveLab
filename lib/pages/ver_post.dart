@@ -1,6 +1,7 @@
 import 'package:JaveLab/models/comentario.dart';
 import 'package:JaveLab/models/post.dart';
 import 'package:JaveLab/models/usuario.dart';
+import 'package:JaveLab/pages/perfil_user.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -220,11 +221,20 @@ class PostView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8.0),
-          Text(
-            post.nombre,
-            style: const TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => ProfileUserPage(uidHost: post.id_op),
+              ));
+            },
+            child: Text(
+              post.nombre,
+              style: const TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.lightBlue, // Color azul claro
+                decoration: TextDecoration.underline, // Subrayado
+              ),
             ),
           ),
           const SizedBox(height: 4.0),
@@ -339,7 +349,23 @@ class PostView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final comentario = comentarios[index];
                     return ListTile(
-                      title: Text(comentario.nombre),
+                      title: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ProfileUserPage(
+                                uidHost: comentario.id_comentador),
+                          ));
+                        },
+                        child: Text(
+                          comentario.nombre,
+                          style: const TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.lightBlue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

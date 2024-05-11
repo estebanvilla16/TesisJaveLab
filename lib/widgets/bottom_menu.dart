@@ -4,7 +4,9 @@ import 'package:JaveLab/pages/usuarios_page.dart';
 import 'package:JaveLab/pages/perfil.dart';
 import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:flutter/material.dart';
-
+import 'package:JaveLab/models/usuario.dart';
+import 'package:JaveLab/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class YourContentWidget extends StatelessWidget {
   const YourContentWidget({super.key});
@@ -26,6 +28,14 @@ class BottomMenu extends StatefulWidget {
 
 class _BottomMenuState extends State<BottomMenu> {
   int _selectedIndex = 0;
+  late Usuario user;
+
+  @override
+  void initState() {
+    super.initState();
+    final authService = Provider.of<AuthService>(context, listen: false);
+    user = authService.usuario;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -34,19 +44,26 @@ class _BottomMenuState extends State<BottomMenu> {
 
     switch (index) {
       case 0:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Principal()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const Principal()));
         break;
       case 1:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const PantallaRutaAprendizaje()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const PantallaRutaAprendizaje()));
         break;
       case 2:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const Cara6()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const Cara6()));
         break;
       case 3:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ProfilePage()));
         break;
       case 4:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const UsuariosPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const UsuariosPage()));
         break;
     }
   }
@@ -71,7 +88,8 @@ class _BottomMenuState extends State<BottomMenu> {
 
   Widget buildNavBarItem(IconData icon, int index) {
     return IconButton(
-      icon: Icon(icon, color: _selectedIndex == index ? Colors.blue : Colors.grey),
+      icon: Icon(icon,
+          color: _selectedIndex == index ? Colors.blue : Colors.grey),
       onPressed: () => _onItemTapped(index),
     );
   }

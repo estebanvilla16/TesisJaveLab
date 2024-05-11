@@ -11,18 +11,20 @@ import 'package:JaveLab/pages/inicio.dart';
 import 'package:JaveLab/pages/loading_page.dart';
 import 'package:JaveLab/pages/registro.dart';
 import 'package:JaveLab/pages/usuarios_page.dart';
+import 'package:JaveLab/pages/perfil_user.dart';
 
-
-
- final Map<String, Widget Function(BuildContext)> appRoutes = {
+final Map<String, Widget Function(BuildContext)> appRoutes = {
   'usuarios': (_) => const UsuariosPage(),
   'chat': (_) => const ChatPage(),
-  'login': (_) =>  LoginScreen(),
+  'login': (_) => LoginScreen(),
   'register': (_) => const RegisterScreen(),
   'loading': (_) => const LoadingPage(),
   'new_post': (_) => const Cara8(),
   'foro': (_) => const Cara6(),
   'perfil': (_) => const ProfilePage(),
+  'perfil2': (_) => const ProfileUserPage(
+        uidHost: '',
+      ),
   'inicio': (_) => const Principal(),
   'cambio': (_) => const ForgotPasswordScreen(),
   'ruta': (_) => const PantallaRutaAprendizaje(),

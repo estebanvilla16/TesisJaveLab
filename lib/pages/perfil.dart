@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/usuario.dart';
+import 'package:JaveLab/pages/perfil_user.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,11 +19,9 @@ class ProfilePage extends StatefulWidget {
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
-  
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  
   final FocusNode _feedbackFocusNode = FocusNode();
   int _filledStars = 0; //0 estrellas por defecto
   String _feedbackMessage = '';
@@ -31,16 +30,12 @@ class _ProfilePageState extends State<ProfilePage> {
   late Usuario user;
   late Future<void> _userDataFuture;
 
-  
-
-
   @override
   void initState() {
     super.initState();
     // Llama al método para cargar los comentarios en el inicio
     _comentariosFuture = _fetchComs();
     _userDataFuture = _fetchUserData();
-    
   }
 
   Future<void> _fetchUserData() async {
@@ -71,7 +66,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final authService = Provider.of<AuthService>(context);
     final usuario = authService.usuario;
 
@@ -79,7 +73,10 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('Perfil'),
         backgroundColor: Colors.blue,
-        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 30,
+        ),
         actions: [
           Builder(
             builder: (BuildContext context) {
@@ -103,9 +100,12 @@ class _ProfilePageState extends State<ProfilePage> {
               Center(
                 child: Stack(
                   children: [
-                     CircleAvatar(
-                      radius:100,
-                      child: Text(usuario.nombre.substring(0, 2), style: const TextStyle(fontSize: 75),),
+                    CircleAvatar(
+                      radius: 100,
+                      child: Text(
+                        usuario.nombre.substring(0, 2),
+                        style: const TextStyle(fontSize: 75),
+                      ),
                     ),
                   ],
                 ),
@@ -155,9 +155,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 5),
-                       Row(
+                      Row(
                         children: <Widget>[
-                          const Icon(Icons.email, size: 20, color: Colors.black54),
+                          const Icon(Icons.email,
+                              size: 20, color: Colors.black54),
                           const SizedBox(width: 5),
                           Text(
                             usuario.correo,
@@ -169,9 +170,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 5),
-                       Row(
+                      Row(
                         children: <Widget>[
-                          const Icon(Icons.book, size: 20, color: Colors.black54),
+                          const Icon(Icons.book,
+                              size: 20, color: Colors.black54),
                           const SizedBox(width: 5),
                           Text(
                             'Semestre: ${usuario.semestre}',
@@ -188,78 +190,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               //Caja de comentarios al perfil del usuario
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Escribir feedback',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Row(
-                    children: [
-                      for (int i = 1; i <= 5; i++)
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _filledStars = i;
-                            });
-                          },
-                          onHover: (hovering) {
-                            if (hovering) {
-                              setState(() {
-                                _filledStars = i;
-                              });
-                            }
-                          },
-                          child: Icon(
-                            Icons.star,
-                            color:
-                                i <= _filledStars ? Colors.amber : Colors.grey,
-                            size: 20,
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                focusNode: _feedbackFocusNode,
-                maxLines: 3,
-                onChanged: (message) {
-                  setState(() {
-                    _feedbackMessage = message;
-                  });
-                },
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(16),
-                  hintText: 'Escribe tu feedback aquí...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(0.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _postFeedback,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0.0),
-                    ),
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xff365b6d),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: const Text('Publicar retroalimentación'),
-                ),
-              ),
-              const SizedBox(height: 20),
               const Text('Feedback',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
@@ -269,44 +199,47 @@ class _ProfilePageState extends State<ProfilePage> {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else {
-                    final comentarios = snapshot.data!;
-                    // Limitar la cantidad de comentarios a 5
-                    final limitedComentarios = comentarios.length > 5
-                        ? comentarios.sublist(0, 5)
-                        : comentarios;
-
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (snapshot.hasData) {
+                    final comentarios = snapshot.data ?? [];
+                    if (comentarios.isEmpty) {
+                      return const Text("No hay comentarios disponibles");
+                    }
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: limitedComentarios.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: comentarios.length,
                       itemBuilder: (context, index) {
-                        final comentario = limitedComentarios[index];
-                        return Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              '${comentario.nombre}: ${comentario.mensaje}',
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                            trailing: Text(
-                              '${comentario.valor}/5',
+                        final comentario = comentarios[index];
+                        return ListTile(
+                          title: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => ProfileUserPage(
+                                    uidHost: comentario.comentador),
+                              ));
+                            },
+                            child: Text(
+                              comentario.nombre,
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 16.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.amber,
+                                color: Colors.lightBlue,
+                                decoration: TextDecoration.underline,
                               ),
                             ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(comentario.mensaje),
+                            ],
                           ),
                         );
                       },
                     );
+                  } else {
+                    return const Text("No hay comentarios para mostrar");
                   }
                 },
               ),
@@ -332,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
       Map<String, dynamic> data = {
         "comentador": user.uid,
-        "receptor": "223",
+        "receptor": user.uid,
         "nombre": nombreCompleto,
         "mensaje": mensaje,
         "valoracion": valoracion,
@@ -362,7 +295,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<List<FeedbackCom>> _fetchComs() async {
     try {
-      final String url = ('${Environment.foroUrl}/feedback/lista-feedback');
+      final String url =
+          ('${Environment.foroUrl}/feedback/receptor/${user.uid}');
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> postData = jsonDecode(response.body);
