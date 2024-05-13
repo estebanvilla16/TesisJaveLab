@@ -238,6 +238,11 @@ class PostView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4.0),
+          Wrap(
+            spacing: 8.0,
+            children: _buildTagWidgets(post.tags),
+          ),
+          const SizedBox(height: 4.0),
           Text(
             'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}',
             style: const TextStyle(
@@ -445,6 +450,32 @@ class PostView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildTagWidgets(String? tags) {
+    if (tags == null || tags.isEmpty) {
+      return [];
+    }
+
+    List<String> tagList = tags.split(',');
+
+    return tagList.map((tag) {
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        margin: EdgeInsets.only(right: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.lightBlue,
+        ),
+        child: Text(
+          tag.trim(),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14.0,
+          ),
+        ),
+      );
+    }).toList();
   }
 
   Future<void> _downloadPDF(String nombre, BuildContext context) async {

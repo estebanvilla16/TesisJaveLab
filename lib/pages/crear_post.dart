@@ -133,7 +133,25 @@ class _Cara8State extends State<Cara8> {
                 },
               ),
               const SizedBox(height: 16.0),
-              
+              const Text(
+                'Etiquetas',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Material(
+                child: TextField(
+                  controller: etiquetasController,
+                  decoration: const InputDecoration(
+                    hintText: 'Agrega etiquetas (separadas por comas)',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
               const Row(
                 children: [
                   Text(
@@ -178,7 +196,6 @@ class _Cara8State extends State<Cara8> {
                     }
                   }
                 },
-                
                 child: const Text('Adjuntar Archivo'),
               ),
               if (_file != null)
@@ -202,49 +219,47 @@ class _Cara8State extends State<Cara8> {
                   ],
                 )
               else
-              const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _publicarPost(tituloController, _zefyrController,
-                            categoriaSeleccionada, user, _file);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2c5697),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      
-                      child: const Text(
-                        'Publicar',
-                        style: TextStyle(fontSize: 20.0, color: Colors.white),
+                const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _publicarPost(tituloController, etiquetasController,
+                          _zefyrController, categoriaSeleccionada, user, _file);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2c5697),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
                       ),
                     ),
-                    const SizedBox(width: 16.0),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushReplacementNamed(
-                                    context, 'foro');
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF2c5697)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Cancelar',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Color(0xFF2c5697),
-                        ),
+                    child: const Text(
+                      'Publicar',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.pushReplacementNamed(context, 'foro');
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Color(0xFF2c5697)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0.0),
                       ),
                     ),
-                  ],
-                ),
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Color(0xFF2c5697),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -319,6 +334,7 @@ class _Cara8State extends State<Cara8> {
 
   void _publicarPost(
       TextEditingController tituloController,
+      TextEditingController etiquetasController,
       ZefyrController _zefyrController,
       String categoriaSeleccionada,
       Usuario user,
@@ -344,7 +360,8 @@ class _Cara8State extends State<Cara8> {
       "video": 'null',
       "valoracion": 0,
       "fecha": formattedDate,
-      "nombre": nombreCompleto
+      "nombre": nombreCompleto,
+      "tags": etiquetasController.text
     };
 
     await Future.delayed(const Duration(seconds: 3));

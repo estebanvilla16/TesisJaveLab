@@ -90,7 +90,10 @@ class _PrincipalState extends State<Principal> {
       appBar: AppBar(
         title: const Text('JAVELAB', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
-        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 30,
+        ),
         elevation: 0,
         leading: IconButton(
           icon: Image.asset('assets/icon/icon.png'),
@@ -254,7 +257,10 @@ class _PrincipalState extends State<Principal> {
           : item.titulo;
 
       return GestureDetector(
-        onTap: () => _navigateToDetailScreen(context, item),
+        onTap: () {
+          updateRutaEstado(item.estado, item.id_tema);
+          _navigateToDetailScreen(context, item);
+        },
         child: Card(
           color: _viewed[carouselIndex * 5 + itemIndex]
               ? Colors.grey
@@ -283,6 +289,7 @@ class _PrincipalState extends State<Principal> {
                     children: [
                       Text(limitedTitle,
                           style: const TextStyle(fontSize: 16.0)),
+                      const SizedBox(height: 16.0),
                       Text(item.estado),
                       // Agregar más Widgets según sea necesario para mostrar otros datos de Contenido
                     ],
@@ -328,6 +335,29 @@ Future<void> _navigateToDetailScreen(BuildContext context, Tema item1) async {
         builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
       ),
     );
+  } else {
+    return;
+  }
+}
+
+Future<void> updateRutaEstado(String estado, int id) async {
+  if (estado == "No visto") {
+    estado = "Visto";
+    final String url = '${Environment.academicUrl}/tema/actualizar/$id';
+    Map<String, dynamic> data = {"estado": estado};
+    final response = await http.put(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(data),
+    );
+    if (response.statusCode == 200) {
+      print('Tema actualizado con éxito');
+      return;
+    } else {
+      print(
+          'Error al actualizar el tema. Código de estado: ${response.statusCode}');
+      return;
+    }
   } else {
     return;
   }

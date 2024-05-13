@@ -9,6 +9,7 @@ class Post {
   int valoracion;
   DateTime fecha;
   String nombre;
+  String? tags;
 
   Post({
     required this.id_post,
@@ -21,6 +22,7 @@ class Post {
     required this.valoracion,
     required this.fecha,
     required this.nombre,
+    required this.tags,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
@@ -34,5 +36,6 @@ class Post {
         valoracion: json['valoracion'],
         fecha: DateTime.parse(json['fecha']),
         nombre: json['nombre'],
+        tags: json['tags'],
       );
 }

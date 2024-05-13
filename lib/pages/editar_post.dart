@@ -19,6 +19,7 @@ class EditarPublicacionScreen extends StatefulWidget {
 class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
   late TextEditingController _tituloController;
   late TextEditingController _contenidoController;
+  late TextEditingController _etiquetaController;
   late String mat;
   late int id;
 
@@ -27,6 +28,7 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     super.initState();
     _tituloController = TextEditingController(text: widget.post.titulo);
     _contenidoController = TextEditingController(text: widget.post.contenido);
+    _etiquetaController = TextEditingController(text: widget.post.tags);
     mat = widget.post.material ??
         ""; // Inicializa con post.material o vacío si es null
     id = widget.post.id_post;
@@ -58,6 +60,17 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
               controller: _tituloController,
               decoration: const InputDecoration(
                 hintText: 'Ingrese el título de la publicación',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            const Text(
+              'Etiquetas:',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: _etiquetaController,
+              decoration: const InputDecoration(
+                hintText: 'Ingrese las etiquetas de la publicación',
               ),
             ),
             const SizedBox(height: 16.0),
@@ -102,8 +115,9 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
                   onPressed: () {
                     String nuevoTitulo = _tituloController.text;
                     String nuevoContenido = _contenidoController.text;
-                    _modificarPost(nuevoTitulo, nuevoContenido, id, mat,
-                        widget.post.material);
+                    String nuevaEtiqueta = _etiquetaController.text;
+                    _modificarPost(nuevoTitulo, nuevoContenido, nuevaEtiqueta,
+                        id, mat, widget.post.material);
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -129,14 +143,15 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     );
   }
 
-  void _modificarPost(String nuevoTitulo, String nuevoContenido, int id,
-      String mat, String filename) async {
+  void _modificarPost(String nuevoTitulo, String nuevoContenido,
+      String nuevaEtiqueta, int id, String mat, String filename) async {
     final String url = '${Environment.foroUrl}/post/actualizar/$id';
 
     Map<String, dynamic> data = {
       "titulo": nuevoTitulo,
       "contenido": nuevoContenido,
-      "material": mat, // Incluye el nuevo valor de material en la solicitud
+      "material": mat,
+      "tags": nuevaEtiqueta,
     };
 
     final response = await http.put(
