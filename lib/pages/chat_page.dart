@@ -127,66 +127,64 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
     );
   }
 
-  Widget _inputChat(){
-
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmit,
-                onChanged: (texto){
-                  setState(() {
-                    if(texto.trim().isNotEmpty){
-                      _estaEscribiendo = true;
-                    }else{
-                      _estaEscribiendo = false;
-                    }
-                  });
-
-                },
-                decoration: const InputDecoration.collapsed(
-                  hintText: 'Enviar mensaje'
-                ),
-                focusNode: _focusNode,
+  Widget _inputChat() {
+  return SafeArea(
+    child: Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            child: TextField(
+              controller: _textController,
+              onSubmitted: _handleSubmit,
+              onChanged: (texto) {
+                setState(() {
+                  _estaEscribiendo = texto.trim().isNotEmpty;
+                });
+              },
+              decoration: const InputDecoration.collapsed(
+                hintText: 'Enviar mensaje',
               ),
+              focusNode: _focusNode,
             ),
+          ),
 
-            //Botón de enviar
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child:  Platform.isIOS
-              ?  CupertinoButton(
-                onPressed: _estaEscribiendo
-                    ? () => _handleSubmit(_textController.text.trim())
-                    : null,
-                child:  const Text('Enviar'),
-              )
-              : Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: IconTheme(
-                  data: IconThemeData(color: Colors.blue[400]),
-                  child: IconButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    icon: const Icon(Icons.send ),
-                    onPressed: _estaEscribiendo
-                    ? () => _handleSubmit(_textController.text.trim())
-                    : null,
-                  ),
+          // Botón de adjuntar archivo
+          Platform.isIOS
+              ? CupertinoButton(
+                  onPressed: _adjuntarArchivo, // Función para adjuntar archivo
+                  child: const Text('Adjuntar'),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.attach_file),
+                  onPressed: _adjuntarArchivo, // Función para adjuntar archivo
                 ),
-              )
-            )
 
+          // Botón de enviar
+          Platform.isIOS
+              ? CupertinoButton(
+                  onPressed: _estaEscribiendo
+                      ? () => _handleSubmit(_textController.text.trim())
+                      : null,
+                  child: const Text('Enviar'),
+                )
+              : IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: _estaEscribiendo
+                      ? () => _handleSubmit(_textController.text.trim())
+                      : null,
+                ),
+        ],
+      ),
+    ),
+  );
+}
 
-          ]
-        ),
-      )
-    );
-  }
+void _adjuntarArchivo() {
+  
+  print('Adjuntar archivo');
+}
+
 
   _handleSubmit(String texto){
 

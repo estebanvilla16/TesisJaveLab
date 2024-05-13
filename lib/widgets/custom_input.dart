@@ -25,9 +25,7 @@ class CustomInput extends StatelessWidget {
         controller: textController,
         autocorrect: false,
         keyboardType: keyboardType,
-        obscureText: isPassword, // Esta línea ocultará el texto si isPassword es true
-        // Condicional para mostrar el texto como puntos solo si isPassword es true
-        // Si isPassword es false, mostrará el texto normalmente
+        obscureText: isPassword,
         onChanged: (text) {
           if (isPassword) {
             textController.value = textController.value.copyWith(
