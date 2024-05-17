@@ -18,6 +18,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class PostViewScreen extends StatefulWidget {
   final int? id;
@@ -223,7 +224,7 @@ class _PostViewState extends State<PostView> {
             children: [
               CircleAvatar(
                 radius: 30,
-         
+             
               ),
               const SizedBox(width: 16.0),
               Expanded(
@@ -266,6 +267,33 @@ class _PostViewState extends State<PostView> {
                       _asignarValorCategoria(widget.post.etiqueta),
                       style: const TextStyle(fontSize: 16.0),
                     ),
+                    const SizedBox(height: 16.0),
+                    const Text(
+                      'Contenido del Post',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      formatContent(widget.post.contenido),
+                      style: const TextStyle(fontSize: 18.0),
+                    ),
+                    const SizedBox(height: 16.0),
+                    if (widget.post.video != null && widget.post.video!.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Video:',
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8.0),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 200,
+                            child: VideoViewerPage(video: widget.post.video),
+                          ),
+                        ],
+                      ),
                     const SizedBox(height: 20),
                     if (widget.post.material != "null")
                       ElevatedButton.icon(
@@ -301,16 +329,6 @@ class _PostViewState extends State<PostView> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Contenido del Post',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            formatContent(widget.post.contenido),
-            style: const TextStyle(fontSize: 16.0),
           ),
           const SizedBox(height: 20),
           const Text(
@@ -741,5 +759,54 @@ class _PostViewState extends State<PostView> {
         );
       }).toList(),
     );
+  }
+}
+
+class VideoViewerPage extends StatefulWidget {
+  final String? video;
+
+  const VideoViewerPage({Key? key, required this.video}) : super(key: key);
+
+  @override
+  _VideoViewerPageState createState() => _VideoViewerPageState();
+}
+
+class _VideoViewerPageState extends State<VideoViewerPage> {
+  YoutubePlayerController? _youtubeController;
+  String? _videoId;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.video != null) {
+      _videoId = YoutubePlayer.convertUrlToId(widget.video!);
+      if (_videoId != null) {
+        _youtubeController = YoutubePlayerController(
+          initialVideoId: _videoId!,
+          flags: const YoutubePlayerFlags(
+            autoPlay: false,
+            mute: false,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _youtubeController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _youtubeController != null
+        ? YoutubePlayer(
+            controller: _youtubeController!,
+            showVideoProgressIndicator: true,
+          )
+        : const Center(
+            child: Text("No hay video disponible."),
+          );
   }
 }

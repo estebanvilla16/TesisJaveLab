@@ -114,6 +114,9 @@ flutter:
   - assets/imgs/Construcciones basicas de programacion.png
   - assets/imgs/Manejo de memoria con colecciones de datos.png
   - assets/imgs/Manejo de datos en archivos.png
+  - assets/Syllabus Cálculo Diferencial.pdf
+  - assets/Syllabus Física Mecánica.pdf
+  - assets/Syllabus Introducción a la Programación.pdf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

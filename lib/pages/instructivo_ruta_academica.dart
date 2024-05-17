@@ -6,7 +6,7 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView( 
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -43,19 +43,19 @@ class OnboardingScreen extends StatelessWidget {
                     icon: Icons.calculate,
                     title: 'Cálculo Diferencial',
                     description: 'Explora los fundamentos del cálculo diferencial, desde límites hasta derivadas.',
-                    syllabusLink: 'assets/syllabus_calculo.pdf',
+                    syllabusLink: 'assets/Syllabus Cálculo Diferencial.pdf',
                   ),
                   _buildStep(
                     icon: Icons.science,
                     title: 'Física Mecánica',
                     description: 'Comprende los principios de la mecánica clásica y sus aplicaciones prácticas.',
-                    syllabusLink: 'assets/syllabus_fisica.pdf',
+                    syllabusLink: 'assets/Syllabus Física Mecánica.pdf',
                   ),
                   _buildStep(
                     icon: Icons.code,
                     title: 'Programación I',
                     description: 'Aprende las bases de la programación con ejercicios prácticos y proyectos.',
-                    syllabusLink: 'assets/syllabus_programacion.pdf',
+                    syllabusLink: 'assets/Syllabus Introducción a la Programación.pdf',
                   ),
                 ],
               ),
@@ -90,21 +90,21 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const Wrap(
+                  Wrap(
                     alignment: WrapAlignment.center,
                     spacing: 10,
                     children: [
                       LinkButton(
                         text: 'Cálculo',
-                        filePath: 'assets/syllabus_calculo.pdf',
+                        filePath: 'assets/Syllabus Cálculo Diferencial.pdf',
                       ),
                       LinkButton(
                         text: 'Física',
-                        filePath: 'assets/syllabus_fisica.pdf',
+                        filePath: 'assets/Syllabus Física Mecánica.pdf',
                       ),
                       LinkButton(
                         text: 'Programación',
-                        filePath: 'assets/syllabus_programacion.pdf',
+                        filePath: 'assets/Syllabus Introducción a la Programación.pdf',
                       ),
                     ],
                   ),
