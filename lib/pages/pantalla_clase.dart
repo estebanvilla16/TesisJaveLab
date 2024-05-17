@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:JaveLab/models/tema.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,9 +24,13 @@ import 'package:JaveLab/pages/perfil_user.dart';
 class MyPantallaClase extends StatelessWidget {
   final Contenido contenido;
   final String pdfUrl;
+  final int ruta;
 
   const MyPantallaClase(
-      {Key? key, required this.contenido, required this.pdfUrl})
+      {Key? key,
+      required this.contenido,
+      required this.pdfUrl,
+      required this.ruta})
       : super(key: key);
 
   @override
@@ -53,7 +58,7 @@ class MyPantallaClase extends StatelessWidget {
           ),
         ),
       ),
-      home: MyWidget(item: contenido, pdfUrl: pdfUrl),
+      home: MyWidget(item: contenido, pdfUrl: pdfUrl, ruta: ruta),
     );
   }
 }
@@ -61,8 +66,10 @@ class MyPantallaClase extends StatelessWidget {
 class MyWidget extends StatelessWidget {
   final Contenido item;
   final String pdfUrl;
+  final int ruta;
 
-  const MyWidget({Key? key, required this.item, required this.pdfUrl})
+  const MyWidget(
+      {Key? key, required this.item, required this.pdfUrl, required this.ruta})
       : super(key: key);
 
   @override
@@ -94,13 +101,47 @@ class MyWidget extends StatelessWidget {
                 ],
               ),
             ),
-            CourseProgressBar(
-                progress:
-                    0.6), // Cambia el valor según el progreso real del curso
+            FutureBuilder<double>(
+              future: _progressCalculator(ruta),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator(); // Muestra un indicador de carga mientras esperas
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  double progress = snapshot.data ??
+                      0.0; // Valor de progreso o 0.0 si es nulo
+                  return CourseProgressBar(progress: progress);
+                }
+              },
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<double> _progressCalculator(int id) async {
+    String url = ('${Environment.academicUrl}/tema/lista-temas/$id');
+    final response = await http.get(Uri.parse(url));
+    int cont = 0;
+    if (response.statusCode == 200) {
+      final List<dynamic> postData = jsonDecode(response.body);
+      final List<Tema> temas =
+          postData.map((data) => Tema.fromJson(data)).toList();
+      for (Tema tema in temas) {
+        if (tema.estado == "Visto") {
+          cont++;
+        }
+      }
+      int valor = temas.length;
+      double progress = cont / valor;
+      return progress;
+    } else {
+      print('error consiguiendo el porcentaje');
+      throw Exception(
+          'Error obteniendo el porcentaje'); // Lanza una excepción en caso de error
+    }
   }
 }
 

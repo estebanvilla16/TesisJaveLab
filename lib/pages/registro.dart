@@ -11,6 +11,8 @@ import 'package:JaveLab/models/userxmateria.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:JaveLab/services/socket_service.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:provider/provider.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +32,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   //Temrinos y condiciones
   bool _isChecked = false;
+
+  final gmailStmp = gmail(Environment.correoJave, Environment.passJave);
 
   String nombre = '';
   String apellido = '';
@@ -211,6 +215,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 //socketService.connect();
                                 Usuario user = authService.usuario;
                                 crearRuta(user);
+                                sendEmail(destino: nombre, email: correo);
                                 Navigator.pushReplacementNamed(
                                     context, 'login');
                                 //mostrarAlerta(context, 'BIENVENIDO!', 'Registro completado con éxito. Recibirás un correo electrónico.');
@@ -814,4 +819,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     }
   }
+
+  Future sendEmail({required String destino, required String email}) async {
+    /*const serviceId = 'service_sp715lw';
+    const templateId = 'template_00jlyo9';
+    const userId = 'yRF6EWiTIlwKHjAGg';
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(
+      url,
+      headers: {
+        'origin': 'htto://localhost',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'service_id': serviceId,
+        'template_id': templateId,
+        'user_id': userId,
+        'template_params': {
+          'from_name': 'Javelab',
+          'to_name': destino,
+          'destino': email,
+          'reply_to': 'javelab2024@gmail.com',
+        }
+      }),
+    );
+    /Map<String, dynamic> templateParams = {
+      'from_name': 'Javelab',
+      'to_name': destino,
+      'destino': email,
+      'reply_to': 'javelab2024@gmail.com',
+    };*/
+
+    final message = Message()
+      ..from = Address(Environment.correoJave, 'Javelab')
+      ..recipients.add(email)
+      ..subject = 'Registro de usuario exitoso!'
+      ..text =
+          'Hola ${destino}! \n Bienvenido a la plataforma Javelab. Por favor recuerda que este es un ambiente académico seguro, por lo que pedimos tu cooperación en mantener este ambiente un lugar educativo para todos. \n Disfruta de una mejor experiencia en tus estudios! ';
+
+
+    try {
+      final sendReport = await send(message, gmailStmp);
+      print('Message sent: ' + sendReport.toString());
+    } on MailerException catch (e) {
+      print('Message not sent.');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+    /*try {
+      await EmailJS.send(
+        serviceId,
+        templateId,
+        templateParams,
+        const Options(
+          publicKey: userId,
+          privateKey: 'kCElAj-Rq57zCEpqhRlc2',
+        ),
+      );
+      print('SUCCESS!');
+    } catch (error) {
+      print(error.toString());
+    }*/
+  }
+
 }

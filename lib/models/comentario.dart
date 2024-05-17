@@ -6,6 +6,7 @@ class Comentario {
   String mensaje;
   int valoracion;
   DateTime fecha;
+  String? material;
 
   Comentario(
       {required this.id_com,
@@ -14,7 +15,8 @@ class Comentario {
       required this.nombre,
       required this.mensaje,
       required this.valoracion,
-      required this.fecha});
+      required this.fecha,
+      required this.material});
 
   factory Comentario.fromJson(Map<String, dynamic> json) => Comentario(
       id_com: json['id_com'],
@@ -23,5 +25,6 @@ class Comentario {
       nombre: json['nombre'],
       mensaje: json['mensaje'],
       valoracion: json['valoracion'],
-      fecha: DateTime.parse(json['fecha']));
+      fecha: DateTime.parse(json['fecha']),
+      material: json['material']);
 }

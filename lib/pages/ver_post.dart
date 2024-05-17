@@ -17,6 +17,8 @@ import 'package:JaveLab/global/enviroment.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:JaveLab/widgets/trending.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as path;
 
 
 class PostViewScreen extends StatefulWidget {
@@ -114,21 +116,29 @@ class _PostViewScreenState extends State<PostViewScreen> {
   }
 }
 
-class PostView extends StatelessWidget {
+class PostView extends StatefulWidget {
   final Post post;
   final TextEditingController comentarioController;
   final Future<List<Comentario>> comentariosFuture;
   final VoidCallback updateComentarios;
   final Usuario user;
 
-  const PostView(
-      {Key? key,
-      required this.post,
-      required this.comentarioController,
-      required this.comentariosFuture,
-      required this.updateComentarios,
-      required this.user})
-      : super(key: key);
+  const PostView({
+    Key? key,
+    required this.post,
+    required this.comentarioController,
+    required this.comentariosFuture,
+    required this.updateComentarios,
+    required this.user,
+  }) : super(key: key);
+
+  @override
+  _PostViewState createState() => _PostViewState();
+}
+
+class _PostViewState extends State<PostView> { 
+
+  File? _file;
 
   void _deleteComment(int id) async {
     final String url = ('${Environment.foroUrl}/comentario/borrar/$id');
@@ -163,17 +173,17 @@ class PostView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        post.titulo,
+                        widget.post.titulo,
                         style: const TextStyle(fontSize: 38.0),
                       ),
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => ProfileUserPage(uidHost: post.id_op),
+                            builder: (_) => ProfileUserPage(uidHost: widget.post.id_op),
                           ));
                         },
                         child: Text(
-                          post.nombre,
+                          widget.post.nombre,
                           style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
@@ -184,10 +194,10 @@ class PostView extends StatelessWidget {
                       ),
                       Wrap(
                         spacing: 8.0,
-                        children: _buildTagWidgets(post.tags),
+                        children: _buildTagWidgets(widget.post.tags),
                       ),
                       Text(
-                        'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}',
+                        'Fecha: ${DateFormat('yyyy-MM-dd').format(widget.post.fecha)}',
                         style: const TextStyle(
                           fontSize: 20.0,
                         ),
@@ -201,7 +211,7 @@ class PostView extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        _asignarValorCategoria(post.etiqueta),
+                        _asignarValorCategoria(widget.post.etiqueta),
                         style: const TextStyle(fontSize: 18.0),
                       ),
                       const SizedBox(height: 20),
@@ -226,9 +236,9 @@ class PostView extends StatelessWidget {
             ),
           
           const SizedBox(height: 20),
-          if (post.material != "null")
+          if (widget.post.material != "null")
             ElevatedButton.icon(
-              onPressed: () => _downloadPDF(post.material, context),
+              onPressed: () => _downloadPDF(widget.post.material, context),
               icon: const Icon(Icons.attach_file, size: 20),
               label: const Text('Descargar archivo',
                   style: TextStyle(fontSize: 16)),
@@ -243,7 +253,7 @@ class PostView extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           Text(
-            formatContent(post.contenido),
+            formatContent(widget.post.contenido),
             style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 20),
@@ -256,12 +266,55 @@ class PostView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          TextField(
-            controller: comentarioController,
-            decoration: const InputDecoration(
-              hintText: 'Escribe un comentario...',
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width *
+                    0.7, // Ancho específico para el TextField
+                child: TextField(
+                  controller: widget.comentarioController,
+                  decoration: const InputDecoration(
+                    hintText: 'Escribe un comentario...',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              ElevatedButton(
+                onPressed: () async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles();
+                  if (result != null) {
+                    String? filePath = result.files.single.path;
+                    if (filePath != null) {
+                      setState(() {
+                        _file = File(filePath);
+                      });
+                    }
+                  }
+                },
+                child: const Text('->'),
+              ),
+            ],
           ),
+          if (_file != null)
+            Container(
+              width: 300, // Ancho específico para el ListTile
+              height: 50,
+              child: ListTile(
+                title: Text('Archivo Adjunto: ${_file!.path}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () {
+                    setState(() {
+                      _file = null;
+                    });
+                  },
+                ),
+              ),
+            ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -280,9 +333,10 @@ class PostView extends StatelessWidget {
                       ),
                     ),
                   );
-                  _crearCom(post.id_post, comentarioController, user);
-                  comentarioController.clear();
-                  updateComentarios();
+                  _crearCom(widget.post.id_post, widget.comentarioController,
+                  widget.user, _file);
+              widget.comentarioController.clear();
+              widget.updateComentarios();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("¡Comentario publicado!"),
@@ -295,7 +349,7 @@ class PostView extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Lógica para cancelar el comentario
-                  comentarioController.clear();
+                  widget.comentarioController.clear();
                 },
                 child: const Text('Cancelar'),
               ),
@@ -303,106 +357,105 @@ class PostView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           FutureBuilder<List<Comentario>>(
-            future: comentariosFuture,
+            future: widget.comentariosFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
-                final comentarios = snapshot.data ?? [];
+                final comentarios = snapshot.data!;
                 return ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: comentarios.length,
                   itemBuilder: (context, index) {
                     final comentario = comentarios[index];
-                    return ListTile(
-                      title: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => ProfileUserPage(
-                                uidHost: comentario.id_comentador),
-                          ));
-                        },
-                        child: Text(
-                          comentario.nombre,
-                          style: const TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.lightBlue,
-                            decoration: TextDecoration.underline,
-                          ),
+                    return Card(
+                      child: ListTile(
+                        title: Text(comentario.mensaje),
+                        subtitle: Text(comentario.fecha.toString()),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (comentario.material != "null" &&
+                                comentario.material != null)
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  String mat = comentario.material!;
+                                  _downloadPDF(mat, context);
+                                },
+                                icon: const Icon(Icons.attach_file, size: 20),
+                                label: const Text('',
+                                    style: TextStyle(fontSize: 16)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            if (widget.user.uid == comentario.id_comentador)
+                              PopupMenuButton<String>(
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry<String>>[
+                                  const PopupMenuItem<String>(
+                                    value: 'edit',
+                                    child: ListTile(
+                                      leading: Icon(Icons.edit),
+                                      title: Text('Editar comentario'),
+                                    ),
+                                  ),
+                                  const PopupMenuItem<String>(
+                                    value: 'delete',
+                                    child: ListTile(
+                                      leading: Icon(Icons.delete),
+                                      title: Text('Eliminar comentario'),
+                                    ),
+                                  ),
+                                ],
+                                onSelected: (String value) {
+                                  if (value == 'edit') {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditarComentarioScreen(
+                                              com: comentario),
+                                    ));
+                                  } else if (value == 'delete') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              "Confirmar eliminación"),
+                                          content: const Text(
+                                              "¿Estás seguro de que quieres eliminar este comentario?"),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("Cancelar"),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                _deleteComment(
+                                                    comentario.id_com);
+                                                Navigator.of(context).pop();
+                                                widget.updateComentarios();
+                                              },
+                                              child: const Text("Eliminar"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                          ],
                         ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(comentario.mensaje),
-                          const SizedBox(height: 4),
-                          Text(
-                            DateFormat('yyyy-MM-dd').format(comentario.fecha),
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                      trailing: PopupMenuButton<String>(
-                        itemBuilder: (BuildContext context) =>
-                            <PopupMenuEntry<String>>[
-                          if (comentario.id_comentador ==
-                              user.uid) // Control de acceso para editar y borrar comentario
-                            const PopupMenuItem<String>(
-                              value: 'edit',
-                              child: ListTile(
-                                leading: Icon(Icons.edit),
-                                title: Text('Editar comentario'),
-                              ),
-                            ),
-                          if (comentario.id_comentador ==
-                              user.uid) // Control de acceso para editar y borrar comentario
-                            const PopupMenuItem<String>(
-                              value: 'delete',
-                              child: ListTile(
-                                leading: Icon(Icons.delete),
-                                title: Text('Eliminar comentario'),
-                              ),
-                            ),
-                        ].where((item) => item != null).toList(),
-                        onSelected: (String value) {
-                          if (value == 'edit') {
-                            // Lógica para editar el comentario
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  EditarComentarioScreen(com: comentario),
-                            ));
-                          } else if (value == 'delete') {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Confirmar eliminación"),
-                                  content: const Text(
-                                      "¿Estás seguro de que quieres eliminar este comentario?"),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("Cancelar"),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        _deleteComment(comentario.id_com);
-                                        Navigator.of(context).pop();
-                                        updateComentarios();
-                                      },
-                                      child: const Text("Eliminar"),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
                       ),
                     );
                   },
@@ -441,6 +494,71 @@ class PostView extends StatelessWidget {
     }).toList();
   }
 
+String getFileNameWithId(String filePath, int id) {
+    String fileName =
+        path.basename(filePath); // Obtiene el nombre del archivo con extensión
+    String extension =
+        path.extension(fileName); // Obtiene la extensión del archivo
+    String fileNameWithoutExtension = path.basenameWithoutExtension(
+        fileName); // Obtiene el nombre del archivo sin extensión
+
+    // Concatena el nombre del archivo sin extensión, el ID y la extensión
+    return '$fileNameWithoutExtension - $id$extension';
+  }
+
+  Future<void> _uploadFile(File file, int id) async {
+    try {
+      String fileName = getFileNameWithId(file.path, id);
+      final url = '${Environment.blobUrl}/api/blob/upload/foro';
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      // Crea un nuevo archivo con el nombre modificado
+      var modifiedFile = http.MultipartFile(
+        'file',
+        file.openRead(),
+        file.lengthSync(),
+        filename: fileName, // Usa el nuevo nombre del archivo
+      );
+
+      // Agrega el archivo modificado a la solicitud
+      request.files.add(modifiedFile);
+
+      // Envía la solicitud y espera la respuesta
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Archivo subido exitosamente');
+        _modificarCom(fileName, id);
+        // Aquí puedes manejar la lógica después de subir el archivo
+      } else {
+        print(
+            'Error al subir el archivo. Código de estado: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+void _modificarCom(String nuevoMaterial, int id) async {
+    final String url = ('${Environment.foroUrl}/comentario/actualizar/$id');
+
+    Map<String, dynamic> data = {
+      "material": nuevoMaterial,
+    };
+
+    print(data);
+
+    final response = await http.put(Uri.parse(url),
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      print('Comentario modificado: ${response.body}');
+    } else {
+      print(
+          'Error al modificar el comentario. Código de estado: ${response.statusCode}');
+    }
+  }
+
   Future<void> _downloadPDF(String nombre, BuildContext context) async {
     String url = ('${Environment.blobUrl}/api/blob/downloadForo/$nombre');
     final response = await http.get(Uri.parse(url));
@@ -464,7 +582,7 @@ class PostView extends StatelessWidget {
   }
 
   void _crearCom(int idPost, TextEditingController comentarioController,
-      Usuario user) async {
+      Usuario user, File? file) async {
     final String url = ('${Environment.foroUrl}/comentario/agregar');
 
     String userId = user.uid;
@@ -480,6 +598,7 @@ class PostView extends StatelessWidget {
       "mensaje": comentarioController.text,
       "valoracion": 0,
       "fecha": formattedDate,
+      "material": "null",
     };
 
     final response = await http.post(Uri.parse(url),
@@ -487,6 +606,10 @@ class PostView extends StatelessWidget {
 
     if (response.statusCode == 201) {
       print('Comentario publicado: ${response.body}');
+      int comId = jsonDecode(response.body)['id_com'];
+      if (file != null) {
+        _uploadFile(_file!, comId);
+      }
     } else {
       print(
           'Error al publicar el comentario. Código de estado: ${response.statusCode}');
@@ -526,4 +649,5 @@ class PostView extends StatelessWidget {
         return "NPI";
     }
   }
+
 }

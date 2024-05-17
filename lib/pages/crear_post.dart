@@ -22,6 +22,7 @@ class Cara8 extends StatefulWidget {
 class _Cara8State extends State<Cara8> {
   TextEditingController tituloController = TextEditingController();
   TextEditingController etiquetasController = TextEditingController();
+  TextEditingController urlController = TextEditingController();
   ZefyrController _zefyrController = ZefyrController(NotusDocument());
   FocusNode _focusNode = FocusNode();
   File? _file;
@@ -183,6 +184,36 @@ class _Cara8State extends State<Cara8> {
               const SizedBox(height: 100),
               ZefyrToolbar.basic(controller: _zefyrController),
               const SizedBox(height: 24.0),
+              const Row(
+                children: [
+                  Text(
+                    'Adjunte un URL de un video si desea.',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    ' *',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              Material(
+                child: TextField(
+                  controller: urlController,
+                  decoration: const InputDecoration(
+                    hintText: 'URL de youtube',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result =
@@ -225,8 +256,14 @@ class _Cara8State extends State<Cara8> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      _publicarPost(tituloController, etiquetasController,
-                          _zefyrController, categoriaSeleccionada, user, _file);
+                      _publicarPost(
+                          tituloController,
+                          etiquetasController,
+                          _zefyrController,
+                          categoriaSeleccionada,
+                          user,
+                          _file,
+                          urlController);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2c5697),
@@ -338,7 +375,8 @@ class _Cara8State extends State<Cara8> {
       ZefyrController _zefyrController,
       String categoriaSeleccionada,
       Usuario user,
-      File? file) async {
+      File? file,
+      TextEditingController urlController) async {
     setState(() {
       _isPublishing = true;
     });
@@ -357,7 +395,7 @@ class _Cara8State extends State<Cara8> {
       "titulo": tituloController.text,
       "contenido": jsonEncode(_zefyrController.document.toPlainText()),
       "material": 'null',
-      "video": 'null',
+      "video": urlController.text,
       "valoracion": 0,
       "fecha": formattedDate,
       "nombre": nombreCompleto,

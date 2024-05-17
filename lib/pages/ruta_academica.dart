@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:JaveLab/models/contenido.dart';
+import 'package:JaveLab/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:JaveLab/widgets/bottom_menu.dart';
 import 'package:JaveLab/widgets/burgermenu.dart';
 import 'package:http/http.dart' as http;
 import 'package:JaveLab/pages/pantalla_clase.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:JaveLab/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class PantallaRutaAprendizaje extends StatelessWidget {
   const PantallaRutaAprendizaje({Key? key});
@@ -23,8 +26,10 @@ class PantallaRutaAprendizaje extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        titleTextStyle:const TextStyle (color:Colors.white, fontSize: 30,),
-       
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 30,
+        ),
         title: const Text(
           'Mi Ruta de Aprendizaje',
           style: TextStyle(
@@ -120,10 +125,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                           .toList(),
                     ),
                   ),
-                  
                   const SizedBox(height: 75),
-                 
-                  
                 ],
               ),
             ),
@@ -143,6 +145,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                         0.0, // Por ahora no tenemos información de progreso
                     contenido: snapshot.data ??
                         [], // Lista de contenido obtenida del servidor
+                    materia: 1,
                   );
                 }
               },
@@ -163,6 +166,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                         0.0, // Por ahora no tenemos información de progreso
                     contenido: snapshot.data ??
                         [], // Lista de contenido obtenida del servidor
+                    materia: 2,
                   );
                 }
               },
@@ -183,6 +187,7 @@ class PantallaRutaAprendizaje extends StatelessWidget {
                         0.0, // Por ahora no tenemos información de progreso
                     contenido: snapshot.data ??
                         [], // Lista de contenido obtenida del servidor
+                    materia: 3,
                   );
                 }
               },
@@ -200,12 +205,14 @@ class SeccionRutaAprendizaje extends StatefulWidget {
   final IconData icono;
   final double progreso;
   final List<Contenido> contenido;
+  final int materia;
 
   const SeccionRutaAprendizaje({
     required this.titulo,
     required this.icono,
     required this.progreso,
     required this.contenido,
+    required this.materia,
   });
 
   @override
@@ -214,6 +221,13 @@ class SeccionRutaAprendizaje extends StatefulWidget {
 
 class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   bool _expanded = false;
+  late Usuario user;
+
+  void initState() {
+    super.initState();
+    final authService = Provider.of<AuthService>(context, listen: false);
+    user = authService.usuario;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,9 +258,10 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
               return ListTile(
                 title: Text(contenido.titulo),
                 subtitle: Text(contenido.descripcion),
-                onTap: () {
+                onTap: () async {
+                  int idRuta = await fetchRel(user.uid, widget.materia);
                   // Implementar la funcionalidad al hacer clic en el contenido
-                  _navigateToDetailScreen(context, contenido);
+                  _navigateToDetailScreen(context, contenido, idRuta);
                 },
               );
             }).toList(),
@@ -257,11 +272,33 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   }
 }
 
-void _navigateToDetailScreen(BuildContext context, Contenido item) {
+Future<int> fetchRel(String usuario, int materia) async {
+  String url1 =
+      ('${Environment.academicUrl}/userxmateria/lista-relaciones/${usuario}/${materia}');
+  final response1 = await http.get(Uri.parse(url1));
+  if (response1.statusCode == 200) {
+    int id = jsonDecode(response1.body)['id_user_mat'];
+    String url2 = ('${Environment.academicUrl}/ruta/ruta-user/$id');
+    final response2 = await http.get(Uri.parse(url2));
+    if (response2.statusCode == 200) {
+      int idRuta = jsonDecode(response2.body)['id_ruta'];
+      return idRuta;
+    } else {
+      print('Error en conseguir la ruta del usuario respecto a esta materia');
+      return Future.value(0);
+    }
+  } else {
+    print('Error en conseguir la relacion de usuario y materia');
+    return Future.value(0);
+  }
+}
+
+void _navigateToDetailScreen(BuildContext context, Contenido item, int idRuta) {
   String pdfUrl = '${Environment.blobUrl}/api/blob/download/${item.material}';
   Navigator.of(context).push(
     MaterialPageRoute(
-      builder: (context) => MyPantallaClase(contenido: item, pdfUrl: pdfUrl),
+      builder: (context) =>
+          MyPantallaClase(contenido: item, pdfUrl: pdfUrl, ruta: idRuta),
     ),
   );
 }

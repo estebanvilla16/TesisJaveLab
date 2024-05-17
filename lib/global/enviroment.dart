@@ -17,4 +17,8 @@ class Environment {
 
   static String blobUrl =
       Platform.isAndroid ? 'http://192.168.10.7:8080' : 'http://localhost:8080';
+
+  static String correoJave = 'javelab2024@gmail.com';
+  static String passJave = 'TesisJaveL@b2024';
+  
 }
