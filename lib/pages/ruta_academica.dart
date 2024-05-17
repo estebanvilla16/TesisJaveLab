@@ -23,6 +23,25 @@ class PantallaRutaAprendizaje extends StatelessWidget {
       '4. Orientación Educativa: Tooltips y pantallas de introducción explican el diseño pedagógico, fomentando la comprensión del usuario.',
       '5. Acceso Eficiente a Contenido: Búsqueda y filtros avanzados optimizan el acceso a recursos educativos, alineándose con principios cognitivistas.',
     ];
+
+    final List<Map<String, String>> clasesRecomendadas = [
+      {'titulo': 'Algoritmos Básicos', 'descripcion': 'Introducción a los algoritmos en Programación 1'},
+      {'titulo': 'Cinemática Avanzada', 'descripcion': 'Movimientos complejos en Física Mecánica'},
+      {'titulo': 'Límites y Continuidad', 'descripcion': 'Conceptos fundamentales en Cálculo Diferencial'},
+    ];
+
+    final List<Map<String, String>> clasesPendientes = [
+      {'titulo': 'Estructuras de Datos', 'descripcion': 'Listas, pilas y colas en Programación 1', 'tipo': 'Actividad'},
+      {'titulo': 'Leyes de Newton', 'descripcion': 'Aplicaciones prácticas en Física Mecánica', 'tipo': 'Quiz'},
+      {'titulo': 'Derivadas', 'descripcion': 'Cómo calcular y aplicar derivadas en Cálculo Diferencial', 'tipo': 'Lectura'},
+    ];
+
+    final List<Map<String, String>> monitores = [
+      {'nombre': 'Juan Pérez', 'materia': 'Programación 1', 'correo': 'juan.perez@example.com', 'especialidad': 'Algoritmos y Estructuras de Datos', 'actividades': 'Publicación reciente sobre Algoritmos Avanzados'},
+      {'nombre': 'Ana Gómez', 'materia': 'Física Mecánica', 'correo': 'ana.gomez@example.com', 'especialidad': 'Dinámica y Cinemática', 'actividades': 'Publicación reciente sobre Dinámica'},
+      {'nombre': 'Luis Martínez', 'materia': 'Cálculo Diferencial', 'correo': 'luis.martinez@example.com', 'especialidad': 'Límites y Derivadas', 'actividades': 'Publicación reciente sobre Derivadas'},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -40,161 +59,391 @@ class PantallaRutaAprendizaje extends StatelessWidget {
         ),
         actions: const [],
       ),
-      bottomNavigationBar: const BottomMenu(), // menu inferior
-      endDrawer: const BurgerMenu(), //menu hamburguesa
+      bottomNavigationBar: const BottomMenu(), // menú inferior
+      endDrawer: const BurgerMenu(), // menú hamburguesa
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-            IconButton(
-              icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(Icons.lightbulb_outline,
-                            color: Colors.yellowAccent),
-                        SizedBox(width: 8),
-                        Expanded(
-                            child: Text(
-                                'El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
-                      ],
-                    ),
-                    duration: const Duration(seconds: 10),
-                    backgroundColor: Colors.blueGrey,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              },
-              tooltip: 'Información',
-            ),
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: 200, // Ajusta este valor según tus necesidades
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        autoPlay: true,
-                        aspectRatio: 2.0,
-                        enlargeCenterPage: true,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: IconButton(
+                  icon: const Icon(Icons.info_outline, color: Colors.blueGrey),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.lightbulb_outline, color: Colors.yellowAccent),
+                            SizedBox(width: 8),
+                            Expanded(
+                                child: Text(
+                                    'El modelo cognitivista aplicado a Javelab pone énfasis en el diseño y la disposición de contenidos para optimizar el procesamiento mental del aprendizaje. Se centra en hacer que la información sea fácil de entender y retener, mediante una interfaz intuitiva y recursos interactivos que fomentan el análisis crítico y la aplicación práctica del conocimiento.')),
+                          ],
+                        ),
+                        duration: const Duration(seconds: 10),
+                        backgroundColor: Colors.blueGrey,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        behavior: SnackBarBehavior.floating,
                       ),
-                      items: carouselItems
-                          .map((item) => Container(
-                                child: Center(
-                                  // Usar una Column para colocar el icono encima del texto
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize
-                                        .min, // Hace que la Columna ocupe solo el espacio necesario
-                                    children: [
-                                      Icon(
-                                        Icons
-                                            .apps_sharp, // Elige el icono que prefieras
-                                        color:
-                                            Colors.blueGrey, // Color del icono
-                                        size: 19.0, // Tamaño del icono
-                                      ),
-                                      Text(
-                                        item,
-                                        style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.teal[50],
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                padding: EdgeInsets.all(12.0),
-                                margin: EdgeInsets.all(8.0),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 75),
-                ],
+                    );
+                  },
+                  tooltip: 'Información',
+                ),
               ),
-            ),
-            const Divider(), // Separador entre filtros y secciones
-            FutureBuilder<List<Contenido>>(
-              future: _fetchTemas(1), // Categoría de programación
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return SeccionRutaAprendizaje(
-                    titulo: 'Programación', // Título de la sección
-                    icono: Icons.code, // Icono relacionado con la programación
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
-                    materia: 1,
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 16), // Espacio entre secciones
-            FutureBuilder<List<Contenido>>(
-              future: _fetchTemas(2), // Categoría de física
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return SeccionRutaAprendizaje(
-                    titulo: 'Física Mecánica', // Título de la sección
-                    icono: Icons.explore, // Icono similar a física
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
-                    materia: 2,
-                  );
-                }
-              },
-            ),
-            const SizedBox(height: 16), // Espacio entre secciones
-            FutureBuilder<List<Contenido>>(
-              future: _fetchTemas(3), // Categoría de cálculo
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return SeccionRutaAprendizaje(
-                    titulo: 'Cálculo Diferencial', // Título de la sección
-                    icono: Icons.calculate, // Icono relacionado con el cálculo
-                    progreso:
-                        0.0, // Por ahora no tenemos información de progreso
-                    contenido: snapshot.data ??
-                        [], // Lista de contenido obtenida del servidor
-                    materia: 3,
-                  );
-                }
-              },
-            ),
-          ],
+              const SizedBox(height: 50),
+              SizedBox(
+                height: 200, // Ajusta este valor según tus necesidades
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    autoPlay: true,
+                    aspectRatio: 2.0,
+                    enlargeCenterPage: true,
+                  ),
+                  items: carouselItems
+                      .map((item) => Container(
+                            child: Center(
+                              // Usar una Column para colocar el icono encima del texto
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min, // Hace que la Columna ocupe solo el espacio necesario
+                                children: [
+                                  Icon(
+                                    Icons.apps_sharp, // Elige el icono que prefieras
+                                    color: Colors.blueGrey, // Color del icono
+                                    size: 19.0, // Tamaño del icono
+                                  ),
+                                  Text(
+                                    item,
+                                    style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.teal[50],
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            padding: EdgeInsets.all(12.0),
+                            margin: EdgeInsets.all(8.0),
+                          ))
+                      .toList(),
+                ),
+              ),
+              const SizedBox(height: 75),
+              const Divider(), // Separador entre filtros y secciones
+              _buildRecomendadasSection(context, clasesRecomendadas),
+              const SizedBox(height: 20),
+              _buildPendientesSection(context, clasesPendientes),
+              const SizedBox(height: 20),
+              _buildSeccionRutaAprendizaje(context, 'Programación', 1, Icons.code),
+              const SizedBox(height: 20),
+              _buildSeccionRutaAprendizaje(context, 'Física Mecánica', 2, Icons.explore),
+              const SizedBox(height: 20),
+              _buildSeccionRutaAprendizaje(context, 'Cálculo Diferencial', 3, Icons.calculate),
+              const SizedBox(height: 20),
+              _buildSugerirMonitoresSection(context, monitores),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRecomendadasSection(BuildContext context, List<Map<String, String>> clases) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Clases Recomendadas',
+          style: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: clases.length,
+            itemBuilder: (context, index) {
+              final clase = clases[index];
+              return Container(
+                width: 300,
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.green),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      clase['titulo']!,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      clase['descripcion']!,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    Spacer(),
+                    TextButton(
+                      onPressed: () {
+                        // Implementar lógica para ver más detalles de la clase recomendada
+                      },
+                      child: Text(
+                        'Ver más',
+                        style: TextStyle(color: Colors.green),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPendientesSection(BuildContext context, List<Map<String, String>> clases) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Clases Pendientes',
+          style: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.red,
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: clases.length,
+            itemBuilder: (context, index) {
+              final clase = clases[index];
+              return Container(
+                width: 300,
+                margin: EdgeInsets.symmetric(horizontal: 8),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.red),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      clase['titulo']!,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      clase['descripcion']!,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      clase['tipo']!,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Spacer(),
+                    TextButton(
+                      onPressed: () {
+                        // Implementar lógica para ver más detalles de la clase pendiente
+                      },
+                      child: Text(
+                        'Ver más',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSeccionRutaAprendizaje(BuildContext context, String titulo, int materia, IconData icono) {
+    return FutureBuilder<List<Contenido>>(
+      future: _fetchTemas(materia),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return SeccionRutaAprendizaje(
+            titulo: titulo,
+            icono: icono,
+            progreso: 0.0,
+            contenido: snapshot.data ?? [],
+            materia: materia,
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildSugerirMonitoresSection(BuildContext context, List<Map<String, String>> monitores) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Sugerir Monitores',
+          style: TextStyle(
+            fontSize: 22.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.blue,
+          ),
+        ),
+        SizedBox(height: 8),
+        Column(
+          children: monitores.map((monitor) {
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.blue),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          monitor['nombre']!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(monitor['materia']!),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.info, color: Colors.blue),
+                    onPressed: () {
+                      _mostrarDetallesMonitor(context, monitor);
+                    },
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  void _mostrarDetallesMonitor(BuildContext context, Map<String, String> monitor) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+              SizedBox(width: 10),
+              Text(
+                monitor['nombre']!,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.email, color: Colors.blue),
+                title: Text(monitor['correo']!),
+              ),
+              ListTile(
+                leading: Icon(Icons.school, color: Colors.blue),
+                title: Text(monitor['especialidad']!),
+              ),
+              ListTile(
+                leading: Icon(Icons.assignment, color: Colors.blue),
+                title: InkWell(
+                  onTap: () {
+                    // Implementar lógica para ver la publicación reciente
+                  },
+                  child: Text(
+                    monitor['actividades']!,
+                    style: TextStyle(
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cerrar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Implementar lógica para contactar al monitor
+              },
+              child: const Text('Contactar'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -221,8 +470,10 @@ class SeccionRutaAprendizaje extends StatefulWidget {
 
 class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
   bool _expanded = false;
+  double progreso = 0.0;
   late Usuario user;
 
+  @override
   void initState() {
     super.initState();
     final authService = Provider.of<AuthService>(context, listen: false);
@@ -245,12 +496,18 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
               fontSize: 18,
             ),
           ),
-          trailing: Text('${(widget.progreso * 100).toInt()}%'),
+          trailing: Text('${(progreso * 100).toInt()}%'),
           onTap: () {
             setState(() {
               _expanded = !_expanded;
             });
           },
+        ),
+        LinearProgressIndicator(
+          value: progreso,
+          backgroundColor: Colors.grey[300],
+          color: Theme.of(context).primaryColor,
+          minHeight: 5,
         ),
         if (_expanded)
           Column(
@@ -260,7 +517,9 @@ class _SeccionRutaAprendizajeState extends State<SeccionRutaAprendizaje> {
                 subtitle: Text(contenido.descripcion),
                 onTap: () async {
                   int idRuta = await fetchRel(user.uid, widget.materia);
-                  // Implementar la funcionalidad al hacer clic en el contenido
+                  setState(() {
+                    progreso += 1 / widget.contenido.length;
+                  });
                   _navigateToDetailScreen(context, contenido, idRuta);
                 },
               );

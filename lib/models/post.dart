@@ -38,4 +38,8 @@ class Post {
         nombre: json['nombre'],
         tags: json['tags'],
       );
+
+  get upvotes => null;
+
+  get downvotes => null;
 }
