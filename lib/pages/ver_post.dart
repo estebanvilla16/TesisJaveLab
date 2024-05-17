@@ -16,6 +16,8 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:JaveLab/global/enviroment.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:JaveLab/widgets/trending.dart';
+
 
 class PostViewScreen extends StatefulWidget {
   final int? id;
@@ -154,114 +156,75 @@ class PostView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  post.titulo,
-                  style: const TextStyle(fontSize: 38.0),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        post.titulo,
+                        style: const TextStyle(fontSize: 38.0),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => ProfileUserPage(uidHost: post.id_op),
+                          ));
+                        },
+                        child: Text(
+                          post.nombre,
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.lightBlue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                      Wrap(
+                        spacing: 8.0,
+                        children: _buildTagWidgets(post.tags),
+                      ),
+                      Text(
+                        'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}',
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Categoría',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        _asignarValorCategoria(post.etiqueta),
+                        style: const TextStyle(fontSize: 18.0),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
-              ),
-              PopupMenuButton<String>(
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  if (post.id_op == user.uid)
-                    const PopupMenuItem<String>(
-                      value: 'edit',
-                      child: ListTile(
-                        leading: Icon(Icons.edit),
-                        title: Text('Editar publicación'),
-                      ),
-                    ),
-                  if (post.id_op == user.uid)
-                    const PopupMenuItem<String>(
-                      value: 'delete',
-                      child: ListTile(
-                        leading: Icon(Icons.delete),
-                        title: Text('Eliminar publicación'),
-                      ),
-                    ),
-                ].where((item) => item != null).toList(),
-                onSelected: (String value) {
-                  if (value == 'edit') {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EditarPublicacionScreen(post: post),
-                    ));
-                  } else if (value == 'delete') {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Confirmar eliminación"),
-                          content: const Text(
-                              "¿Estás seguro de que quieres eliminar esta publicación?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("Cancelar"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                _deletePost(post.id_post);
-                                Navigator.of(context).pop();
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const Cara6(),
-                                ));
-                              },
-                              child: const Text("Eliminar"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => ProfileUserPage(uidHost: post.id_op),
-              ));
-            },
-            child: Text(
-              post.nombre,
-              style: const TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.lightBlue, // Color azul claro
-                decoration: TextDecoration.underline, // Subrayado
-              ),
+                SizedBox(width: 20), // Espacio entre el contenido y el TrendingChart
+                TrendingChart(
+                  score: 10, // Puedes ajustar estos valores según lo que desees mostrar
+                  isUpvoted: true,
+                  isDownvoted: false,
+                  upvotes: [3, 5, 2, 7, 4],
+                  downvotes: [1, 0, 2, 1, 3],
+                  onUpvotePressed: () {
+                    // Lógica cuando se presiona el botón de upvote
+                  },
+                  onDownvotePressed: () {
+                    // Lógica cuando se presiona el botón de downvote
+                  },
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 4.0),
-          Wrap(
-            spacing: 8.0,
-            children: _buildTagWidgets(post.tags),
-          ),
-          const SizedBox(height: 4.0),
-          Text(
-            'Fecha: ${DateFormat('yyyy-MM-dd').format(post.fecha)}',
-            style: const TextStyle(
-              fontSize: 20.0,
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          const Text(
-            'Categoría',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            _asignarValorCategoria(post.etiqueta),
-            style: const TextStyle(fontSize: 18.0),
-          ), // Aquí iría la categoría del post
+          
           const SizedBox(height: 20),
           if (post.material != "null")
             ElevatedButton.icon(

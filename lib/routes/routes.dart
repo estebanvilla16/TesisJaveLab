@@ -2,7 +2,9 @@ import 'package:JaveLab/pages/contrasena.dart';
 import 'package:JaveLab/pages/crear_post.dart';
 import 'package:JaveLab/pages/editar_perfil.dart';
 import 'package:JaveLab/pages/foro.dart';
+import 'package:JaveLab/pages/instructivo_foro.dart';
 import 'package:JaveLab/pages/main_app.dart';
+import 'package:JaveLab/pages/monitorias.dart';
 import 'package:JaveLab/pages/perfil.dart';
 import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:flutter/material.dart';
@@ -29,4 +31,6 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   'cambio': (_) => const ForgotPasswordScreen(),
   'ruta': (_) => const PantallaRutaAprendizaje(),
   'editar': (_) => const EditProfileScreen(),
+  'monitorias': (_) => const RegistrationAndBookingPage(),
+  'intructivoForo':(_) =>  ForumOnboardingScreen(),
 };

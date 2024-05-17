@@ -1,6 +1,9 @@
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/pages/foro.dart';
+import 'package:JaveLab/pages/instructivo_foro.dart';
+import 'package:JaveLab/pages/instructivo_ruta_academica.dart';
 import 'package:JaveLab/pages/main_app.dart';
+import 'package:JaveLab/pages/monitorias.dart';
 import 'package:JaveLab/pages/perfil.dart';
 import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:JaveLab/pages/usuarios_page.dart';
@@ -70,8 +73,8 @@ class _BurgerMenuState extends State<BurgerMenu> {
             onTap: () => navigateToScreen(context, 'Perfil'),
           ),
           ListTile(
-            leading: Icon(Icons.chat, color: Color(0xFF2c5697)),
-            title: Text('Conversaciones', style: TextStyle(fontSize: 16)),
+            leading: const Icon(Icons.chat, color: Color(0xFF2c5697)),
+            title: const Text('Conversaciones', style: TextStyle(fontSize: 16)),
             onTap: () => Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const UsuariosPage())),
           ),
@@ -80,14 +83,19 @@ class _BurgerMenuState extends State<BurgerMenu> {
               color: Colors.grey,
               margin: const EdgeInsets.symmetric(vertical: 4)),
           ListTile(
-            leading: Icon(Icons.forum, color: Color(0xFF2c5697)),
-            title: Text('Foro', style: TextStyle(fontSize: 16)),
+            leading: const Icon(Icons.forum, color: Color(0xFF2c5697)),
+            title: const Text('Foro', style: TextStyle(fontSize: 16)),
             onTap: () => navigateToScreen(context, 'Foro'),
           ),
           ListTile(
-            leading: Icon(Icons.school, color: Color(0xFF2c5697)),
-            title: Text('Ruta académica', style: TextStyle(fontSize: 16)),
+            leading: const Icon(Icons.school, color: Color(0xFF2c5697)),
+            title: const Text('Ruta académica', style: TextStyle(fontSize: 16)),
             onTap: () => navigateToScreen(context, 'Ruta académica'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.calendar_month, color: Color(0xFF2c5697)),
+            title: const Text('Monitorias', style: TextStyle(fontSize: 16)),
+            onTap: () => navigateToScreen(context, 'Monitorias'),
           ),
           const Spacer(),
           Container(
@@ -109,8 +117,8 @@ class _BurgerMenuState extends State<BurgerMenu> {
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
-                Row(
+                const SizedBox(height: 8),
+                const Row(
                   children: [
                     Icon(Icons.info_outline, color: Colors.grey),
                     SizedBox(width: 8),
@@ -136,20 +144,23 @@ class _BurgerMenuState extends State<BurgerMenu> {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => ProfilePage()));
         break;
-      case 'Conversaciones':
+      case 'Monitorias':
 
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => RegistrationAndBookingPage()));
+
+        
         break;
       case 'Intercambios':
 
         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
         break;
       case 'Foro':
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => Cara6()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ForumOnboardingScreen()));
         break;
       case 'Ruta académica':
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => PantallaRutaAprendizaje()));
+            .push(MaterialPageRoute(builder: (_) => OnboardingScreen()));
         break;
       case 'Monitorias':
 

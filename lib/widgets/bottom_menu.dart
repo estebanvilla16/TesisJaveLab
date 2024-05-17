@@ -1,8 +1,8 @@
+import 'package:JaveLab/pages/instructivo_foro.dart';
+import 'package:JaveLab/pages/instructivo_ruta_academica.dart';
 import 'package:JaveLab/pages/main_app.dart';
-import 'package:JaveLab/pages/foro.dart';
 import 'package:JaveLab/pages/usuarios_page.dart';
 import 'package:JaveLab/pages/perfil.dart';
-import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:flutter/material.dart';
 import 'package:JaveLab/models/usuario.dart';
 import 'package:JaveLab/services/auth_service.dart';
@@ -51,11 +51,11 @@ class _BottomMenuState extends State<BottomMenu> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const PantallaRutaAprendizaje()));
+                builder: (context) =>  OnboardingScreen()));
         break;
       case 2:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const Cara6()));
+            context, MaterialPageRoute(builder: (context) =>  ForumOnboardingScreen()));
         break;
       case 3:
         Navigator.push(
