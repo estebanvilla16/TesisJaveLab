@@ -20,7 +20,8 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
   late TextEditingController _tituloController;
   late TextEditingController _contenidoController;
   late TextEditingController _etiquetaController;
-  late String mat;
+  late TextEditingController _urlController;
+  late List<String> mat; // Lista de nombres de archivos
   late int id;
 
   @override
@@ -29,8 +30,9 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     _tituloController = TextEditingController(text: widget.post.titulo);
     _contenidoController = TextEditingController(text: widget.post.contenido);
     _etiquetaController = TextEditingController(text: widget.post.tags);
-    mat = widget.post.material ??
-        ""; // Inicializa con post.material o vacío si es null
+    _urlController = TextEditingController(text: widget.post.video);
+    mat = widget.post.material?.split(', ') ??
+        []; // Inicializa con los nombres de los archivos o una lista vacía si es null
     id = widget.post.id_post;
   }
 
@@ -87,25 +89,42 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
               ),
             ),
             const SizedBox(height: 16.0),
-            if (widget.post.material != "null")
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      readOnly: true,
-                      controller: TextEditingController(text: mat),
-                      decoration: const InputDecoration(
-                        hintText: 'Material adjunto',
+            const Text(
+              'URL de video:',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: _urlController,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              decoration: const InputDecoration(
+                hintText: 'Ingrese el url de un video a adjuntar',
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            if (mat.isNotEmpty)
+              Column(
+                children: mat.map((fileName) {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          readOnly: true,
+                          controller: TextEditingController(text: fileName),
+                          decoration: const InputDecoration(
+                            hintText: 'Material adjunto',
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      _confirmarEliminarMaterial(context);
-                    },
-                  ),
-                ],
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: () {
+                          _confirmarEliminarMaterial(context, fileName);
+                        },
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
             const SizedBox(height: 16.0),
             Row(
@@ -116,8 +135,9 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
                     String nuevoTitulo = _tituloController.text;
                     String nuevoContenido = _contenidoController.text;
                     String nuevaEtiqueta = _etiquetaController.text;
+                    String urlNuevo = _urlController.text;
                     _modificarPost(nuevoTitulo, nuevoContenido, nuevaEtiqueta,
-                        id, mat, widget.post.material);
+                        id, mat, urlNuevo);
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -144,13 +164,14 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
   }
 
   void _modificarPost(String nuevoTitulo, String nuevoContenido,
-      String nuevaEtiqueta, int id, String mat, String filename) async {
+      String nuevaEtiqueta, int id, List<String> mat, String url) async {
     final String url = '${Environment.foroUrl}/post/actualizar/$id';
 
     Map<String, dynamic> data = {
       "titulo": nuevoTitulo,
       "contenido": nuevoContenido,
-      "material": mat,
+      "material": mat.isNotEmpty ? mat.join(', ') : "null",
+      "video": url,
       "tags": nuevaEtiqueta,
     };
 
@@ -162,15 +183,9 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
 
     if (response.statusCode == 200) {
       print('Post modificado: ${response.body}');
-      if (mat == "null") {
-        final String url2 =
-            ('${Environment.blobUrl}/api/blob/delete/$filename');
-        final response2 = await http.delete(Uri.parse(url2));
-
-        if (response2.statusCode == 200) {
-          print('Archivo eliminado: ${response2.body}');
-        } else {
-          print('Error al eliminar el archivo: ${response2.body}');
+      for (String fileName in widget.post.material?.split(', ') ?? []) {
+        if (!mat.contains(fileName)) {
+          await _eliminarArchivo(fileName);
         }
       }
     } else {
@@ -179,7 +194,19 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
     }
   }
 
-  Future<void> _confirmarEliminarMaterial(BuildContext context) async {
+  Future<void> _eliminarArchivo(String filename) async {
+    final String url = '${Environment.blobUrl}/api/blob/delete/$filename';
+    final response = await http.delete(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      print('Archivo eliminado: ${response.body}');
+    } else {
+      print('Error al eliminar el archivo: ${response.body}');
+    }
+  }
+
+  Future<void> _confirmarEliminarMaterial(
+      BuildContext context, String fileName) async {
     bool confirmado = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -207,7 +234,7 @@ class _EditarPublicacionScreenState extends State<EditarPublicacionScreen> {
 
     if (confirmado) {
       setState(() {
-        mat = "null"; // Actualiza la variable de material a "null"
+        mat.remove(fileName); // Elimina el archivo específico de la lista
       });
     }
   }

@@ -67,11 +67,13 @@ class _PostViewScreenState extends State<PostViewScreen> {
 
   Future<List<Comentario>> _fetchComs(int idPost) async {
     try {
-      final String url = ('${Environment.foroUrl}/comentario/lista-comentarios/$idPost');
+      final String url =
+          ('${Environment.foroUrl}/comentario/lista-comentarios/$idPost');
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> postData = jsonDecode(response.body);
-        final List<Comentario> coms = postData.map((data) => Comentario.fromJson(data)).toList();
+        final List<Comentario> coms =
+            postData.map((data) => Comentario.fromJson(data)).toList();
         return coms;
       } else {
         throw Exception('Error en la solicitud: ${response.statusCode}');
@@ -204,7 +206,8 @@ class _PostViewState extends State<PostView> {
     if (response.statusCode == 200) {
       print('Comentario eliminado: ${response.statusCode}');
     } else {
-      print('Error al eliminar el comentario. Código de estado: ${response.statusCode}');
+      print(
+          'Error al eliminar el comentario. Código de estado: ${response.statusCode}');
     }
   }
 
@@ -224,7 +227,6 @@ class _PostViewState extends State<PostView> {
             children: [
               CircleAvatar(
                 radius: 30,
-             
               ),
               const SizedBox(width: 16.0),
               Expanded(
@@ -233,12 +235,14 @@ class _PostViewState extends State<PostView> {
                   children: [
                     Text(
                       widget.post.titulo,
-                      style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 24.0, fontWeight: FontWeight.bold),
                     ),
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => ProfileUserPage(uidHost: widget.post.id_op),
+                          builder: (_) =>
+                              ProfileUserPage(uidHost: widget.post.id_op),
                         ));
                       },
                       child: Text(
@@ -261,7 +265,8 @@ class _PostViewState extends State<PostView> {
                     const SizedBox(height: 16.0),
                     const Text(
                       'Categoría',
-                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       _asignarValorCategoria(widget.post.etiqueta),
@@ -270,7 +275,8 @@ class _PostViewState extends State<PostView> {
                     const SizedBox(height: 16.0),
                     const Text(
                       'Contenido del Post',
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 20.0, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
@@ -278,13 +284,15 @@ class _PostViewState extends State<PostView> {
                       style: const TextStyle(fontSize: 18.0),
                     ),
                     const SizedBox(height: 16.0),
-                    if (widget.post.video != null && widget.post.video!.isNotEmpty)
+                    if (widget.post.video != null &&
+                        widget.post.video!.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
                             'Video:',
-                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8.0),
                           SizedBox(
@@ -295,32 +303,54 @@ class _PostViewState extends State<PostView> {
                         ],
                       ),
                     const SizedBox(height: 20),
-                    if (widget.post.material != "null")
-                      ElevatedButton.icon(
-                        onPressed: () => _downloadPDF(widget.post.material, context),
-                        icon: const Icon(Icons.attach_file, size: 20),
-                        label: const Text('Descargar archivo', style: TextStyle(fontSize: 16)),
+                    if (widget.post.material != null &&
+                        widget.post.material!.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Archivos adjuntos:',
+                            style: TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8.0),
+                          for (String material
+                              in widget.post.material!.split(','))
+                            ElevatedButton.icon(
+                              onPressed: () =>
+                                  _downloadPDF(material.trim(), context),
+                              icon: const Icon(Icons.attach_file, size: 20),
+                              label: Text('Descargar ${material.trim()}',
+                                  style: TextStyle(fontSize: 16)),
+                            ),
+                        ],
                       ),
                     const SizedBox(height: 16.0),
                     Row(
                       children: [
                         IconButton(
                           icon: Icon(Icons.thumb_up,
-                              color: widget.isLiked ? Colors.blue : Colors.grey),
+                              color:
+                                  widget.isLiked ? Colors.blue : Colors.grey),
                           onPressed: widget.toggleLike,
                         ),
-                        Text('${widget.likes}', style: const TextStyle(fontSize: 16)),
+                        Text('${widget.likes}',
+                            style: const TextStyle(fontSize: 16)),
                         const SizedBox(width: 16),
                         IconButton(
                           icon: Icon(Icons.thumb_down,
-                              color: widget.isDisliked ? Colors.red : Colors.grey),
+                              color:
+                                  widget.isDisliked ? Colors.red : Colors.grey),
                           onPressed: widget.toggleDislike,
                         ),
-                        Text('${widget.dislikes}', style: const TextStyle(fontSize: 16)),
+                        Text('${widget.dislikes}',
+                            style: const TextStyle(fontSize: 16)),
                         const SizedBox(width: 16),
                         IconButton(
                           icon: Icon(Icons.favorite,
-                              color: widget.isFavorited ? Colors.red : Colors.grey),
+                              color: widget.isFavorited
+                                  ? Colors.red
+                                  : Colors.grey),
                           onPressed: widget.toggleFavorite,
                         ),
                       ],
@@ -351,7 +381,8 @@ class _PostViewState extends State<PostView> {
                   ),
                 ),
               );
-              _crearCom(widget.post.id_post, widget.comentarioController, widget.user, _file);
+              _crearCom(widget.post.id_post, widget.comentarioController,
+                  widget.user, _file);
               widget.comentarioController.clear();
               widget.updateComentarios();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -394,7 +425,8 @@ class _PostViewState extends State<PostView> {
             const SizedBox(width: 8.0),
             ElevatedButton(
               onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles();
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles();
                 if (result != null) {
                   String? filePath = result.files.single.path;
                   if (filePath != null) {
@@ -457,9 +489,7 @@ class _PostViewState extends State<PostView> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
-        leading: CircleAvatar(
-    
-        ),
+        leading: CircleAvatar(),
         title: Text(comentario.nombre),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -501,7 +531,8 @@ class _PostViewState extends State<PostView> {
                 onSelected: (String value) {
                   if (value == 'edit') {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EditarComentarioScreen(com: comentario),
+                      builder: (context) =>
+                          EditarComentarioScreen(com: comentario),
                     ));
                   } else if (value == 'delete') {
                     showDialog(
@@ -509,7 +540,8 @@ class _PostViewState extends State<PostView> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text("Confirmar eliminación"),
-                          content: const Text("¿Estás seguro de que quieres eliminar este comentario?"),
+                          content: const Text(
+                              "¿Estás seguro de que quieres eliminar este comentario?"),
                           actions: [
                             TextButton(
                               onPressed: () {
@@ -555,9 +587,7 @@ class _PostViewState extends State<PostView> {
         ),
         child: Text(
           tag.trim(),
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 14.0),
+          style: const TextStyle(color: Colors.black, fontSize: 14.0),
         ),
       );
     }).toList();
@@ -587,7 +617,8 @@ class _PostViewState extends State<PostView> {
         print('Archivo subido exitosamente');
         _modificarCom(fileName, id);
       } else {
-        print('Error al subir el archivo. Código de estado: ${response.statusCode}');
+        print(
+            'Error al subir el archivo. Código de estado: ${response.statusCode}');
       }
     } catch (e) {
       print('Error: $e');
@@ -604,7 +635,8 @@ class _PostViewState extends State<PostView> {
     if (response.statusCode == 200) {
       print('Comentario modificado: ${response.body}');
     } else {
-      print('Error al modificar el comentario. Código de estado: ${response.statusCode}');
+      print(
+          'Error al modificar el comentario. Código de estado: ${response.statusCode}');
     }
   }
 
@@ -614,7 +646,8 @@ class _PostViewState extends State<PostView> {
     if (response.statusCode == 200) {
       final bytes = response.bodyBytes;
       final downloadDir = await getExternalStorageDirectory();
-      final file = await File('${downloadDir!.path}/$nombre').writeAsBytes(bytes);
+      final file =
+          await File('${downloadDir!.path}/$nombre').writeAsBytes(bytes);
       OpenFile.open(file.path);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -625,11 +658,13 @@ class _PostViewState extends State<PostView> {
     }
   }
 
-  void _crearCom(int idPost, TextEditingController comentarioController, Usuario user, File? file) async {
+  void _crearCom(int idPost, TextEditingController comentarioController,
+      Usuario user, File? file) async {
     final String url = ('${Environment.foroUrl}/comentario/agregar');
     String userId = user.uid;
     String nombreCompleto = '${user.nombre} ${user.apellido}';
-    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
+    String formattedDate =
+        DateFormat('yyyy-MM-dd').format(DateTime.now().toLocal());
     Map<String, dynamic> data = {
       "id_comentador": userId,
       "id_post": idPost,
@@ -648,12 +683,14 @@ class _PostViewState extends State<PostView> {
         _uploadFile(_file!, comId);
       }
     } else {
-      print('Error al publicar el comentario. Código de estado: ${response.statusCode}');
+      print(
+          'Error al publicar el comentario. Código de estado: ${response.statusCode}');
     }
   }
 
   void _deletePost(int? id) async {
-    final String url = ('${Environment.foroUrl}/comentario/borrar-por-post/$id');
+    final String url =
+        ('${Environment.foroUrl}/comentario/borrar-por-post/$id');
     final String url2 = ('${Environment.foroUrl}/post/borrar/$id');
     final response = await http.delete(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -662,10 +699,12 @@ class _PostViewState extends State<PostView> {
       if (response2.statusCode == 200) {
         print('Post eliminado: ${response2.statusCode}');
       } else {
-        print('Error al eliminar el post. Código de estado: ${response2.statusCode}');
+        print(
+            'Error al eliminar el post. Código de estado: ${response2.statusCode}');
       }
     } else {
-      print('Error al eliminar los comentarios del post. Código de estado: ${response.statusCode}');
+      print(
+          'Error al eliminar los comentarios del post. Código de estado: ${response.statusCode}');
     }
   }
 
@@ -737,7 +776,8 @@ class _PostViewState extends State<PostView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(post.titulo, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(post.titulo,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8.0),
                     Text('Autor: ${post.nombre}'),
                     const SizedBox(height: 8.0),
@@ -748,7 +788,8 @@ class _PostViewState extends State<PostView> {
                         onPressed: () {
                           // Navegar al detalle del post
                         },
-                        child: const Text('Ver más', style: TextStyle(color: Colors.lightBlue)),
+                        child: const Text('Ver más',
+                            style: TextStyle(color: Colors.lightBlue)),
                       ),
                     ),
                   ],

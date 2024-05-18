@@ -29,6 +29,7 @@ class _Cara8State extends State<Cara8> {
   String categoriaSeleccionada = "Programación";
   bool _isPublishing = false;
   late Usuario user;
+  List<File> _files = [];
 
   @override
   void initState() {
@@ -217,29 +218,30 @@ class _Cara8State extends State<Cara8> {
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                      await FilePicker.platform.pickFiles(allowMultiple: true);
                   if (result != null) {
-                    String? filePath = result.files.single.path;
-                    if (filePath != null) {
-                      setState(() {
-                        _file = File(filePath);
-                      });
-                    }
+                    setState(() {
+                      _files = result.paths.map((path) => File(path!)).toList();
+                    });
                   }
                 },
-                child: const Text('Adjuntar Archivo'),
+                child: const Text('Adjuntar Archivos'),
               ),
-              if (_file != null)
-                ListTile(
-                  title: Text('Archivo Adjunto: ${_file!.path}'),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        _file = null;
-                      });
-                    },
-                  ),
+              if (_files.isNotEmpty)
+                Column(
+                  children: _files.map((file) {
+                    return ListTile(
+                      title: Text('Archivo Adjunto: ${file.path}'),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            _files.remove(file);
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
                 ),
               if (_isPublishing)
                 const Column(
@@ -262,7 +264,7 @@ class _Cara8State extends State<Cara8> {
                           _zefyrController,
                           categoriaSeleccionada,
                           user,
-                          _file,
+                          _files,
                           urlController);
                     },
                     style: ElevatedButton.styleFrom(
@@ -316,36 +318,40 @@ class _Cara8State extends State<Cara8> {
     return '$fileNameWithoutExtension - $id$extension';
   }
 
-  Future<void> _uploadFile(File file, int id) async {
-    try {
-      String fileName = getFileNameWithId(file.path, id);
-      final url = '${Environment.blobUrl}/api/blob/upload/foro';
-      var request = http.MultipartRequest('POST', Uri.parse(url));
+  Future<void> _uploadFiles(List<File> files, int id) async {
+    List<String> fileNames = [];
+    for (var file in files) {
+      try {
+        String fileName = getFileNameWithId(file.path, id);
+        final url = '${Environment.blobUrl}/api/blob/upload/foro';
+        var request = http.MultipartRequest('POST', Uri.parse(url));
 
-      // Crea un nuevo archivo con el nombre modificado
-      var modifiedFile = http.MultipartFile(
-        'file',
-        file.openRead(),
-        file.lengthSync(),
-        filename: fileName, // Usa el nuevo nombre del archivo
-      );
+        var modifiedFile = http.MultipartFile(
+          'file',
+          file.openRead(),
+          file.lengthSync(),
+          filename: fileName,
+        );
 
-      // Agrega el archivo modificado a la solicitud
-      request.files.add(modifiedFile);
+        request.files.add(modifiedFile);
 
-      // Envía la solicitud y espera la respuesta
-      var response = await request.send();
+        var response = await request.send();
 
-      if (response.statusCode == 200) {
-        print('Archivo subido exitosamente');
-        _modificarPost(fileName, id);
-        // Aquí puedes manejar la lógica después de subir el archivo
-      } else {
-        print(
-            'Error al subir el archivo. Código de estado: ${response.statusCode}');
+        if (response.statusCode == 200) {
+          fileNames.add(fileName);
+          print('Archivo subido exitosamente: $fileName');
+        } else {
+          print(
+              'Error al subir el archivo. Código de estado: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
       }
-    } catch (e) {
-      print('Error: $e');
+    }
+
+    if (fileNames.isNotEmpty) {
+      String concatenatedFileNames = fileNames.join(', ');
+      _modificarPost(concatenatedFileNames, id);
     }
   }
 
@@ -375,7 +381,7 @@ class _Cara8State extends State<Cara8> {
       ZefyrController _zefyrController,
       String categoriaSeleccionada,
       Usuario user,
-      File? file,
+      List<File> files,
       TextEditingController urlController) async {
     setState(() {
       _isPublishing = true;
@@ -409,12 +415,10 @@ class _Cara8State extends State<Cara8> {
     if (response.statusCode == 201) {
       print('Post publicado: ${response.body}');
       int postId = jsonDecode(response.body)['id_post'];
-      if (_file != null) {
-        await _uploadFile(_file!, postId);
+      if (files.isNotEmpty) {
+        await _uploadFiles(files, postId);
       }
-      // Mostrar la notificación
       _mostrarNotificacion('Post creado');
-      // Redirigir a la pantalla Cara6 después de mostrar la notificación
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Cara6()),
