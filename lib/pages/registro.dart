@@ -10,6 +10,7 @@ import 'package:JaveLab/models/syllabus.dart';
 import 'package:JaveLab/models/userxmateria.dart';
 import 'package:JaveLab/services/auth_service.dart';
 import 'package:JaveLab/services/socket_service.dart';
+import 'package:emailjs/emailjs.dart';
 import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
@@ -821,7 +822,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future sendEmail({required String destino, required String email}) async {
-    /*const serviceId = 'service_sp715lw';
+    const serviceId = 'service_ns1uppe';
     const templateId = 'template_00jlyo9';
     const userId = 'yRF6EWiTIlwKHjAGg';
     final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
@@ -843,14 +844,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
       }),
     );
-    /Map<String, dynamic> templateParams = {
+    Map<String, dynamic> templateParams = {
       'from_name': 'Javelab',
       'to_name': destino,
       'destino': email,
       'reply_to': 'javelab2024@gmail.com',
-    };*/
+    };
 
-    final message = Message()
+    /*final message = Message()
       ..from = Address(Environment.correoJave, 'Javelab')
       ..recipients.add(email)
       ..subject = 'Registro de usuario exitoso!'
@@ -866,8 +867,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       for (var p in e.problems) {
         print('Problem: ${p.code}: ${p.msg}');
       }
-    }
-    /*try {
+    }*/
+    try {
       await EmailJS.send(
         serviceId,
         templateId,
@@ -880,7 +881,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print('SUCCESS!');
     } catch (error) {
       print(error.toString());
-    }*/
+    }
   }
 
 }
