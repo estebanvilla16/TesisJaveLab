@@ -117,6 +117,8 @@ flutter:
   - assets/Syllabus Cálculo Diferencial.pdf
   - assets/Syllabus Física Mecánica.pdf
   - assets/Syllabus Introducción a la Programación.pdf
+  - assets/logo.png
+  - assets/profile_placeholder.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

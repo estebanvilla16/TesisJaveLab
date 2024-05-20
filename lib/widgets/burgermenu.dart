@@ -5,6 +5,7 @@ import 'package:JaveLab/pages/instructivo_ruta_academica.dart';
 import 'package:JaveLab/pages/main_app.dart';
 import 'package:JaveLab/pages/monitorias.dart';
 import 'package:JaveLab/pages/perfil.dart';
+import 'package:JaveLab/pages/repositorio.dart';
 import 'package:JaveLab/pages/ruta_academica.dart';
 import 'package:JaveLab/pages/usuarios_page.dart';
 import 'package:JaveLab/services/auth_service.dart';
@@ -97,6 +98,11 @@ class _BurgerMenuState extends State<BurgerMenu> {
             title: const Text('Monitorias', style: TextStyle(fontSize: 16)),
             onTap: () => navigateToScreen(context, 'Monitorias'),
           ),
+          ListTile(
+            leading: const Icon(Icons.data_object, color: Color(0xFF2c5697)),
+            title: const Text('Repositorio', style: TextStyle(fontSize: 16)),
+            onTap: () => navigateToScreen(context, 'Repositorio'),
+          ),
           const Spacer(),
           Container(
             padding: const EdgeInsets.all(10),
@@ -166,9 +172,10 @@ class _BurgerMenuState extends State<BurgerMenu> {
 
         // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
         break;
-      case 'Calendario académico':
+      case 'Repositorio':
 
-        // Navigator.of(context).push(MaterialPageRoute(builder: (_) => ConversationsScreen()));
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => RepositoryHomeScreen()));
         break;
 
       // Incluye los demás casos aquí
