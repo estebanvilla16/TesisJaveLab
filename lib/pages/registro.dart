@@ -555,7 +555,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ('${Environment.academicUrl}/userxmateria/agregar');
     final String urlRuta = ('${Environment.academicUrl}/ruta/agregar');
     final String urlTema = ('${Environment.academicUrl}/tema/agregar');
-    if (user.calculoDiferencial = true) {
+    if (user.calculoDiferencial == true) {
       Map<String, dynamic> dataRel = {
         "materia": 3,
         "usuario": id,
@@ -623,7 +623,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
     }
-    if (user.fisicaMecanica = true) {
+    if (user.fisicaMecanica == true) {
       Map<String, dynamic> dataRel = {
         "materia": 2,
         "usuario": id,
@@ -691,7 +691,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
     }
-    if (user.pensamientoAlgoritmico = true) {
+    if (user.pensamientoAlgoritmico == true) {
       Map<String, dynamic> dataRel = {
         "materia": 1,
         "usuario": id,
